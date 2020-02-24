@@ -52,6 +52,9 @@ function setHeader($type = "x") {
 // Determine block page type
 if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
     // Redirect to Web Interface
+    if( $serverName === "thuis.surfwijzer.nl" ){
+        exit(header("Location: /admin"));
+    }
     exit(header("Location: /admin"));
 } elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
     // Set Splash Page output
@@ -274,7 +277,7 @@ setHeader();
             <?php if (!empty($svEmail)) echo '<a class="linkEmail" href="mailto:'.$svEmail.'"></a>'; ?>
         </div>
 </div>
-
+XXXX
 <div id="bpAlt">
     <label class="altBtn" for="bpAboutToggle"><?php //Why am I here? ?></label>
 </div>
