@@ -1,0 +1,11 @@
+{
+    "name": "jerryhopper/blackboxweb",
+    "type": "project",
+    "authors": [
+        {
+            "name": "jerryhopper",
+            "email": "hopper.jerry@gmail.com"
+        }
+    ],
+    "require": {}
+}
