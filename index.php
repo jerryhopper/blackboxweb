@@ -50,7 +50,7 @@ function setHeader($type = "x") {
 }
 
 // Determine block page type
-if ($serverName === "pi.hole") {
+if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
     // Redirect to Web Interface
     exit(header("Location: /admin"));
 } elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
