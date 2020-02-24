@@ -53,7 +53,7 @@ function setHeader($type = "x") {
 if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
     // Redirect to Web Interface
     if( $serverName === "thuis.surfwijzer.nl" ){
-        exit(header("Location: /admin"));
+        exit(header("Location: /blackbox/home.php"));
     }
     exit(header("Location: /admin"));
 } elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
