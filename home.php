@@ -3,6 +3,12 @@
 
 require 'vendor/autoload.php';
 
+
+
+require 'src/FTL.php';
+require 'src/Gravity.php';
+require 'src/BbPiholeApi.php';
+
 #echo "xYYYYYYYYYY";
 
 #print_r($_SERVER);
@@ -68,8 +74,32 @@ $app->get('/', function ($request, $response, $args) {
     ]);
 })->setName('profile');
 
+
+
+
+
+
+
+
+
+
+
+
 // Define home route
 $app->get('/api.php', function ($request, $response, $args) {
+
+    //var_dump($request);
+    // Other API functions
+    //require("../admin/api_FTL.php");
+
+
+    $bbapi = new BbPiholeApi($request, $args);
+
+
+
+    $x = $bbapi->result();
+
+    //http://pi.hole/api.php?summaryRaw&getQuerySources&topClientsBlocked
 
     /*   Pi-hole: A black hole for Internet advertisements
     *    (c) 2017 Pi-hole, LLC (https://pi-hole.net)
@@ -79,12 +109,13 @@ $app->get('/api.php', function ($request, $response, $args) {
     *    Please see LICENSE file for your rights under this license */
 
     //GET
-    $allGetVars = $request->getQueryParams();
+    //$allGetVars = $request->getQueryParams();
 
     //POST or PUT
-    $allPostPutVars = $request->getParsedBody();
+    //$allPostPutVars = $request->getParsedBody();
+print_r($x);
 
-
+die();
 
 
     $api = true;
@@ -252,8 +283,16 @@ $app->get('/api.php', function ($request, $response, $args) {
 
         if (isset($allGetVars['summary']) || isset($allGetVars['summaryRaw']) || !count($_GET))
         {
-            require_once("scripts/pi-hole/php/gravity.php");
+            $new_include_path="/var/www/html/admin";
+            //$new_include_path=":./usr/share/php,:./var/www/admin";
+
+            set_include_path ( $new_include_path );
+            require_once("/var/www/html/admin/scripts/pi-hole/php/gravity.php");
+            restore_include_path();
+
             sendRequestFTL("stats");
+
+
             $return = getResponseFTL();
 
             $stats = [];
@@ -695,33 +734,33 @@ $app->get('/api.php', function ($request, $response, $args) {
 
 // Define whitelist route
 $app->get('/whitelist', function ($request, $response, $args) {
-    //return $response->withStatus(403);
+    //return $response->withStatus(403);'name' => $args['name']
     return $this->view->render($response, 'whitelist.html', [
-        'name' => $args['name']
+
     ]);
 })->setName('whitelist');
 
 // Define blacklist route
 $app->get('/blacklist', function ($request, $response, $args) {
-    //return $response->withStatus(403);
+    //return $response->withStatus(403);'name' => $args['name']
     return $this->view->render($response, 'blacklist.html', [
-        'name' => $args['name']
+
     ]);
 })->setName('blacklist');
 
 // Define blacklist route
 $app->get('/network', function ($request, $response, $args) {
-    //return $response->withStatus(403);
+    //return $response->withStatus(403);'name' => $args['name']
     return $this->view->render($response, 'network.html', [
-        'name' => $args['name']
+
     ]);
 })->setName('network');
 
 // Define blacklist route
 $app->get('/groups', function ($request, $response, $args) {
-    //return $response->withStatus(403);
+    //return $response->withStatus(403);'name' => $args['name']
     return $this->view->render($response, 'groups.html', [
-        'name' => $args['name']
+
     ]);
 })->setName('groups');
 
