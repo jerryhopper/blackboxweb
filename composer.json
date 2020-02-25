@@ -7,5 +7,9 @@
             "email": "hopper.jerry@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "slim/slim": "3.*",
+        "twig/twig": "^3.0",
+        "slim/twig-view": "2.*"
+    }
 }

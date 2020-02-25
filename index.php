@@ -53,6 +53,28 @@ function setHeader($type = "x") {
 if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
     // Redirect to Web Interface
     if( $serverName === "thuis.surfwijzer.nl" ){
+        #print_r($_SERVER);
+        #die();
+/*
+        if($_SERVER['REQUEST_URI']=='/api.php'){
+            if(file_exists("/var/www/blackbox/home.php")){
+                include("/var/www/html/admin/api.php");
+                exit();
+            }else{
+                include("/var/www/admin/api.php");
+                exit();
+            }
+
+        }
+*/
+
+        if(file_exists("/var/www/blackbox/home.php")){
+            include("/var/www/blackbox/home.php");
+        }else{
+            include("/var/www/html/blackbox/home.php");
+        }
+
+        die();
         exit(header("Location: /blackbox/home.php"));
     }
     exit(header("Location: /admin"));
