@@ -52,6 +52,7 @@ function setHeader($type = "x") {
 // Determine block page type
 if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
     // Redirect to Web Interface
+
     if( $serverName === "thuis.surfwijzer.nl" ){
         #print_r($_SERVER);
         #die();
@@ -86,6 +87,13 @@ if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "
         <link rel='stylesheet' href='/pihole/blockingpage.css' type='text/css'/>
     </head><body id='splashpage'><img src='/admin/img/logo.svg'/><br/>Pi-<b>hole</b>: Your black hole for Internet advertisements<br><a href='/admin'>Did you mean to go to the admin panel?</a></body></html>
     ";
+
+    if(file_exists("/var/www/blackbox/home.php")){
+        include("/var/www/blackbox/home.php");
+    }else{
+        include("/var/www/html/blackbox/home.php");
+    }
+    die();
 
     // Set splash/landing page based off presence of $landPage
     $renderPage = is_file(getcwd()."/$landPage") ? include $landPage : "$splashPage";
