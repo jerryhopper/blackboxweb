@@ -8,6 +8,14 @@
 {% endblock %}
 {% block sidebar %}
 <ul class="nav">
+    <li class="nav-item alert-dark  ">
+        <a class="nav-link" href="/login">
+            <i class="material-icons">vpn_key</i>
+            <p>login</p>
+        </a>
+    </li>
+
+
     <li class="nav-item active">
         <a class="nav-link" href="/">
             <i class="material-icons">dashboard</i>
@@ -53,11 +61,13 @@
 
 {% block content%}
 
-<!-- Small boxes (Stat box) -->
+
+
+        <!-- Small boxes (Stat box) -->
 <div class="row">
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-3 col-sm-6 card">
         <!-- small box -->
-        <div class="small-box bg-green" id="total_queries" title="only A + AAAA queries">
+        <div class="small-box bg-green card-body" id="total_queries" title="only A + AAAA queries">
             <div class="inner">
                 <p>Total queries (<span id="unique_clients">-</span> clients)</p>
                 <h3 class="statistic"><span id="dns_queries_today">---</span></h3>
@@ -68,9 +78,9 @@
         </div>
     </div>
     <!-- ./col -->
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-3 col-sm-6 card">
         <!-- small box -->
-        <div class="small-box bg-aqua">
+        <div class="small-box bg-aqua card-body">
             <div class="inner">
                 <p>Queries Blocked</p>
                 <h3 class="statistic"><span id="ads_blocked_today">---</span></h3>
@@ -81,9 +91,9 @@
         </div>
     </div>
     <!-- ./col -->
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-3 col-sm-6 card">
         <!-- small box -->
-        <div class="small-box bg-yellow">
+        <div class="small-box bg-yellow card-body">
             <div class="inner">
                 <p>Percent Blocked</p>
                 <h3 class="statistic"><span id="ads_percentage_today">---</span></h3>
@@ -94,9 +104,9 @@
         </div>
     </div>
     <!-- ./col -->
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-3 col-sm-6 card">
         <!-- small box -->
-        <div class="small-box bg-red" title="<?php echo gravity_last_update(); ?>">
+        <div class="small-box bg-red card-body" title="<?php echo gravity_last_update(); ?>">
             <div class="inner">
                 <p>Domains on Blocklist</p>
                 <h3 class="statistic"><span id="domains_being_blocked">---</span></h3>

@@ -60,7 +60,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="network-entries" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <table id="network-entries" class="display table table-striped table-bordered dataTable" cellspacing="0" width="100%">
                     <thead>
                     <tr>
                         <th>IP address</th>
@@ -102,4 +102,12 @@
         <!-- /.box -->
     </div>
 </div>
+
+{% endblock %}
+
+
+{% block specificjs %}
+<script src="/admin/scripts/vendor/moment.min.js"></script>
+<script src="/admin/scripts/pi-hole/js/ip-address-sorting.js"></script>
+<script src="/admin/scripts/pi-hole/js/network.js"></script>
 {% endblock %}

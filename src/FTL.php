@@ -4,8 +4,23 @@
 class FTL
 {
     var $socket;
+    private $request;
 
 
+
+    function __construct()
+    {
+        $this->connect("127.0.0.1");
+    }
+
+    static function readconf(){
+        return parse_ini_file("/etc/pihole/pihole-FTL.conf");
+    }
+
+
+    function is_resource(){
+        return is_resource($this->socket);
+    }
     function connect($address, $port=4711){
         if($address == "127.0.0.1")
         {

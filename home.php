@@ -8,6 +8,10 @@ require 'vendor/autoload.php';
 require 'src/FTL.php';
 require 'src/Gravity.php';
 require 'src/BbPiholeApi.php';
+require 'src/BbPiholeApiDb.php';
+require 'src/SQLite3.php';
+require 'src/PiholeNativeAuth.php';
+require 'src/SetupVars.php';
 
 #echo "xYYYYYYYYYY";
 
@@ -20,6 +24,11 @@ $app = new \Slim\App();
 
 // Fetch DI Container
 $container = $app->getContainer();
+
+$container['setupVars'] = function ($c) {
+    $vars = new SetupVars();
+    return $vars->get();
+};
 
 // Register Twig View helper
 $container['view'] = function ($c) {
@@ -77,9 +86,23 @@ $app->get('/', function ($request, $response, $args) {
 
 
 
+$app->get('/queries.php', function ($request, $response, $args) {
+    //return $response->withJson( $bbapi->result() );
 
 
+    return $this->view->render($response, 'queries.html',  [] );
 
+});
+
+
+$app->get('/setupvars.json', function ($request, $response, $args) {
+
+    return $response->withJson( $this->setupVars );
+
+
+    //return $this->view->render($response, 'queries.html',  [] );
+
+});
 
 
 
@@ -88,157 +111,41 @@ $app->get('/', function ($request, $response, $args) {
 // Define home route
 $app->get('/api.php', function ($request, $response, $args) {
 
-    //var_dump($request);
-    // Other API functions
-    //require("../admin/api_FTL.php");
+    $bbapi = new BbPiholeApi($request, $args, $this->setupVars);
 
-
-    $bbapi = new BbPiholeApi($request, $args);
-
-
-
-    $x = $bbapi->result();
-
-    //http://pi.hole/api.php?summaryRaw&getQuerySources&topClientsBlocked
-
-    /*   Pi-hole: A black hole for Internet advertisements
-    *    (c) 2017 Pi-hole, LLC (https://pi-hole.net)
-    *    Network-wide ad blocking via your own hardware.
-    *
-    *    This file is copyright under the latest version of the EUPL.
-    *    Please see LICENSE file for your rights under this license */
+    $bbapidb = new BbPiholeApiDb($request, $args, $this->setupVars);
 
     //GET
-    //$allGetVars = $request->getQueryParams();
+    $allGetVars = $request->getQueryParams();
 
     //POST or PUT
-    //$allPostPutVars = $request->getParsedBody();
-print_r($x);
-
-die();
+    $allPostPutVars = $request->getParsedBody();
 
 
     $api = true;
-    //header('Content-type: application/json');
-    require("../admin/scripts/pi-hole/php/FTL.php");
-    require("../admin/scripts/pi-hole/php/password.php");
-    require("../admin/scripts/pi-hole/php/auth.php");
-    #check_cors();
-
-    $FTL_IP = "127.0.0.1";
 
     $data = array();
 
     // Common API functions
     if (isset($allGetVars['status']))
     {
-        $pistatus = exec('sudo pihole status web');
-        if ($pistatus == "1")
-        {
-            $data = array_merge($data, array("status" => "enabled"));
-        }
-        else
-        {
-            $data = array_merge($data, array("status" => "disabled"));
-        }
+        $bbapi->status();
     }
     elseif (isset($allGetVars['enable']) && $auth)
     {
-        if(isset($allGetVars["auth"]))
-        {
-            if($allGetVars["auth"] !== $pwhash)
-                die("Not authorized!");
-        }
-        else
-        {
-            // Skip token validation if explicit auth string is given
-            check_csrf($_GET['token']);
-        }
-        exec('sudo pihole enable');
-        $data = array_merge($data, array("status" => "enabled"));
-        unlink("../custom_disable_timer");
+        $bbapi->enable();
     }
     elseif (isset($allGetVars['disable']) && $auth)
     {
-        if(isset($allGetVars["auth"]))
-        {
-            if($allGetVars["auth"] !== $pwhash)
-                die("Not authorized!");
-        }
-        else
-        {
-            // Skip token validation if explicit auth string is given
-            check_csrf($allGetVars['token']);
-        }
-        $disable = intval($allGetVars['disable']);
-        // intval returns the integer value on success, or 0 on failure
-        if($disable > 0)
-        {
-            $timestamp = time();
-            exec("sudo pihole disable ".$disable."s");
-            file_put_contents("../custom_disable_timer",($timestamp+$disable)*1000);
-        }
-        else
-        {
-            exec('sudo pihole disable');
-            unlink("../custom_disable_timer");
-        }
-        $data = array_merge($data, array("status" => "disabled"));
+        $bbapi->disable();
     }
     elseif (isset($allGetVars['versions']))
     {
-        // Determine if updates are available for Pi-hole
-        // using the same script that we use for the footer
-        // on the dashboard (update notifications are
-        // suppressed if on development branches)
-        #require "scripts/pi-hole/php/update_checker.php";
-        $updates = array("core_update" => $core_update,
-            "web_update" => $web_update,
-            "FTL_update" => $FTL_update);
-        $current = array("core_current" => $core_current,
-            "web_current" => $web_current,
-            "FTL_current" => $FTL_current);
-        $latest = array("core_latest" => $core_latest,
-            "web_latest" => $web_latest,
-            "FTL_latest" => $FTL_latest);
-        $branches = array("core_branch" => $core_branch,
-            "web_branch" => $web_branch,
-            "FTL_branch" => $FTL_branch);
-        $data = array_merge($data, $updates);
-        $data = array_merge($data, $current);
-        $data = array_merge($data, $latest);
-        $data = array_merge($data, $branches);
+        $bbapi->versions();
     }
     elseif (isset($allGetVars['list']))
     {
-        if (isset($allGetVars['add']))
-        {
-            if (!$auth)
-                die("Not authorized!");
-
-            // Set POST parameters and invoke script to add domain to list
-            $_POST['domain'] = $allGetVars['add'];
-            $_POST['list'] = $allGetVars['list'];
-            #require("scripts/pi-hole/php/add.php");
-        }
-        elseif (isset($allGetVars['sub']))
-        {
-            if (!$auth)
-                die("Not authorized!");
-
-            // Set POST parameters and invoke script to remove domain from list
-            $_POST['domain'] = $allGetVars['sub'];
-            $_POST['list'] = $allGetVars['list'];
-            #require("scripts/pi-hole/php/sub.php");
-        }
-        else
-        {
-            error_log("1");
-            #require("scripts/pi-hole/php/get.php");
-
-        }
-
-        return;
+        $bbapi->list();
     }
 
     // Other API functions
@@ -248,330 +155,74 @@ die();
 
     //require("/var/www/admin/api_FTL.php");
 
+    //return $response->withJson( $bbapi->result() );
+
+
+
+//echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 
 
 
 
 
+    //if(!isset($api))
+    //{
+    //    die("Direct call to api_FTL.php is not allowed!");
+    //}
+
+    // $FTL_IP is defined in api.php
+    //$socket = connectFTL($FTL_IP);
+    //$FTL_IP="127.0.0.1";
+    //$socket = FTL::connect($FTL_IP);
 
 
 
 
 
-    if(!isset($api))
-    {
-        die("Direct call to api_FTL.php is not allowed!");
-    }
+    $auth = true;
 
-// $FTL_IP is defined in api.php
-    $socket = connectFTL($FTL_IP);
-
-    if(!is_resource($socket))
+    if( ! $bbapi->FTL->is_resource() )
     {
         $data = array_merge($data, array("FTLnotrunning" => true));
+        //echo "NOOOOOOO";
     }
     else
     {
+
         if (isset($allGetVars['type'])) {
-            $data["type"] = "FTL";
+            //$data["type"] = "FTL";
+            $bbapi->type();
         }
 
         if (isset($allGetVars['version'])) {
-            $data["version"] = 3;
+            $bbapi->version();
         }
 
-        if (isset($allGetVars['summary']) || isset($allGetVars['summaryRaw']) || !count($_GET))
+        if (isset($allGetVars['summary']) || isset($allGetVars['summaryRaw']) || !count($allGetVars))
         {
-            $new_include_path="/var/www/html/admin";
-            //$new_include_path=":./usr/share/php,:./var/www/admin";
-
-            set_include_path ( $new_include_path );
-            require_once("/var/www/html/admin/scripts/pi-hole/php/gravity.php");
-            restore_include_path();
-
-            sendRequestFTL("stats");
-
-
-            $return = getResponseFTL();
-
-            $stats = [];
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-
-                if(($tmp[0] === "domains_being_blocked" && !is_numeric($tmp[1])) || $tmp[0] === "status")
-                {
-                    $stats[$tmp[0]] = $tmp[1];
-                    continue;
-                }
-
-                if(isset($allGetVars['summary']))
-                {
-                    if($tmp[0] !== "ads_percentage_today")
-                    {
-                        $stats[$tmp[0]] = number_format($tmp[1]);
-                    }
-                    else
-                    {
-                        $stats[$tmp[0]] = number_format($tmp[1], 1, '.', '');
-                    }
-                }
-                else
-                {
-                    $stats[$tmp[0]] = floatval($tmp[1]);
-                }
-            }
-            $stats['gravity_last_updated'] = gravity_last_update(true);
-            $data = array_merge($data,$stats);
+            $bbapi->summary();
         }
+
 
         if (isset($allGetVars['overTimeData10mins']))
         {
-            sendRequestFTL("overTime");
-            $return = getResponseFTL();
+            //echo "overTimeData10mins";
+            $bbapi->overTimeData10mins();
 
-            $domains_over_time = array();
-            $ads_over_time = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $domains_over_time[intval($tmp[0])] = intval($tmp[1]);
-                $ads_over_time[intval($tmp[0])] = intval($tmp[2]);
-            }
-            $result = array('domains_over_time' => $domains_over_time,
-                'ads_over_time' => $ads_over_time);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['topItems']) && $auth)
-        {
-            if($allGetVars['topItems'] === "audit")
-            {
-                sendRequestFTL("top-domains for audit");
-            }
-            else if(is_numeric($allGetVars['topItems']))
-            {
-                sendRequestFTL("top-domains (".$allGetVars['topItems'].")");
-            }
-            else
-            {
-                sendRequestFTL("top-domains");
-            }
-
-            $return = getResponseFTL();
-            $top_queries = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $domain = utf8_encode($tmp[2]);
-                $top_queries[$domain] = intval($tmp[1]);
-            }
-
-            if($allGetVars['topItems'] === "audit")
-            {
-                sendRequestFTL("top-ads for audit");
-            }
-            else if(is_numeric($allGetVars['topItems']))
-            {
-                sendRequestFTL("top-ads (".$allGetVars['topItems'].")");
-            }
-            else
-            {
-                sendRequestFTL("top-ads");
-            }
-
-            $return = getResponseFTL();
-            $top_ads = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $domain = utf8_encode($tmp[2]);
-                if(count($tmp) > 3)
-                    $top_ads[$domain." (".$tmp[3].")"] = intval($tmp[1]);
-                else
-                    $top_ads[$domain] = intval($tmp[1]);
-            }
-
-            $result = array('top_queries' => $top_queries,
-                'top_ads' => $top_ads);
-
-            $data = array_merge($data, $result);
-        }
-
-        if ((isset($allGetVars['topClients']) || isset($allGetVars['getQuerySources'])) && $auth)
-        {
-
-            if(isset($allGetVars['topClients']))
-            {
-                $number = $allGetVars['topClients'];
-            }
-            elseif(isset($allGetVars['getQuerySources']))
-            {
-                $number = $allGetVars['getQuerySources'];
-            }
-
-            if(is_numeric($number))
-            {
-                sendRequestFTL("top-clients (".$number.")");
-            }
-            else
-            {
-                sendRequestFTL("top-clients");
-            }
-
-            $return = getResponseFTL();
-            $top_clients = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $clientip = utf8_encode($tmp[2]);
-                if(count($tmp) > 3 && strlen($tmp[3]) > 0)
-                {
-                    $clientname = utf8_encode($tmp[3]);
-                    $top_clients[$clientname."|".$clientip] = intval($tmp[1]);
-                }
-                else
-                    $top_clients[$clientip] = intval($tmp[1]);
-            }
-
-            $result = array('top_sources' => $top_clients);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['topClientsBlocked']) && $auth)
-        {
-
-            if(isset($allGetVars['topClientsBlocked']))
-            {
-                $number = $allGetVars['topClientsBlocked'];
-            }
-
-            if(is_numeric($number))
-            {
-                sendRequestFTL("top-clients blocked (".$number.")");
-            }
-            else
-            {
-                sendRequestFTL("top-clients blocked");
-            }
-
-            $return = getResponseFTL();
-            $top_clients = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $clientip = utf8_encode($tmp[2]);
-                if(count($tmp) > 3 && strlen($tmp[3]) > 0)
-                {
-                    $clientname = utf8_encode($tmp[3]);
-                    $top_clients[$clientname."|".$clientip] = intval($tmp[1]);
-                }
-                else
-                    $top_clients[$clientip] = intval($tmp[1]);
-            }
-
-            $result = array('top_sources_blocked' => $top_clients);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['getForwardDestinations']) && $auth)
-        {
-            if($allGetVars['getForwardDestinations'] === "unsorted")
-            {
-                sendRequestFTL("forward-dest unsorted");
-            }
-            else
-            {
-                sendRequestFTL("forward-dest");
-            }
-            $return = getResponseFTL();
-            $forward_dest = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                $forwardip = utf8_encode($tmp[2]);
-                if(count($tmp) > 3 && strlen($tmp[3]) > 0)
-                {
-                    $forwardname = utf8_encode($tmp[3]);
-                    $forward_dest[$forwardname."|".$forwardip] = floatval($tmp[1]);
-                }
-                else
-                    $forward_dest[$forwardip] = floatval($tmp[1]);
-            }
-
-            $result = array('forward_destinations' => $forward_dest);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['getQueryTypes']) && $auth)
-        {
-            sendRequestFTL("querytypes");
-            $return = getResponseFTL();
-            $querytypes = array();
-            foreach($return as $ret)
-            {
-                $tmp = explode(": ",$ret);
-                // Reply cannot contain non-ASCII characters
-                $querytypes[$tmp[0]] = floatval($tmp[1]);
-            }
-
-            $result = array('querytypes' => $querytypes);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['getCacheInfo']) && $auth)
-        {
-            sendRequestFTL("cacheinfo");
-            $return = getResponseFTL();
-            $cacheinfo = array();
-            foreach($return as $ret)
-            {
-                $tmp = explode(": ",$ret);
-                // Reply cannot contain non-ASCII characters
-                $cacheinfo[$tmp[0]] = floatval($tmp[1]);
-            }
-
-            $result = array('cacheinfo' => $cacheinfo);
-            $data = array_merge($data, $result);
+            //die();
         }
 
         if (isset($allGetVars['getAllQueries']) && $auth)
         {
-            if(isset($allGetVars['from']) && isset($allGetVars['until']))
-            {
-                // Get limited time interval
-                sendRequestFTL("getallqueries-time ".$allGetVars['from']." ".$allGetVars['until']);
-            }
-            else if(isset($allGetVars['domain']))
-            {
-                // Get specific domain only
-                sendRequestFTL("getallqueries-domain ".$allGetVars['domain']);
-            }
-            else if(isset($allGetVars['client']))
-            {
-                // Get specific client only
-                sendRequestFTL("getallqueries-client ".$allGetVars['client']);
-            }
-            else if(isset($allGetVars['querytype']))
-            {
-                // Get specific query type only
-                sendRequestFTL("getallqueries-qtype ".$allGetVars['querytype']);
-            }
-            else if(isset($allGetVars['forwarddest']))
-            {
-                // Get specific forward destination only
-                sendRequestFTL("getallqueries-forward ".$allGetVars['forwarddest']);
-            }
-            else if(is_numeric($allGetVars['getAllQueries']))
-            {
-                sendRequestFTL("getallqueries (".$allGetVars['getAllQueries'].")");
-            }
-            else
-            {
-                // Get all queries
-                sendRequestFTL("getallqueries");
-            }
+
+            //ie("xxx");
+            $bbapidb->getAllQueries();
+
+            /*
+             *            *
+             *
+             *
             $return = getResponseFTL();
             $allQueries = array();
             foreach($return as $line)
@@ -586,96 +237,299 @@ die();
 
             $result = array('data' => $allQueries);
             $data = array_merge($data, $result);
+            */
         }
 
-        if(isset($allGetVars["recentBlocked"]))
-        {
-            sendRequestFTL("recentBlocked");
-            die(utf8_encode(getResponseFTL()[0]));
-            unset($data);
-        }
 
-        if (isset($allGetVars['getForwardDestinationNames']) && $auth)
-        {
-            sendRequestFTL("forward-names");
-            $return = getResponseFTL();
-            $forward_dest = array();
-            foreach($return as $line)
+
+
+
+
+        /*
+            if (isset($allGetVars['topItems']) && $auth)
             {
-                $tmp = explode(" ",$line);
-                $forwardip = utf8_encode($tmp[2]);
-                if(count($tmp) > 3)
+                if($allGetVars['topItems'] === "audit")
                 {
-                    $forwardname = utf8_encode($tmp[3]);
-                    $forward_dest[$forwardname."|".$forwardip] = floatval($tmp[1]);
+                    sendRequestFTL("top-domains for audit");
+                }
+                else if(is_numeric($allGetVars['topItems']))
+                {
+                    sendRequestFTL("top-domains (".$allGetVars['topItems'].")");
                 }
                 else
                 {
-                    $forward_dest[$forwardip] = floatval($tmp[1]);
+                    sendRequestFTL("top-domains");
                 }
-            }
 
-            $result = array('forward_destinations' => $forward_dest);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['overTimeDataQueryTypes']) && $auth)
-        {
-            sendRequestFTL("QueryTypesoverTime");
-            $return = getResponseFTL();
-            $over_time = array();
-
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                for ($i=0; $i < count($tmp)-1; $i++) {
-                    $over_time[intval($tmp[0])][$i] = floatval($tmp[$i+1]);
+                $return = getResponseFTL();
+                $top_queries = array();
+                foreach($return as $line)
+                {
+                    $tmp = explode(" ",$line);
+                    $domain = utf8_encode($tmp[2]);
+                    $top_queries[$domain] = intval($tmp[1]);
                 }
-            }
-            $result = array('over_time' => $over_time);
-            $data = array_merge($data, $result);
-        }
 
-        if (isset($allGetVars['getClientNames']) && $auth)
-        {
-            sendRequestFTL("client-names");
-            $return = getResponseFTL();
-            $client_names = array();
-            foreach($return as $line)
-            {
-                $tmp = explode(" ", $line);
-                $client_names[] = array(
-                    "name" => utf8_encode($tmp[0]),
-                    "ip" => utf8_encode($tmp[1])
-                );
-            }
-
-            $result = array('clients' => $client_names);
-            $data = array_merge($data, $result);
-        }
-
-        if (isset($allGetVars['overTimeDataClients']) && $auth)
-        {
-            sendRequestFTL("ClientsoverTime");
-            $return = getResponseFTL();
-            $over_time = array();
-
-            foreach($return as $line)
-            {
-                $tmp = explode(" ",$line);
-                for ($i=0; $i < count($tmp)-1; $i++) {
-                    $over_time[intval($tmp[0])][$i] = floatval($tmp[$i+1]);
+                if($allGetVars['topItems'] === "audit")
+                {
+                    sendRequestFTL("top-ads for audit");
                 }
-            }
-            $result = array('over_time' => $over_time);
-            $data = array_merge($data, $result);
-        }
+                else if(is_numeric($allGetVars['topItems']))
+                {
+                    sendRequestFTL("top-ads (".$allGetVars['topItems'].")");
+                }
+                else
+                {
+                    sendRequestFTL("top-ads");
+                }
 
-        disconnectFTL();
+                $return = getResponseFTL();
+                $top_ads = array();
+                foreach($return as $line)
+                {
+                    $tmp = explode(" ",$line);
+                    $domain = utf8_encode($tmp[2]);
+                    if(count($tmp) > 3)
+                        $top_ads[$domain." (".$tmp[3].")"] = intval($tmp[1]);
+                    else
+                        $top_ads[$domain] = intval($tmp[1]);
+                }
+
+                $result = array('top_queries' => $top_queries,
+                    'top_ads' => $top_ads);
+
+                $data = array_merge($data, $result);
+            }
+
+            if ((isset($allGetVars['topClients']) || isset($allGetVars['getQuerySources'])) && $auth)
+            {
+
+                if(isset($allGetVars['topClients']))
+                {
+                    $number = $allGetVars['topClients'];
+                }
+                elseif(isset($allGetVars['getQuerySources']))
+                {
+                    $number = $allGetVars['getQuerySources'];
+                }
+
+                if(is_numeric($number))
+                {
+                    sendRequestFTL("top-clients (".$number.")");
+                }
+                else
+                {
+                    sendRequestFTL("top-clients");
+                }
+
+                $return = getResponseFTL();
+                $top_clients = array();
+                foreach($return as $line)
+                {
+                    $tmp = explode(" ",$line);
+                    $clientip = utf8_encode($tmp[2]);
+                    if(count($tmp) > 3 && strlen($tmp[3]) > 0)
+                    {
+                        $clientname = utf8_encode($tmp[3]);
+                        $top_clients[$clientname."|".$clientip] = intval($tmp[1]);
+                    }
+                    else
+                        $top_clients[$clientip] = intval($tmp[1]);
+                }
+
+                $result = array('top_sources' => $top_clients);
+                $data = array_merge($data, $result);
+            }
+
+                        if (isset($allGetVars['topClientsBlocked']) && $auth)
+                        {
+
+                            if(isset($allGetVars['topClientsBlocked']))
+                            {
+                                $number = $allGetVars['topClientsBlocked'];
+                            }
+
+                            if(is_numeric($number))
+                            {
+                                sendRequestFTL("top-clients blocked (".$number.")");
+                            }
+                            else
+                            {
+                                sendRequestFTL("top-clients blocked");
+                            }
+
+                            $return = getResponseFTL();
+                            $top_clients = array();
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ",$line);
+                                $clientip = utf8_encode($tmp[2]);
+                                if(count($tmp) > 3 && strlen($tmp[3]) > 0)
+                                {
+                                    $clientname = utf8_encode($tmp[3]);
+                                    $top_clients[$clientname."|".$clientip] = intval($tmp[1]);
+                                }
+                                else
+                                    $top_clients[$clientip] = intval($tmp[1]);
+                            }
+
+                            $result = array('top_sources_blocked' => $top_clients);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['getForwardDestinations']) && $auth)
+                        {
+                            if($allGetVars['getForwardDestinations'] === "unsorted")
+                            {
+                                sendRequestFTL("forward-dest unsorted");
+                            }
+                            else
+                            {
+                                sendRequestFTL("forward-dest");
+                            }
+                            $return = getResponseFTL();
+                            $forward_dest = array();
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ",$line);
+                                $forwardip = utf8_encode($tmp[2]);
+                                if(count($tmp) > 3 && strlen($tmp[3]) > 0)
+                                {
+                                    $forwardname = utf8_encode($tmp[3]);
+                                    $forward_dest[$forwardname."|".$forwardip] = floatval($tmp[1]);
+                                }
+                                else
+                                    $forward_dest[$forwardip] = floatval($tmp[1]);
+                            }
+
+                            $result = array('forward_destinations' => $forward_dest);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['getQueryTypes']) && $auth)
+                        {
+                            sendRequestFTL("querytypes");
+                            $return = getResponseFTL();
+                            $querytypes = array();
+                            foreach($return as $ret)
+                            {
+                                $tmp = explode(": ",$ret);
+                                // Reply cannot contain non-ASCII characters
+                                $querytypes[$tmp[0]] = floatval($tmp[1]);
+                            }
+
+                            $result = array('querytypes' => $querytypes);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['getCacheInfo']) && $auth)
+                        {
+                            sendRequestFTL("cacheinfo");
+                            $return = getResponseFTL();
+                            $cacheinfo = array();
+                            foreach($return as $ret)
+                            {
+                                $tmp = explode(": ",$ret);
+                                // Reply cannot contain non-ASCII characters
+                                $cacheinfo[$tmp[0]] = floatval($tmp[1]);
+                            }
+
+                            $result = array('cacheinfo' => $cacheinfo);
+                            $data = array_merge($data, $result);
+                        }
+
+
+
+                        if(isset($allGetVars["recentBlocked"]))
+                        {
+                            sendRequestFTL("recentBlocked");
+                            die(utf8_encode(getResponseFTL()[0]));
+                            unset($data);
+                        }
+
+                        if (isset($allGetVars['getForwardDestinationNames']) && $auth)
+                        {
+                            sendRequestFTL("forward-names");
+                            $return = getResponseFTL();
+                            $forward_dest = array();
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ",$line);
+                                $forwardip = utf8_encode($tmp[2]);
+                                if(count($tmp) > 3)
+                                {
+                                    $forwardname = utf8_encode($tmp[3]);
+                                    $forward_dest[$forwardname."|".$forwardip] = floatval($tmp[1]);
+                                }
+                                else
+                                {
+                                    $forward_dest[$forwardip] = floatval($tmp[1]);
+                                }
+                            }
+
+                            $result = array('forward_destinations' => $forward_dest);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['overTimeDataQueryTypes']) && $auth)
+                        {
+                            sendRequestFTL("QueryTypesoverTime");
+                            $return = getResponseFTL();
+                            $over_time = array();
+
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ",$line);
+                                for ($i=0; $i < count($tmp)-1; $i++) {
+                                    $over_time[intval($tmp[0])][$i] = floatval($tmp[$i+1]);
+                                }
+                            }
+                            $result = array('over_time' => $over_time);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['getClientNames']) && $auth)
+                        {
+                            sendRequestFTL("client-names");
+                            $return = getResponseFTL();
+                            $client_names = array();
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ", $line);
+                                $client_names[] = array(
+                                    "name" => utf8_encode($tmp[0]),
+                                    "ip" => utf8_encode($tmp[1])
+                                );
+                            }
+
+                            $result = array('clients' => $client_names);
+                            $data = array_merge($data, $result);
+                        }
+
+                        if (isset($allGetVars['overTimeDataClients']) && $auth)
+                        {
+                            sendRequestFTL("ClientsoverTime");
+                            $return = getResponseFTL();
+                            $over_time = array();
+
+                            foreach($return as $line)
+                            {
+                                $tmp = explode(" ",$line);
+                                for ($i=0; $i < count($tmp)-1; $i++) {
+                                    $over_time[intval($tmp[0])][$i] = floatval($tmp[$i+1]);
+                                }
+                            }
+                            $result = array('over_time' => $over_time);
+                            $data = array_merge($data, $result);
+                        }
+                */
+
+        $bbapi->FTL->disconnect();
+ //       FTL::disconnect();
     }
 
 
-
+    return $response->withJson( $bbapi->result() );
 
 
 
@@ -710,19 +564,6 @@ die();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     return $response->withStatus(200);
 
     //return $this->view->render($response, 'dashboard.html', [
@@ -731,6 +572,309 @@ die();
 })->setName('api');
 
 
+
+
+
+
+
+$app->get('/api_db.php', function ($request, $response, $args) {
+
+    $bbapi = new BbPiholeApiDb($request, $args, $this->setupVars);
+
+    $auth=true;
+
+    //GET
+    $allGetVars = $request->getQueryParams();
+
+    //POST or PUT
+    $allPostPutVars = $request->getParsedBody();
+    //var_dump($x);
+
+
+
+
+    #$QUERYDB = getQueriesDBFilename();
+    #$db = SQLite3_connect($QUERYDB);
+
+    if(isset($allGetVars["network"]) && $auth)
+    {
+        $bbapi->network();
+    }
+
+
+    if (isset($allGetVars['getAllQueries']) && $auth)
+    {
+        $bbapi->getAllQueries();
+    }
+
+    return $response->withJson( $bbapi->result() );
+    die();
+
+
+    if (isset($allGetVars['topClients']) && $auth)
+    {
+        // $from = intval($_GET["from"]);
+        $limit = "";
+        if(isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = "WHERE timestamp >= :from AND timestamp <= :until";
+        }
+        elseif(isset($_GET["from"]) && !isset($_GET["until"]))
+        {
+            $limit = "WHERE timestamp >= :from";
+        }
+        elseif(!isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = "WHERE timestamp <= :until";
+        }
+        $stmt = $db->prepare('SELECT client,count(client) FROM queries '.$limit.' GROUP by client order by count(client) desc limit 20');
+        $stmt->bindValue(":from", intval($_GET['from']), SQLITE3_INTEGER);
+        $stmt->bindValue(":until", intval($_GET['until']), SQLITE3_INTEGER);
+        $results = $stmt->execute();
+
+        $clientnums = array();
+
+        if(!is_bool($results))
+            while ($row = $results->fetchArray())
+            {
+                // Try to resolve host name and convert to UTF-8
+                $c = utf8_encode(resolveHostname($row[0],false));
+
+                if(array_key_exists($c, $clientnums))
+                {
+                    // Entry already exists, add to it (might appear multiple times due to mixed capitalization in the database)
+                    $clientnums[$c] += intval($row[1]);
+                }
+                else
+                {
+                    // Entry does not yet exist
+                    $clientnums[$c] = intval($row[1]);
+                }
+            }
+
+        // Sort by number of hits
+        arsort($clientnums);
+
+        // Extract only the first ten entries
+        $clientnums = array_slice($clientnums, 0, 10);
+
+        $result = array('top_sources' => $clientnums);
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['topDomains']) && $auth)
+    {
+        $limit = "";
+
+        if(isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from AND timestamp <= :until";
+        }
+        elseif(isset($_GET["from"]) && !isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from";
+        }
+        elseif(!isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp <= :until";
+        }
+        $stmt = $db->prepare('SELECT domain,count(domain) FROM queries WHERE (STATUS == 2 OR STATUS == 3)'.$limit.' GROUP by domain order by count(domain) desc limit 20');
+        $stmt->bindValue(":from", intval($_GET['from']), SQLITE3_INTEGER);
+        $stmt->bindValue(":until", intval($_GET['until']), SQLITE3_INTEGER);
+        $results = $stmt->execute();
+
+        $domains = array();
+
+        if(!is_bool($results))
+            while ($row = $results->fetchArray())
+            {
+                // Convert domain to lower case UTF-8
+                $c = utf8_encode(strtolower($row[0]));
+                if(array_key_exists($c, $domains))
+                {
+                    // Entry already exists, add to it (might appear multiple times due to mixed capitalization in the database)
+                    $domains[$c] += intval($row[1]);
+                }
+                else
+                {
+                    // Entry does not yet exist
+                    $domains[$c] = intval($row[1]);
+                }
+            }
+
+        // Sort by number of hits
+        arsort($domains);
+
+        // Extract only the first ten entries
+        $domains = array_slice($domains, 0, 10);
+
+        $result = array('top_domains' => $domains);
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['topAds']) && $auth)
+    {
+        $limit = "";
+
+        if(isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from AND timestamp <= :until";
+        }
+        elseif(isset($_GET["from"]) && !isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from";
+        }
+        elseif(!isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp <= :until";
+        }
+        $stmt = $db->prepare('SELECT domain,count(domain) FROM queries WHERE (STATUS == 1 OR STATUS == 4)'.$limit.' GROUP by domain order by count(domain) desc limit 10');
+        $stmt->bindValue(":from", intval($_GET['from']), SQLITE3_INTEGER);
+        $stmt->bindValue(":until", intval($_GET['until']), SQLITE3_INTEGER);
+        $results = $stmt->execute();
+
+        $addomains = array();
+
+        if(!is_bool($results))
+            while ($row = $results->fetchArray())
+            {
+                $addomains[utf8_encode($row[0])] = intval($row[1]);
+            }
+        $result = array('top_ads' => $addomains);
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['getMinTimestamp']) && $auth)
+    {
+        $results = $db->query('SELECT MIN(timestamp) FROM queries');
+
+        if(!is_bool($results))
+            $result = array('mintimestamp' => $results->fetchArray()[0]);
+        else
+            $result = array();
+
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['getMaxTimestamp']) && $auth)
+    {
+        $results = $db->query('SELECT MAX(timestamp) FROM queries');
+
+        if(!is_bool($results))
+            $result = array('maxtimestamp' => $results->fetchArray()[0]);
+        else
+            $result = array();
+
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['getQueriesCount']) && $auth)
+    {
+        $results = $db->query('SELECT COUNT(timestamp) FROM queries');
+
+        if(!is_bool($results))
+            $result = array('count' => $results->fetchArray()[0]);
+        else
+            $result = array();
+
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['getDBfilesize']) && $auth)
+    {
+        $filesize = filesize("/etc/pihole/pihole-FTL.db");
+        $result = array('filesize' => $filesize);
+        $data = array_merge($data, $result);
+    }
+
+    if (isset($allGetVars['getGraphData']) && $auth)
+    {
+        $limit = "";
+
+        if(isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from AND timestamp <= :until";
+        }
+        elseif(isset($_GET["from"]) && !isset($_GET["until"]))
+        {
+            $limit = " AND timestamp >= :from";
+        }
+        elseif(!isset($_GET["from"]) && isset($_GET["until"]))
+        {
+            $limit = " AND timestamp <= :until";
+        }
+
+        $interval = 600;
+
+        if(isset($_GET["interval"]))
+        {
+            $q = intval($_GET["interval"]);
+            if($q > 10)
+                $interval = $q;
+        }
+
+        // Round $from and $until to match the requested $interval
+        $from = intval((intval($_GET['from'])/$interval)*$interval);
+        $until = intval((intval($_GET['until'])/$interval)*$interval);
+
+        // Count permitted queries in intervals
+        $stmt = $this->db->prepare('SELECT (timestamp/:interval)*:interval interval, COUNT(*) FROM queries WHERE (status != 0 )'.$limit.' GROUP by interval ORDER by interval');
+        $stmt->bindValue(":from", $from, SQLITE3_INTEGER);
+        $stmt->bindValue(":until", $until, SQLITE3_INTEGER);
+        $stmt->bindValue(":interval", $interval, SQLITE3_INTEGER);
+        $results = $stmt->execute();
+
+        // Parse the DB result into graph data, filling in missing interval sections with zero
+        function parseDBData($results, $interval, $from, $until) {
+            $data = array();
+
+            if(!is_bool($results)) {
+                // Read in the data
+                while($row = $results->fetchArray()) {
+                    // $data[timestamp] = value_in_this_interval
+                    $data[$row[0]] = intval($row[1]);
+                }
+            }
+
+            return $data;
+        }
+
+        $domains = parseDBData($results, $interval, $from, $until);
+
+        $result = array('domains_over_time' => $domains);
+        $data = array_merge($data, $result);
+
+        // Count blocked queries in intervals
+        $stmt = $db->prepare('SELECT (timestamp/:interval)*:interval interval, COUNT(*) FROM queries WHERE (status == 1 OR status == 4 OR status == 5)'.$limit.' GROUP by interval ORDER by interval');
+        $stmt->bindValue(":from", $from, SQLITE3_INTEGER);
+        $stmt->bindValue(":until", $until, SQLITE3_INTEGER);
+        $stmt->bindValue(":interval", $interval, SQLITE3_INTEGER);
+        $results = $stmt->execute();
+
+        $addomains = parseDBData($results, $interval, $from, $until);
+
+        $result = array('ads_over_time' => $addomains);
+        $data = array_merge($data, $result);
+    }
+
+
+    //$bbapi->result();
+    return $response->withJson( $bbapi->result() );
+
+    if(isset($_GET["jsonForceObject"]))
+    {
+        echo json_encode($data, JSON_FORCE_OBJECT);
+    }
+    else
+    {
+        echo json_encode($data);
+    }
+
+
+
+
+
+});
 
 // Define whitelist route
 $app->get('/whitelist', function ($request, $response, $args) {
