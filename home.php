@@ -63,10 +63,9 @@ $app->get('/test', function ($request, $response, $args) {
 
     #print_r($this->bbconfig);
     #var_dump($this->bbconfig->owner);
-    $cmd = 'sudo bash /boot/installsrc/usr/share/blackbox/networkinfo.sh';
-
-
-
+    $cmd = 'sudo /usr/share/blackbox/networkinfo.sh';
+    //$cmd = 'sudo blackbox';
+    //$cmd = 'whoami';
     $result = exec( $cmd ,$output,$returnvar);
     #$x = exec('sudo whoami',$y,$z);
     #$x = exec('sudo ip addr',$y,$z);
@@ -76,15 +75,33 @@ $app->get('/test', function ($request, $response, $args) {
     echo "<pre>";
 
     echo "<h1>$cmd</h1>";
-
     echo "<h2>Result</h2>";
     print_r($result);
-
     echo "<h2>Output</h2>";
     var_dump($output);
-
     echo "<h2>Returnvar</h2>";
     var_dump($returnvar);
+
+
+
+
+    $cmd = 'sudo pihole';
+    $result = exec( $cmd ,$output,$returnvar);
+    #$x = exec('sudo whoami',$y,$z);
+    #$x = exec('sudo ip addr',$y,$z);
+    //$phVersion = exec("cd /etc/.pihole/ && git describe --long --tags");
+
+    #$result = exec("cd /boot && ls -latr",$output,$returnvar );
+    #echo "<pre>";
+
+    echo "<h1>$cmd</h1>";
+    echo "<h2>Result</h2>";
+    print_r($result);
+    echo "<h2>Output</h2>";
+    var_dump($output);
+    echo "<h2>Returnvar</h2>";
+    var_dump($returnvar);
+
 
     die();
 })->setName('test');
