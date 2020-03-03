@@ -63,8 +63,8 @@ $app->get('/test', function ($request, $response, $args) {
 
     #print_r($this->bbconfig);
     #var_dump($this->bbconfig->owner);
-    $cmd = 'sudo /usr/share/blackbox/networkinfo.sh';
-    //$cmd = 'sudo blackbox';
+    //$cmd = 'sudo /usr/share/blackbox/networkinfo.sh';
+    $cmd = 'sudo blackbox';
     //$cmd = 'whoami';
     $result = exec( $cmd ,$output,$returnvar);
     #$x = exec('sudo whoami',$y,$z);
