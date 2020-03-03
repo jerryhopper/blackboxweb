@@ -50,10 +50,14 @@ function setHeader($type = "x") {
 }
 
 // Determine block page type
-if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "thuis.surfwijzer.nl") {
+if (    $serverName === "pi.hole" OR
+        $serverName === "blackbox" OR
+        $serverName === "thuis.surfwijzer.nl" OR
+        $serverName === "blackbox.surfwijzer.nl"
+) {
     // Redirect to Web Interface
 
-    if( $serverName === "thuis.surfwijzer.nl" ){
+    if( $serverName === "thuis.surfwijzer.nl" OR $serverName === "blackbox.surfwijzer.nl" ){
         #print_r($_SERVER);
         #die();
 /*
@@ -79,6 +83,7 @@ if ($serverName === "pi.hole" OR $serverName === "blackbox" OR $serverName === "
         exit(header("Location: /blackbox/home.php"));
     }
     exit(header("Location: /admin"));
+
 } elseif (filter_var($serverName, FILTER_VALIDATE_IP) || in_array($serverName, $authorizedHosts)) {
     // Set Splash Page output
     $splashPage = "

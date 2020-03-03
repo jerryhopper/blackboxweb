@@ -34,6 +34,7 @@ The above copyright notice and this permission notice shall be included in all c
     <script src="/admin/scripts/vendor/jquery.min.js"></script>
     <script src="/admin/scripts/vendor/jquery-ui.min.js"></script>
     <script src="/admin/style/vendor/bootstrap/js/bootstrap.min.js"></script>
+
 </head>
 
 <body class="">
@@ -80,7 +81,9 @@ The above copyright notice and this permission notice shall be included in all c
         </div>
     </div>
     {% endblock %}
-    <div class="main-panel">
+
+    <div class="main-panel {% block mainpanelclass %}{% endblock %}">
+        {% block navbar %}
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
             <div class="container-fluid">
@@ -148,25 +151,24 @@ The above copyright notice and this permission notice shall be included in all c
             </div>
         </nav>
         <!-- End Navbar -->
+        {% endblock %}
         <div class="content">
-
-
-
-
-            <b>Session is valid for <span id="sessiontimercounter">
+            <!-- <b>Session is valid for <span id="sessiontimercounter">
                 <?php
                 if( $auth && strlen($pwhash) > 0){
                     echo $maxlifetime;}else{echo "0";
                 }
                 ?>
-            </span>
+            </span> -->
             <div class="container-fluid">
 
-                {% block content %}{% endblock %}
+                {% block content %}
+
+                {% endblock %}
             </div>
         </div>
+        {% block footer %}
         <footer class="footer">
-            {% block footer %}
             <div class="container-fluid">
                 <nav class="float-left">
                     <ul>
@@ -200,10 +202,13 @@ The above copyright notice and this permission notice shall be included in all c
                     <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
                 </div>
             </div>
-            {% endblock %}
         </footer>
+        {% endblock %}
     </div>
+
+
 </div>
+
 <div class="fixed-plugin">
 </div>
 <!--   Core JS Files   -->
