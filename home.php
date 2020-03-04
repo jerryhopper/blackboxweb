@@ -58,20 +58,193 @@ $container['view'] = function ($c) {
  *
  **/
 
+$app->get('/api/network/scan', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+
+
+    $cmd = 'sudo blackbox network scan';
+    $result = exec( $cmd ,$AdressesInUse,$returnvar);
+
+
+
+
+    $cmd = 'sudo blackbox network info';
+    $result = exec( $cmd ,$output,$returnvar);
+    $items = explode(",",$result);
+    $network = $items[0];
+    $gateway = $items[1];
+    $netdetail = explode("/",$network);
+    $ipaddres  = $netdetail[0];
+    $netsize  = $netdetail[1];
+
+    $sub = new IPv4\SubnetCalculator($ipaddres, $netsize);
+
+    $ip_address        = $sub->getIPAddress();
+
+    $min_host_quads  = $sub->getMinHostQuads();
+    $max_host_quads  = $sub->getMaxHostQuads();
+
+    $min = $min_host_quads[3];
+    $max = $max_host_quads[3];
+    $teller = $min;
+
+    $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
+
+    $list = array();
+    while ($teller <= $max) {
+        if( !in_array($_ip.$teller, $AdressesInUse) ){
+            $list[] = $_ip.$teller;
+        }
+        $teller++;
+    }
+    $list[] = $_SERVER['HTTP_HOST'];
+
+    #print_r($list);
+
+
+
+
+
+
+    #echo "<pre>";
+
+    #echo "<h1>$cmd</h1>";
+    #echo "<h2>Result</h2>";
+    #print_r($result);
+    #echo "<h2>Output</h2>";
+    #var_dump($output);
+    #echo "<h2>Returnvar</h2>";
+    #var_dump($returnvar);
+    //die();
+    $out = array("result"=>array( "ip_inuse"=>$AdressesInUse,"ip_free"=>$list));
+
+
+    return $response->withJson( $out );
+
+})->setName('network/scan');
+
+$app->get('/api/network/info', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+
+    $cmd = 'sudo blackbox network info';
+    $result = exec( $cmd ,$output,$returnvar);
+    $items = explode(",",$result);
+    $network = $items[0];
+    $gateway = $items[1];
+    $netdetail = explode("/",$network);
+    $ipaddres  = $netdetail[0];
+    $netsize  = $netdetail[1];
+
+    $sub = new IPv4\SubnetCalculator($ipaddres, $netsize);
+    $subnet_mask = $sub->getSubnetMask();
+
+    $out = array("result"=>array(  "ip_address"=>$ipaddres,"subnet_mask"=>$subnet_mask,"gateway"=>$gateway ));
+    return $response->withJson( $out );
+
+})->setName('network/info');
+
+$app->post('/api/network/reset', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+
+    // set ip
+    // check if ip is in use.
+    $cmd = "sudo blackbox network reset";
+    $result = exec( $cmd ,$output,$returnvar);
+    if ( "$result" == "ok" ){
+        return $response->withStatus(200);
+    } else{
+        return $response->withStatus(500);
+    }
+
+
+})->setName('network/ip');
+
+$app->post('/api/network/set', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+    // set ip
+    // check if ip is in use.
+    //$request->getParsedBody();
+    $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
+    $result = exec( $cmd ,$output,$returnvar);
+    if ( "$result" == "ok" ){
+        return $response->withStatus(200);
+    } else{
+        return $response->withStatus(500);
+    }
+    return $response->withStatus(200);
+})->setName('network/set');
+
+$app->get('/api/network/current', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+
+    $cmd = "sudo blackbox network current";
+    $result = exec( $cmd ,$output,$returnvar);
+    if ( "$result" == "static" ){
+        return $response->withJson( array("result"=>$result) )->withStatus(200);
+    } else{
+        return $response->withJson( array("result"=>$result) )->withStatus(200);
+    }
+    return $response->withStatus(200);
+})->setName('network/current');
+
+
+
+
 // Define home route
 $app->get('/test', function ($request, $response, $args) {
 
+    print_r($_SERVER['SERVER_ADDR']);
+
+    $ip = "10.0.1.200";
+    $size = 24;
+
+
+    $sub = new IPv4\SubnetCalculator($ip, $size);
+    //$subnet_mask = $sub->getSubnetMask();
+    //$min_host        = $sub->getMinHost();
+    //$max_host        = $sub->getMaxHost();
+    $min_host_quads  = $sub->getMinHostQuads();
+    $max_host_quads  = $sub->getMaxHostQuads();
+
+    $min = $min_host_quads[3];
+    $max = $max_host_quads[3];
+    $teller = $min;
+
+    $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
+
+    $list = array();
+    while ($teller <= $max) {
+        $list[] = $_ip.$teller;
+        $teller++;
+    }
+
+
+    print_r($list);
+
+
+
+    die();
     #print_r($this->bbconfig);
     #var_dump($this->bbconfig->owner);
     //$cmd = 'sudo /usr/share/blackbox/networkinfo.sh';
-    $cmd = 'sudo blackbox';
-    //$cmd = 'whoami';
-    $result = exec( $cmd ,$output,$returnvar);
-    #$x = exec('sudo whoami',$y,$z);
-    #$x = exec('sudo ip addr',$y,$z);
-    //$phVersion = exec("cd /etc/.pihole/ && git describe --long --tags");
 
-    #$result = exec("cd /boot && ls -latr",$output,$returnvar );
+    $cmd = 'sudo blackbox network reset';
+    $result = exec( $cmd ,$output,$returnvar);
     echo "<pre>";
 
     echo "<h1>$cmd</h1>";
@@ -85,7 +258,7 @@ $app->get('/test', function ($request, $response, $args) {
 
 
 
-    $cmd = 'sudo pihole';
+    $cmd = 'sudo blackbox network set x x x';
     $result = exec( $cmd ,$output,$returnvar);
     #$x = exec('sudo whoami',$y,$z);
     #$x = exec('sudo ip addr',$y,$z);
@@ -119,7 +292,7 @@ $app->get('/', function ($request, $response, $args) {
         // blackbox needs network setup
         $page = "setup/index.html";
     }
-    return $this->view->render($response, $page, []);
+    return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');
 
 $app->get('/register', function ($request, $response, $args) {

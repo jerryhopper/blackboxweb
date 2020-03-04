@@ -19,6 +19,95 @@
 
 {% block content %}
 <div class="row">
+    <div class="col-lg-12 col-sm-12 ">
+        <h1>Netwerk configuratie</h1>
+        <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
+        <p></p>
+
+        <hr/>
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-lg-6 col-sm-6 ">
+        <h2>BlackBox IP Adress</h2>
+        <p>Hier kunt u het ip-adress van de blackbox instellen/wijzigen.</p>
+        <p>U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipaddress.</p>
+        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    </div>
+    <div class="col-lg-6 col-sm-6 ">
+
+        <div id="change-ip-form-progress">
+            <p></p>
+            <p></p>
+        <p>Loading network settings</p>
+        <div class="progress" >
+
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+        </div>
+        </div>
+        <form id="change-ip-form" style="display:none">
+            <div class="form-group">
+                <label for="IpAdressFormFormControlSelect1">Select IP</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" id="IpAdressFormFormControlSelect1">
+                    <option>{{ SERVER_ADDR }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="SubnetFormControlInput1">Subnet</label>
+                <input type="text" class="form-control" id="SubnetFormControlInput1" placeholder="*.*.*.*" disabled>
+            </div>
+            <div class="form-group">
+                <label for="GatewayFormControlInput1">Gateway</label>
+                <input type="text" class="form-control" id="GatewayFormControlInput1" placeholder="*.*.*.*" disabled>
+            </div>
+
+
+        </form>
+    </div>
+    <div class="col-lg-12 col-sm-12 ">
+        <hr/>
+    </div>
+    <!-- ./col -->
+
+    <!-- ./col -->
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-sm-6 ">
+        <h2>Router instellingen</h2>
+        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
+        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
+        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
+
+        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    </div>
+    <div class="col-lg-6 col-sm-6 ">
+        <p>Instructies</p>
+        <ol>
+            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+            <li>Navigeer naar  Lan/DHCP</li>
+            <li>Wijzig de DNS server naar adres : [adress] </li>
+            <li>Sla wijziging op. Klaar!</li>
+
+        </ol>
+
+
+
+    </div>
+    <div class="col-lg-12 col-sm-12 ">
+        <hr/>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="row" style="display:none">
     <div class="col-lg-12 col-sm-12 card">
         <div class="card-header">
             <h1>Setup</h1>
@@ -32,12 +121,95 @@
                 <li>Sla oude config op</li>
                 <li>RouterCheck</li>
                 <li>check static or dhcp </li>
+                <li>GET /api/network/scan </li>
+                <li>GET /api/network/info</li>
+                <li>GET /api/network/current</li>
+                <li>POST /api/network/reset</li>
+                <li>POST /api/network/set x x x</li>
             </ul>
         </div>
-    </div>
-    <!-- ./col -->
 
-    <!-- ./col -->
+
+    </div>
 </div>
+
+
+<script>
+
+    $(document).ready(function(){
+
+        networkInfo("/api/network/info");
+        networkCurrent("/api/network/current");
+        networkScan("/api/network/scan");
+    });
+
+
+
+    function networkScan (url){
+        fetch(url)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                //
+                var newprogress=90;
+                $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
+                var $dropdown = $("#IpAdressFormFormControlSelect1");
+                $.each(data.result.ip_free, function(index,value) {
+                    $dropdown.append($("<option />").val(value).text(value));
+                });
+                $("form#change-ip-form").css("display","block");
+                $("#change-ip-form-progress").css("display","none");
+
+
+            });
+    }
+
+    function networkCurrent (url){
+        fetch(url)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                var newprogress=60;
+                $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
+                if(data.result=="static"){
+                    console.log("1")
+                    //Swal.fire({ title:"Good job!", text: "Your networkconfiguration is correct!", type: "success", buttonsStyling: false, confirmButtonClass: "btn btn-success"})
+                }else{
+                    console.log(data.result);
+                }
+            });
+    }
+
+    function networkInfo (url){
+        fetch(url)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                var newprogress=40;
+                $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
+
+                $("#IpAdressFormControlInput1").val(data.result.ip_address);
+                $("#SubnetFormControlInput1").val(data.result.subnet_mask);
+                $("#GatewayFormControlInput1").val(data.result.gateway);
+
+                $("#GatewayFormControlInput1").val(data.result.gateway);
+
+                console.log(data.result.ip_address);
+                console.log(data.result.subnet_mask);
+                console.log(data.result.gateway);
+            });
+    }
+    //networkScan("/api/network/scan");
+
+
+
+
+
+</script>
 {% endblock %}
 
