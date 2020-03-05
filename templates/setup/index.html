@@ -29,6 +29,23 @@
 
 
 </div>
+
+
+<div class="row">
+    <div class="col-lg-12 col-sm-12 ">
+        <h2>Voordat we verder gaan</h2>
+        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk. Hiervoor dient u in te loggen in uw internet-router.</p>
+        <p>Hiervoor heeft u login-gegevens nodig. Zonder toegang tot uw internet-router kan de installatie niet verder.</p>
+        <p></p>
+        <p>Heeft u toegang tot uw router?</b></p>
+        <p><button>Ja</button><button>Nee</button></p>
+    </div>
+    <div class="col-lg-12 col-sm-12 ">
+        <hr/>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col-lg-6 col-sm-6 ">
         <h2>BlackBox IP Adress</h2>
@@ -70,9 +87,6 @@
     <div class="col-lg-12 col-sm-12 ">
         <hr/>
     </div>
-    <!-- ./col -->
-
-    <!-- ./col -->
 </div>
 
 <div class="row">
@@ -103,9 +117,31 @@
 </div>
 
 
+<div class="row">
+    <div class="col-lg-6 col-sm-6 ">
+        <h2>De instellingen worden toegepast</h2>
+        <p>Het duurt even voordat de instellingen zijn toegepast.</p>
+        <p>Even gedult alstublieft.</p>
+
+        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    </div>
+    <div class="col-lg-6 col-sm-6 ">
+        <p>...</p>
+        <ol>
+            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+            <li>Navigeer naar  Lan/DHCP</li>
+            <li>Wijzig de DNS server naar adres : [adress] </li>
+            <li>Sla wijziging op. Klaar!</li>
+
+        </ol>
 
 
 
+    </div>
+    <div class="col-lg-12 col-sm-12 ">
+        <hr/>
+    </div>
+</div>
 
 <div class="row" style="display:none">
     <div class="col-lg-12 col-sm-12 card">
