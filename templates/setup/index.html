@@ -19,18 +19,21 @@
 
 {% block content %}
 <div class="row">
-    <ul class="col-lg-12 col-sm-12 ">
+    <div class="col-lg-8 col-sm-8 ">
         <h1>Netwerk configuratie</h1>
         <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
         <p></p>
 
+
+        <hr/>
+    </div>
+    <div class="col-lg-4 col-sm-4 ">
         <ul>
             <li>[<span id="checklist-router-access">X</span>] Toegang tot router</li>
             <li>[<span id="checklist-static-ip">X</span>] Set statisch IP</li>
-            <li>[<span id="checklist-dhcp-dns">X</span>] Router ingestelt</li>
+            <li>[<span id="checklist-dhcp-dns">X</span>] Router Dhcp/Dns aangepast</li>
 
         </ul>
-        <hr/>
     </div>
 
 
@@ -222,6 +225,7 @@
 
                     //Swal.fire({ title:"Good job!", text: "Your networkconfiguration is correct!", type: "success", buttonsStyling: false, confirmButtonClass: "btn btn-success"})
                 }else{
+                    $("span#checklist-static-ip").html("X");
                     console.log(data.result);
                 }
             });
