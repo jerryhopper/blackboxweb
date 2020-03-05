@@ -25,9 +25,9 @@
         <p></p>
 
         <ul>
-            <li>[<span id="static-ip">X</span>] Toegang tot router</li>
-            <li>[<span id="static-ip">V</span>] Set statisch IP</li>
-            <li>[<span id="static-ip">V</span>] Router ingestelt</li>
+            <li>[<span id="checklist-router-access">X</span>] Toegang tot router</li>
+            <li>[<span id="checklist-static-ip">X</span>] Set statisch IP</li>
+            <li>[<span id="checklist-dhcp-dns">X</span>] Router ingestelt</li>
 
         </ul>
         <hr/>
@@ -218,6 +218,8 @@
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
                 if(data.result=="static"){
                     console.log("1")
+                    $("span#checklist-static-ip").html("V");
+
                     //Swal.fire({ title:"Good job!", text: "Your networkconfiguration is correct!", type: "success", buttonsStyling: false, confirmButtonClass: "btn btn-success"})
                 }else{
                     console.log(data.result);
