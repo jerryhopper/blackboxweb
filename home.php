@@ -144,7 +144,32 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $sub = new IPv4\SubnetCalculator($ipaddres, $netsize);
     $subnet_mask = $sub->getSubnetMask();
 
-    $out = array("result"=>array(  "ip_address"=>$ipaddres,"subnet_mask"=>$subnet_mask,"gateway"=>$gateway ));
+    $ipQuads = $sub->getIPAddressQuads();
+
+
+    $minHostQuads = $sub->getMinHostQuads();
+
+    $minHost= $sub->getMinHost();
+    $t=1;
+    while( $t<10){
+
+        $IP=$ipQuads[0].".".$ipQuads[1].".".$ipQuads[2].".".($minHostQuads+$t);
+        if($minHostQuads+$t <255 && $IP!=$gateway ){
+            $suggestIp[] = $ipQuads[0].".".$ipQuads[1].".".$ipQuads[2].".".($minHostQuads+$t);
+        }
+        $t++;
+    }
+
+
+
+    $out = array(
+        "result"=>array(
+            "ip_address"=>$ipaddres,
+            "subnet_mask"=>$subnet_mask,
+            "gateway"=>$gateway,
+            "suggests"=>$suggestIp
+        )
+    );
     return $response->withJson( $out );
 
 })->setName('network/info');

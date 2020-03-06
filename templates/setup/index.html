@@ -23,84 +23,226 @@
         <h1>Netwerk configuratie</h1>
         <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
         <p></p>
+        <p>Door middel van een aantal vragen loodsen wij u door het installatieproces. De checklist laat zien hoever je bent in het proces.</p>
+        <p>Houd dit venster open totdat de installatie voltooid is.</p>
+
+    </div>
+    <div class="col-lg-4 col-sm-4 card">
+<!--- warning error error-outline check_box check_box_outline_blank --->
+        <div class="card-body">
+            <h5> Checklist</h5>
+            <div>
+                <i id="checklist-router-access" class="material-icons pull-left">check_box_outline_blank</i>
+                <div>Toegang tot router</div>
+            </div>
+            <div>
+                <i id="checklist-static-ip" class="material-icons pull-left">check_box_outline_blank</i>
+                <div>Blackbox ingesteld.</div>
+            </div>
+            <div>
+                <i id="checklist-dhcp-dns" class="material-icons pull-left">check_box_outline_blank</i>
+                <div>Router Dhcp/Dns aangepast</div>
+            </div>
+
+        </div>
 
 
+    </div>
+    <div class="col-lg-12 col-sm-12 " style="display: none">
+        <button type="button" class="btn btn-default pull-left">
+            <i class="material-icons">skip_previous</i>
+            Vorige
+        </button>
+        <button type="button" class="btn btn-default pull-left">
+            <i class="material-icons">skip_next</i>
+            Volgende
+        </button>
+        <button type="button" class="btn btn-danger pull-right">
+            Installeren
+        </button>
+    </div>
+
+    <div class="col-lg-12 col-sm-12">
         <hr/>
     </div>
-    <div class="col-lg-4 col-sm-4 ">
-        <h1> </h1>
-        <ul>
-            <li>[<span id="checklist-router-access">X</span>] Toegang tot router</li>
-            <li>[<span id="checklist-static-ip">X</span>] Set statisch IP</li>
-            <li>[<span id="checklist-dhcp-dns">X</span>] Router Dhcp/Dns aangepast</li>
-
-        </ul>
-    </div>
-
 
 </div>
 
 <div class="row">
-    <div class="col-lg-12 col-sm-12 ">
+    <div class="col-lg-12 col-sm-12 voordat" >
         <h2>Voordat we verder gaan</h2>
         <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk. Hiervoor dient u in te loggen in uw internet-router.</p>
         <p>Hiervoor heeft u login-gegevens nodig. Zonder toegang tot uw internet-router kan de installatie niet verder.</p>
         <p></p>
-        <p>Heeft u toegang tot uw router?</b></p>
-        <p><button>Ja</button><button>Nee</button></p>
+        <div class="row vraag2" id="voordat-nee" style="display: none">
+            <div class="col-lg-12 col-sm-12 ">
+                <h3>[NEE] Router hulp</h3>
+                <p>U heeft hulp nodig bij het configureren van uw router. Als u een router heeft gekregen bij uw internet-abonnement is het goed mogelijk dat de login-gegevens op een sticker staan afgedrukt op de router. Identificeer uw router door deze fysiek te bekijken, in het byzonder het merk, typenummer - en of er eventueel een sticker of andere aanwijzingen te vinden zijn. U heeft geen toegang tot uw router, of u weet niet hoe? Dan is het goed mogelijk dat uw router nog de fabrieks-intellingen heeft.</p>
+                <p>Uw router-administratie bevindt zich waarschijnlijk hier: <b>http://routerIP</b></p>
+                <p>Om in te loggen in uw router, heeft u inloggegevens nodig. Veel routers hebben standaard wachtwoorden, en deze gaan we proberen op te zoeken.</p>
+                <p>De (engelstalige) website portforward houdt een lijst bij van standaard wachtwoorden van routers. Vindt hier het wachtwoord van uw router.</p>
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        <h4>Wat is het Merk van uw Router?</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="text" name="router_merk"> <a href="#"> Zoek!</a>
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+                <p>Heeft u het wachtwoord gevonden, en kunt u inloggen? - Dan kunnen we verder!</p>
+
+                <p></p>
+
+                <hr>
+            </div>
+        </div>
+
+
+        <div class="row vraag1">
+            <div class="col-lg-12 col-sm-12">
+                <p></p>
+                <p>Heeft u toegang tot uw router?</p>
+            </div>
+            <div class="col-lg-12 col-sm-12">
+                <button type="button" class="btn btn-default pull-left" id="router-access-true" >
+                    <i class="material-icons">done</i>
+                    Ja
+                </button>
+                <button type="button" class="btn btn-default pull-left" id="router-access-false" >
+                    <i class="material-icons">error_outline</i>
+                    Nee
+                </button>
+            </div>
+        </div>
+
+
+
+        <div class="row vraag3" id="voordat-ja" style="display: none">
+            <div class="col-lg-12 col-sm-12 ">
+                <h3>[JA] Login in uw router</h3>
+                <p>Login in uw router, en navigeer naar de sectie 'DHCPServer'</p>
+                <p> </p>
+
+                <div class="voordatja-1" style="">
+                    <p>Kunt u de optie DNS Server vinden?</p>
+                    <p> </p>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <button type="button" class="btn btn-default pull-left" id="router-dns-true" >
+                                <i class="material-icons">done</i>
+                                Ja
+                            </button>
+                            <button type="button" class="btn btn-default pull-left" id="router-dns-false" >
+                                <i class="material-icons">error_outline</i>
+                                Nee
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="voordatja-2" style="display: none">
+                    <p>Kunt u een optie vinden die de DHCP server uitschakeld?</p>
+                    <p></p>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <button type="button" class="btn btn-default pull-left" id="router-dhcp-true" >
+                                <i class="material-icons">done</i>
+                                Ja
+                            </button>
+                            <button type="button" class="btn btn-default pull-left" id="router-dhcp-false">
+                                <i class="material-icons">error_outline</i>
+                                Nee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="voordatja-3" style="display: none">
+                    <p>We weten genoeg om de installatie te kunnen beginnen.</p>
+                    <button type="button" class="btn btn-default" id="voordat-info-ok">
+                        <i class="material-icons">done</i>
+                        Volgende
+                    </button>
+                </div>
+
+
+                <hr>
+            </div>
+        </div>
+        <div class="col-lg-12 col-sm-12 ">
+            <hr/>
+        </div>
     </div>
-    <div class="col-lg-12 col-sm-12 ">
-        <hr/>
-    </div>
+
 </div>
 
 
-<div class="row">
-    <div class="col-lg-6 col-sm-6 ">
-        <h2>BlackBox IP Adress</h2>
-        <p>Hier kunt u het ip-adress van de blackbox instellen/wijzigen.</p>
-        <p>U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipaddress.</p>
-        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
-    </div>
-    <div class="col-lg-6 col-sm-6 ">
+<div class="row" id="main-setup" style="display:none" >
 
-        <div id="change-ip-form-progress">
-            <p></p>
-            <p></p>
-        <p>Loading network settings</p>
-        <div class="progress" >
 
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+
+
+    <div class="col-lg-12 col-sm-12">
+        <h2>Stap 1 - BlackBox instellen</h2>
+        <div class="row">
+            <div class="col-lg-6 col-sm-6">
+                <p>Hier wordt het ip-adress van de blackbox ingesteld.</p>
+                <p>U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipadres kiezen.</p>
+                <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+                <p>Voorkeur-instelling : <b>000.000.000.000</b></p>
+                <button class="btn btn-info pull-right"> Volgende </button>
+            </div>
+            <div class="col-lg-4 col-sm-4">
+                <div id="change-ip-form-progress">
+                    <p></p>
+                    <p></p>
+                    <p>Loading network settings</p>
+                    <div class="progress" >
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+                    </div>
+                </div>
+
+                <form id="change-ip-form" style="display:none">
+
+                    <div class="form-group">
+                        <label for="IpAdressFormFormControlSelect1">Select IP</label>
+                        <select class="form-control selectpicker" data-style="btn btn-link" id="IpAdressFormFormControlSelect1">
+                            <option>{{ SERVER_ADDR }}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SubnetFormControlInput1">Subnet</label>
+                        <input type="text" class="form-control" id="SubnetFormControlInput1" placeholder="*.*.*.*" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="GatewayFormControlInput1">Gateway</label>
+                        <input type="text" class="form-control" id="GatewayFormControlInput1" placeholder="*.*.*.*" disabled>
+                    </div>
+
+
+                </form>
+            </div>
+
         </div>
-        </div>
-        <form id="change-ip-form" style="display:none">
-            <div class="form-group">
-                <label for="IpAdressFormFormControlSelect1">Select IP</label>
-                <select class="form-control selectpicker" data-style="btn btn-link" id="IpAdressFormFormControlSelect1">
-                    <option>{{ SERVER_ADDR }}</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="SubnetFormControlInput1">Subnet</label>
-                <input type="text" class="form-control" id="SubnetFormControlInput1" placeholder="*.*.*.*" disabled>
-            </div>
-            <div class="form-group">
-                <label for="GatewayFormControlInput1">Gateway</label>
-                <input type="text" class="form-control" id="GatewayFormControlInput1" placeholder="*.*.*.*" disabled>
-            </div>
 
 
-        </form>
+        <div></div>
+
     </div>
-    <div class="col-lg-12 col-sm-12 ">
-        <hr/>
-    </div>
+
+
+
+
 </div>
 
-<div class="row">
+<div class="row" id="setup-router" style="display:none">
     <div class="col-lg-6 col-sm-6 ">
-        <h2>Router instellingen</h2>
+        <h2>Stap 2 - Router instellen</h2>
         <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
         <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
         <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
@@ -125,8 +267,58 @@
     </div>
 </div>
 
+<div class="row" id="blackbox-activate" style="display:none">
+    <div class="col-lg-6 col-sm-6 ">
+        <h2>Stap 3 - Blackbox activeren</h2>
+        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
+        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
+        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
 
-<div class="row">
+        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    </div>
+    <div class="col-lg-6 col-sm-6 ">
+        <p>Instructies</p>
+        <ol>
+            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+            <li>Navigeer naar  Lan/DHCP</li>
+            <li>Wijzig de DNS server naar adres : [adress] </li>
+            <li>Sla wijziging op. Klaar!</li>
+
+        </ol>
+
+
+
+    </div>
+
+</div>
+
+<div class="row" id="blackbox-usage" style="display:none">
+    <div class="col-lg-6 col-sm-6 ">
+        <h2>Stap 4 - Blackbox Gebruiken</h2>
+        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
+        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
+        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
+
+        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    </div>
+    <div class="col-lg-5 col-sm-5 ">
+        <p>Instructies</p>
+        <ol>
+            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+            <li>Navigeer naar  Lan/DHCP</li>
+            <li>Wijzig de DNS server naar adres : [adress] </li>
+            <li>Sla wijziging op. Klaar!</li>
+
+        </ol>
+
+
+
+    </div>
+
+</div>
+
+
+<div class="row" style="display:none">
     <div class="col-lg-6 col-sm-6 ">
         <h2>De instellingen worden toegepast</h2>
         <p>Het duurt even voordat de instellingen zijn toegepast.</p>
@@ -152,41 +344,64 @@
     </div>
 </div>
 
-<div class="row" style="display:none">
-    <div class="col-lg-12 col-sm-12 card">
-        <div class="card-header">
-            <h1>Setup</h1>
-        </div>
-        <!-- small box -->
-        <div class="card-body">
-            <p>Total queries </p>
-            <ul>
-                <li>check static or dhcp </li>
-                <li>check gateway etc</li>
-                <li>Sla oude config op</li>
-                <li>RouterCheck</li>
-                <li>check static or dhcp </li>
-                <li>GET /api/network/scan </li>
-                <li>GET /api/network/info</li>
-                <li>GET /api/network/current</li>
-                <li>POST /api/network/reset</li>
-                <li>POST /api/network/set x x x</li>
-            </ul>
-        </div>
-
-
-    </div>
-</div>
-
 
 <script>
 
-    $(document).ready(function(){
 
-        networkInfo("/api/network/info");
-        networkCurrent("/api/network/current");
-        networkScan("/api/network/scan");
-    });
+
+    class Router {
+        constructor (brand,type){
+            this.brand = brand;
+            this.type = type;
+        }
+    };
+
+
+
+    class Network {
+        constructor (ip,sub,gw){
+            this.ip     = ip;
+            this.subnet = sub;
+            this.gateway= gw;
+        }
+
+    };
+
+
+
+    function CheckList(){
+        this.routerToegang = false;
+        this.blackbloxIp = false;
+        this.routerChange = false;
+    }
+
+
+    var checkList = {}
+
+    checkList.toegang = false;
+    checkList.dnsserver= false;
+    checkList.disabledhcp = false;
+
+    var router = {}
+
+    router.brand = "asus";
+    router.model = "rt66acu";
+
+    router.gateway = "";
+    router.subnet = "";
+    router.ipadres = "";
+
+
+
+
+
+
+
+    function setProp(el,prop,val){
+        $(el).attr(prop,val)
+    }
+
+
 
 
 
@@ -222,11 +437,11 @@
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
                 if(data.result=="static"){
                     console.log("1")
-                    $("span#checklist-static-ip").html("V");
+                    $("i#checklist-static-ip").html("check_box");
 
                     //Swal.fire({ title:"Good job!", text: "Your networkconfiguration is correct!", type: "success", buttonsStyling: false, confirmButtonClass: "btn btn-success"})
                 }else{
-                    $("span#checklist-static-ip").html("X");
+                    $("i#checklist-static-ip").html("check_box_outline_blank");
                     console.log(data.result);
                 }
             });
@@ -254,6 +469,109 @@
     }
     //networkScan("/api/network/scan");
 
+
+    //
+    // $('#yourElement').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', alert("x"));
+    //
+
+    //
+
+    class buttonClick {
+
+        constructor (buttonId){
+            var parts = buttonId.split("-");
+            this.section    = parts[0];
+            this.property   = parts[1];
+            this.value      = parts[2];
+            console.log(">>>>> button#"+this.section+"-"+this.property+"-"+this.value);
+
+            if(this.value=="true"){
+                // true!
+                //.addClass( "animated" ).addClass( "fadeOut" );
+                //.animated .fadeIn
+                $("button#"+this.section+"-"+this.property+"-true" ) .removeClass( "btn-default" ).addClass( "btn-info" );
+                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-info" ).addClass( "btn-default" );
+            }else{
+                // false
+                $("button#"+this.section+"-"+this.property+"-true" ) .removeClass( "btn-info" ).addClass( "btn-default" );
+                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-default" ).addClass( "btn-info" );
+            }
+
+
+            if( buttonId == "router-access-true"){
+
+                $("#voordat-ja").css("display","block");
+                //$("#voordat-ja").addClass( "animated" ).addClass( "fadeOut" );
+                $("#voordat-nee").css("display","none");
+                //$("#voordat-nee").addClass( "animated" ).addClass( "fadeIn" );
+
+            }else if( buttonId == "router-access-false" ){
+                $("#voordat-ja").css("display","none");
+                $("#voordat-nee").css("display","block");
+                if( $("button#router-access-false").hasClass('btn-warning') ){
+                    alert("fatal");
+                }
+                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-default" ).addClass( "btn-warning" );
+
+            }
+            // router-access-true
+
+            if( buttonId == "router-dns-true" || buttonId == "router-dns-false"){
+                $(".voordatja-2").css("display","block");
+            }
+
+
+
+            // $("button#router-dhcp-true").hasClass('btn-info');
+            // $("button#router-dhcp-false").hasClass('btn-info');
+            // $("button#router-dns-true").hasClass('btn-info');
+            // $("button#router-dns-false").hasClass('btn-info');
+            // $("button#router-access-true").hassClass('btn-info');
+            if( buttonId == "router-dhcp-true" || buttonId == "router-dhcp-false" || buttonId == "router-dns-false" || buttonId == "router-dns-true"){
+                console.log("check settings");
+                if( $("button#router-dhcp-false").hasClass('btn-info') && $("button#router-dns-false").hasClass('btn-info') ){
+                    //alert("Fatal");
+                    $(".voordatja-3").css("display","none");
+                }
+
+                if( ( $("button#router-dhcp-true").hasClass('btn-info')==true ^  $("button#router-dns-true").hasClass('btn-info')==true) ^ ( $("button#router-dhcp-true").hasClass('btn-info') && $("button#router-dns-true").hasClass('btn-info') ) ){
+                    $(".voordatja-3").css("display","block");
+                }else{
+                    $(".voordatja-3").css("display","none");
+                }
+
+            }
+
+
+
+            if( buttonId == "voordat-info-ok"){
+                $("div.voordat").css("display","none");
+
+                $("i#checklist-router-access").html("check_box");
+                $("#main-setup").css("display","block");
+            }
+
+
+
+        }
+    };
+
+
+
+
+
+$(document).ready(function(){
+
+    networkInfo("/api/network/info");
+    networkCurrent("/api/network/current");
+    networkScan("/api/network/scan");
+
+    // Button listener.
+    $( "button" ).click(function() {
+        var clickedButton = $(this).attr("id");
+        new buttonClick(clickedButton);
+    });
+});
 
 
 
