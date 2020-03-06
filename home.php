@@ -93,10 +93,13 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
     $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
 
-    $list = array();
+    $gatewayList = array();
     while ($teller <= $max) {
         if( !in_array($_ip.$teller, $AdressesInUse) ){
             $list[] = $_ip.$teller;
+            if(($teller < 10) or ($teller > 250)){
+                $gatewayList[]=$_ip.$teller;
+            }
         }
         $teller++;
     }
@@ -106,7 +109,7 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 
 
-
+    //$gatewayList = array();
 
 
     #echo "<pre>";
@@ -122,7 +125,8 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     $out = array("result"=>array(
         "ip_inuse"=>$AdressesInUse,
         "ip_free"=>$list,
-        "gw_suggest"=>$gatewayList
+        "gw"=>$gateway,
+        "ip_suggest"=>$gatewayList
         )
     );
 
@@ -158,6 +162,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $minHostQuads = $sub->getMinHostQuads();
 
     $minHost= $sub->getMinHost();
+    /*
     $t=1;
     while( $t<10){
 
@@ -167,6 +172,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
         }
         $t++;
     }
+    */
 
 
 
@@ -174,8 +180,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
         "result"=>array(
             "ip_address"=>$ipaddres,
             "subnet_mask"=>$subnet_mask,
-            "gateway"=>$gateway,
-            "suggests"=>$suggestIp
+            "gateway"=>$gateway
         )
     );
     return $response->withJson( $out );
@@ -187,6 +192,7 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
     if( $this->bbconfig->owner !=false ){
         return $response->withStatus(400);
     }
+
 
     // set ip
     // check if ip is in use.
@@ -201,6 +207,18 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 
 })->setName('network/ip');
 
+$app->get('/api/system/reboot', function ($request, $response, $args) {
+    // check if ip is in use.
+    $cmd = "sudo shutdown -r now";
+    $result = exec( $cmd ,$output,$returnvar);
+    if ( "$result" == "ok" ){
+        return $response->withStatus(200);
+    } else{
+        return $response->withStatus(200);
+    }
+
+})->setName('system/reboot');
+
 $app->post('/api/network/set', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
@@ -210,11 +228,12 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     // check if ip is in use.
     //$request->getParsedBody();
     $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
-    $result = exec( $cmd ,$output,$returnvar);
-    if ( "$result" == "ok" ){
-        return $response->withStatus(200);
+    //$result = exec( $cmd ,$output,$returnvar);
+    $result  ="ok";
+    if ( $result == "ok" ){
+        return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     } else{
-        return $response->withStatus(500);
+        return $response->withJson(array("result"=> "error" ) )->withStatus(500);
     }
     return $response->withStatus(200);
 })->setName('network/set');
