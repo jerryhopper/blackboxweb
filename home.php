@@ -126,6 +126,9 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 })->setName('network/scan');
 
+
+
+
 $app->get('/api/network/info', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
