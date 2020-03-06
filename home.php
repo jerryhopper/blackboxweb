@@ -64,7 +64,7 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
         return $response->withStatus(400);
     }
 
-
+    #die("x");
     $cmd = 'sudo blackbox network scan';
     $result = exec( $cmd ,$AdressesInUse,$returnvar);
 
@@ -119,7 +119,12 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     #echo "<h2>Returnvar</h2>";
     #var_dump($returnvar);
     //die();
-    $out = array("result"=>array( "ip_inuse"=>$AdressesInUse,"ip_free"=>$list));
+    $out = array("result"=>array(
+        "ip_inuse"=>$AdressesInUse,
+        "ip_free"=>$list,
+        "gw_suggest"=>$gatewayList
+        )
+    );
 
 
     return $response->withJson( $out );

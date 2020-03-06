@@ -20,7 +20,7 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-8 col-sm-8 ">
-        <h1>Netwerk configuratie</h1>
+        <h1>Netwerk x configuratie</h1>
         <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
         <p></p>
         <p>Door middel van een aantal vragen loodsen wij u door het installatieproces. De checklist laat zien hoever je bent in het proces.</p>
@@ -416,9 +416,12 @@
                 var newprogress=90;
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
                 var $dropdown = $("#IpAdressFormFormControlSelect1");
+
+
                 $.each(data.result.ip_free, function(index,value) {
                     $dropdown.append($("<option />").val(value).text(value));
                 });
+
                 $("form#change-ip-form").css("display","block");
                 $("#change-ip-form-progress").css("display","none");
 
