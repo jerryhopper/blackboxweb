@@ -159,25 +159,25 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
 
-    print_r($rawdata);
+    //print_r($rawdata);
 
     $result = explode("|",$rawdata);
     $gateway = $result[1];
     $result = $result[0];
 
-    print_r($result);
+    //print_r($result);
 
     $NETitems = explode(",",$result);
 
     $NETPrimary = $NETitems[0];
     $NETSecundary = $NETitems[1];
 
-    print_r($NETitems);
-    die();
+    //print_r($NETitems);
+    //die();
 
     //$network = $items[0];
     //$gateway = $items[1];
-    error_log($NETPrimary);
+    //error_log($NETPrimary);
     $netdetail = explode("/",$NETPrimary);
     $ipaddres  = $netdetail[0];
     $netsize  = $netdetail[1];
