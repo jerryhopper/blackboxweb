@@ -260,7 +260,7 @@
         <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
         <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
 
-        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+        <p></p>
     </div>
     <div class="col-lg-6 col-sm-6 ">
         <p>Instructies</p>
@@ -356,7 +356,10 @@
 
 <script>
 
-
+    window.onunload = function () {
+        alert('You are trying to leave.');
+        return false;
+    }
 
     class Router {
         constructor (brand,type){
@@ -583,14 +586,14 @@
                     .then((data) => {
                         console.log(data);
                         saveIp(30)
-                        window.myTimerVar = setInterval(myRebootWaitTimer, 4000);
+                        window.myTimerVar = setInterval(myRebootWaitTimer, 5000);
 
 
                         fetch("/api/system/reboot", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'},
-                            body: JSON.stringify({ "ïpadress": $("#IpAdressFormFormControlSelect1").val()})
+                            body: JSON.stringify({ "ipadress": $("#IpAdressFormFormControlSelect1").val()})
                         }).then((response) => {
                                 return response.json();
                             }).then((data) => {
