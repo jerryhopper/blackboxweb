@@ -20,7 +20,7 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-8 col-sm-8 ">
-        <h1>Netwerk x configuratie</h1>
+        <h1>Netwerk configuratie</h1>
         <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
         <p></p>
         <p>Door middel van een aantal vragen loodsen wij u door het installatieproces. De checklist laat zien hoever je bent in het proces.</p>
@@ -629,10 +629,10 @@ function checkServer(url, timeout) {
             var gw = $("#GatewayFormControlInput1").val();
 
 
-        $("a#local-router-link").attr("href","http://"+gw);
-        $("a#local-router-link").html("http://"+gw);
-        $("span#blackbox-static-ip-adress").html(ip);
-
+            $("a#local-router-link").attr("href","http://"+gw);
+            $("a#local-router-link").html("http://"+gw);
+            $("span#blackbox-static-ip-adress").html(ip);
+            $("i#checklist-static-ip").html("check_box");
 
 
             //    response => console.log('Check server response:', response.statusText)
