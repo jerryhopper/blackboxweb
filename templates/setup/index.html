@@ -482,6 +482,9 @@
                 console.log(data.result.size);
                 console.log(data.result.raw);
 
+
+
+
                 var myObject = {}
                 var info = data.result.raw.split('|');
                 myObject.gateway = info[1];
@@ -496,9 +499,9 @@
                 for (i = 0; i < ipinfo.length; i++) {
                     myObject.ipadress.push(ipinfo[i].split("/")[0]) ;
                 }
-                console.log(info);
-                console.log(myObject);
-
+                //console.log(info);
+                //console.log(myObject);
+                window.networkInformation = myObject
 
             });
     }
