@@ -231,12 +231,12 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     $IP = $xx['ip'];
     $SUBNET = $xx['net'];
     $GATEWAY = $xx['gw'];
-    return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
-      var_dump($xx);
-    die("xx");
+    //return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
+    //var_dump($xx);
+    //die("xx");
     $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
     $result = exec( $cmd ,$output,$returnvar);
-    print_r($result);
+    //print_r($result);
     //$result  ="ok";
     if ( $result == "ok" ){
         return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
