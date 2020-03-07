@@ -470,11 +470,6 @@
                 var newprogress=40;
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
 
-                $("#IpAdressFormControlInput1").val(data.result.ip_address);
-                $("#SubnetFormControlInput1").val(data.result.subnet_mask);
-                $("#GatewayFormControlInput1").val(data.result.gateway);
-
-                $("#GatewayFormControlInput1").val(data.result.gateway);
 
                 console.log(data.result.ip_address);
                 console.log(data.result.subnet_mask);
@@ -487,21 +482,29 @@
 
                 var myObject = {}
                 var info = data.result.raw.split('|');
-                myObject.gateway = info[1];
 
-                //info[0];
-                //info[1];
                 var ipinfo = info[0].split(",")
 
-                myObject.size = ipinfo[0].split("/")[1]
+                myObject.size = data.result.size
                 myObject.ipadress= []
                 var i;
                 for (i = 0; i < ipinfo.length; i++) {
                     myObject.ipadress.push(ipinfo[i].split("/")[0]) ;
                 }
+                myObject.gateway = info[1];
+                myObject.subnet = data.result.subnet_mask;
                 //console.log(info);
                 //console.log(myObject);
                 window.networkInformation = myObject
+
+
+                $("#IpAdressFormControlInput1").val(myObject.ipadress[0]);
+                $("#SubnetFormControlInput1").val(myObject.subnet);
+                $("#GatewayFormControlInput1").val(myObject.gateway);
+
+//               $("#GatewayFormControlInput1").val(data.result.gateway);
+
+
 
             });
     }
