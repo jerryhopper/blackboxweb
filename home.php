@@ -145,11 +145,23 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     }
 
     $cmd = 'sudo blackbox network info';
-    $result = exec( $cmd ,$output,$returnvar);
-    $items = explode(",",$result);
-    $network = $items[0];
-    $gateway = $items[1];
-    $netdetail = explode("/",$network);
+    $rawdata = exec( $cmd ,$output,$returnvar);
+    //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
+
+    $result = explode("|",$rawdata);
+    $gateway = $result[1];
+    $result = $result[0];
+
+    $NETitems = explode(",",$result);
+
+    $NETPrimary = $NETitems[0];
+    $NETSecundary = $NETitems[1];
+
+
+
+    //$network = $items[0];
+    //$gateway = $items[1];
+    $netdetail = explode("/",$NETPrimary);
     $ipaddres  = $netdetail[0];
     $netsize  = $netdetail[1];
 
@@ -180,7 +192,9 @@ $app->get('/api/network/info', function ($request, $response, $args) {
         "result"=>array(
             "ip_address"=>$ipaddres,
             "subnet_mask"=>$subnet_mask,
-            "gateway"=>$gateway
+            "gateway"=>$gateway,
+            "size"=>$netsize,
+            "raw"=>$rawdata
         )
     );
     return $response->withJson( $out );
@@ -231,6 +245,9 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     $IP = $xx['ip'];
     $SUBNET = $xx['net'];
     $GATEWAY = $xx['gw'];
+
+
+
     //return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     //var_dump($xx);
     //die("xx");
