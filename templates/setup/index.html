@@ -485,17 +485,17 @@
                 var myObject = {}
                 var info = data.result.raw.split('|');
                 myObject.gateway = info[1];
-                myObject.ipadress= []
+
                 //info[0];
                 //info[1];
                 var ipinfo = info[0].split(",")
 
+                myObject.size = ipinfo[0].split("/")[1]
+                myObject.ipadress= []
                 var i;
                 for (i = 0; i < ipinfo.length; i++) {
-
                     myObject.ipadress.push(ipinfo[i].split("/")[0]) ;
                 }
-
                 console.log(info);
                 console.log(myObject);
 
