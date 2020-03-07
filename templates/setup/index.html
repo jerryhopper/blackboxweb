@@ -479,6 +479,14 @@
                 console.log(data.result.ip_address);
                 console.log(data.result.subnet_mask);
                 console.log(data.result.gateway);
+                console.log(data.result.size);
+                console.log(data.result.raw);
+
+                var info = data.result.raw.split('|');
+                #info[0];
+                #info[1];
+                console.log(info);
+
             });
     }
     //networkScan("/api/network/scan");
