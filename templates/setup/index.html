@@ -566,18 +566,23 @@
                 $("div#main-setup").css("display","none");
                 $("div#main-setup-apply").css("display","block");
                 saveIp(10);
+
                 fetch("/api/network/set", {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'},
-                        body: JSON.stringify({ "ïpadress": $("#IpAdressFormFormControlSelect1").val()})
+                        body: JSON.stringify({
+                            "ip": $("#IpAdressFormFormControlSelect1").val(),
+                            "net":$("#SubnetFormControlInput1").val(),
+                            "gw":$("#GatewayFormControlInput1").val()
+                        })
                     })
                     .then((response) => {
                         return response.json();
                     })
                     .then((data) => {
-                        //console.log(data);
+                        console.log(data);
                         saveIp(30)
                         window.myTimerVar = setInterval(myRebootWaitTimer, 4000);
 
@@ -588,11 +593,9 @@
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'},
                             body: JSON.stringify({ "ïpadress": $("#IpAdressFormFormControlSelect1").val()})
-                        })
-                            .then((response) => {
+                        }).then((response) => {
                                 return response.json();
-                            })
-                            .then((data) => {
+                            }).then((data) => {
                                 //console.log(data);
                                 a=1;
                             });

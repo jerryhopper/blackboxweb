@@ -207,9 +207,9 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 
 })->setName('network/ip');
 
-$app->get('/api/system/reboot', function ($request, $response, $args) {
+$app->post('/api/system/reboot', function ($request, $response, $args) {
     // check if ip is in use.
-    $cmd = "sudo shutdown -r now";
+    $cmd = "sudo blackbox reboot";
     $result = exec( $cmd ,$output,$returnvar);
     if ( "$result" == "ok" ){
         return $response->withStatus(200);
@@ -224,12 +224,19 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     if( $this->bbconfig->owner !=false ){
         return $response->withStatus(400);
     }
+    $xx=$request->getParsedBody();
     // set ip
     // check if ip is in use.
-    //$request->getParsedBody();
+    $xx =$request->getParsedBody();
+    $IP = $xx['ip'];
+    $SUBNET = $xx['net'];
+    $GATEWAY = $xx['gw'];
+
+  //  print_r($xx);
+//die();
     $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
-    //$result = exec( $cmd ,$output,$returnvar);
-    $result  ="ok";
+    $result = exec( $cmd ,$output,$returnvar);
+    //$result  ="ok";
     if ( $result == "ok" ){
         return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     } else{
