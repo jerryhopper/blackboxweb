@@ -224,18 +224,19 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     if( $this->bbconfig->owner !=false ){
         return $response->withStatus(400);
     }
-    $xx=$request->getParsedBody();
+    //$xx=$request->getParsedBody();
     // set ip
     // check if ip is in use.
     $xx =$request->getParsedBody();
     $IP = $xx['ip'];
     $SUBNET = $xx['net'];
     $GATEWAY = $xx['gw'];
-
-  //  print_r($xx);
-//die();
+    return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
+      var_dump($xx);
+    die("xx");
     $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
     $result = exec( $cmd ,$output,$returnvar);
+    print_r($result);
     //$result  ="ok";
     if ( $result == "ok" ){
         return $response->withJson(array("result"=> "ok" ) )->withStatus(200);

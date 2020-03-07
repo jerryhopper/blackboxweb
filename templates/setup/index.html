@@ -570,7 +570,6 @@
                 fetch("/api/network/set", {
                     method: 'POST',
                     headers: {
-                        'Accept': 'application/json',
                         'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             "ip": $("#IpAdressFormFormControlSelect1").val(),
@@ -590,7 +589,6 @@
                         fetch("/api/system/reboot", {
                             method: 'POST',
                             headers: {
-                                'Accept': 'application/json',
                                 'Content-Type': 'application/json'},
                             body: JSON.stringify({ "ïpadress": $("#IpAdressFormFormControlSelect1").val()})
                         }).then((response) => {
