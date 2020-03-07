@@ -172,6 +172,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 
     //$network = $items[0];
     //$gateway = $items[1];
+    error_log($NETPrimary);
     $netdetail = explode("/",$NETPrimary);
     $ipaddres  = $netdetail[0];
     $netsize  = $netdetail[1];
