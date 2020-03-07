@@ -677,7 +677,7 @@ function myRebootWaitTimer() {
     checkServer("http://"+$("#IpAdressFormFormControlSelect1").val(), 2000);
     var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
 
-    saveIp(curval+10);
+    saveIp(curval+8);
     //document.getElementById("demo").innerHTML = t;
     if(curval+1 >99 ){
         alert("Timeout!");
