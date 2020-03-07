@@ -267,7 +267,7 @@
         <ol>
             <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
             <li>Navigeer naar  Lan/DHCP</li>
-            <li>Wijzig de DNS server naar adres : [adress] </li>
+            <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
             <li>Sla wijziging op. Klaar!</li>
 
         </ol>
@@ -621,8 +621,18 @@ function checkServer(url, timeout) {
             console.log(response);
             myStopFunction();
             saveIp(100);
+
             $("#main-setup-apply").css("display","none");
             $("#setup-router").css("display","block");
+
+            var ip = $("#IpAdressFormFormControlSelect1").val();
+            var gw = $("#GatewayFormControlInput1").val();
+
+
+        $("a#local-router-link").attr("href","http://"+gw);
+        $("a#local-router-link").html("http://"+gw);
+        $("span#blackbox-static-ip-adress").html(ip);
+
 
 
             //    response => console.log('Check server response:', response.statusText)
