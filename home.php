@@ -144,6 +144,16 @@ $app->get('/api/network/info', function ($request, $response, $args) {
         return $response->withStatus(400);
     }
 
+    $cmd = "sudo blackbox network current";
+    $result = exec( $cmd ,$output,$returnvar);
+    if ( "$result" == "static" ){
+        $configurationType="static";
+    } else{
+        $configurationType="dynamic";
+    }
+
+
+
     $cmd = 'sudo blackbox network info';
     $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
@@ -195,6 +205,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
             "gateway"=>$gateway,
             "size"=>$netsize,
             "raw"=>$rawdata
+            "netconfig"=>$configurationType
         )
     );
     return $response->withJson( $out );
