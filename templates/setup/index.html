@@ -188,7 +188,7 @@
             <div class="col-lg-6 col-sm-6">
                 <p>Hier wordt het ip-adress van de blackbox ingesteld.</p>
                 <p>U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipadres kiezen.</p>
-                <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+                <p>Huidig ip: <b id="real-blackbox-ip">{{ SERVER_ADDR }}</b></p>
                 <p>Voorkeur-instelling : <b id="preferred_ip">000.000.000.000</b></p>
                 <button class="btn btn-info" id="blackbox-save-ip" style="display: none"> Volgende </button>
             </div>
@@ -497,7 +497,7 @@
                 //console.log(myObject);
                 window.networkInformation = myObject
 
-
+                $("#real-blackbox-ip").html(myObject.ipadress[0]);
                 $("#IpAdressFormControlInput1").val(myObject.ipadress[0]);
                 $("#SubnetFormControlInput1").val(myObject.subnet);
                 $("#GatewayFormControlInput1").val(myObject.gateway);
