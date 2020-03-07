@@ -159,9 +159,13 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
 
+    print_r($rawdata);
+
     $result = explode("|",$rawdata);
     $gateway = $result[1];
     $result = $result[0];
+
+    print_r($result);
 
     $NETitems = explode(",",$result);
 
