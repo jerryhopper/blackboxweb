@@ -645,9 +645,10 @@ function checkServer(url, timeout) {
     return fetch(url, options)
         .then(setTimeout(() => { controller.abort() }, timeout))
         .then(function(response){
+            saveIp(100);
             console.log(response);
             myStopFunction();
-            saveIp(100);
+
 
             $("#main-setup-apply").css("display","none");
             $("#setup-router").css("display","block");
@@ -678,7 +679,7 @@ function myRebootWaitTimer() {
 
     saveIp(curval+1);
     //document.getElementById("demo").innerHTML = t;
-    if(curval+1 >99 ){
+    if(curval+10 >99 ){
         alert("Timeout!");
         myStopFunction();
     }
