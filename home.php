@@ -145,12 +145,13 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     }
 
     $cmd = "sudo blackbox network current";
-    $result = exec( $cmd ,$output,$returnvar);
+    $result = exec( $cmd ,$output2,$returnvar2);
     if ( "$result" == "static" ){
         $configurationType="static";
     } else{
         $configurationType="dynamic";
     }
+
 
 
 
