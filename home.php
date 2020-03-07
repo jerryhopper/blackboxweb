@@ -168,7 +168,8 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $NETPrimary = $NETitems[0];
     $NETSecundary = $NETitems[1];
 
-
+    print_r($NETitems);
+    die();
 
     //$network = $items[0];
     //$gateway = $items[1];
