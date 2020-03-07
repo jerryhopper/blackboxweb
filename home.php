@@ -204,7 +204,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
             "subnet_mask"=>$subnet_mask,
             "gateway"=>$gateway,
             "size"=>$netsize,
-            "raw"=>$rawdata
+            "raw"=>$rawdata,
             "netconfig"=>$configurationType
         )
     );
