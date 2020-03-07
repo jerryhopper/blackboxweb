@@ -241,7 +241,7 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     if ( $result == "ok" ){
         return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     } else{
-        return $response->withJson(array("result"=> "error","msg"=>$result ) )->withStatus(500);
+        return $response->withJson(array("result"=> "error","msg"=>$result ) )->withStatus(501);
     }
     return $response->withStatus(200);
 })->setName('network/set');
