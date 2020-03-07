@@ -482,12 +482,21 @@
                 console.log(data.result.size);
                 console.log(data.result.raw);
 
+                var myObject = {}
                 var info = data.result.raw.split('|');
+                myObject.gateway = info[1];
+                myObject.ipadress= []
                 //info[0];
                 //info[1];
                 var ipinfo = info[0].split(",")
+
+                var i;
+                for (i = 0; i < ipinfo.length; i++) {
+                    myObject.ipadress.append(ipinfo[i]) ;
+                }
+
                 console.log(info);
-                console.log(ipinfo);
+                console.log(myObject);
 
 
             });
