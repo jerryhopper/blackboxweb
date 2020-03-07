@@ -263,13 +263,13 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     $IP = $xx['ip'];
     $SUBNET = $xx['net'];
     $GATEWAY = $xx['gw'];
-
+    $SIZE = $xx['size'];
 
 
     //return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     //var_dump($xx);
     //die("xx");
-    $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY";
+    $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY $SIZE";
     $result = exec( $cmd ,$output,$returnvar);
     //print_r($result);
     //$result  ="ok";
