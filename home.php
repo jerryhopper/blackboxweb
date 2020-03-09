@@ -378,15 +378,25 @@ $app->get('/test', function ($request, $response, $args) {
 // Define home route
 $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
+
+
+
     if( !$this->bbconfig->owner ){
         // blackbox needs network setup
         $page = "register/index.html";
     }
 
-    if( !$this->bbconfig->networkState ){
+    #if( !$this->bbconfig->networkState ){
         // blackbox needs network setup
+    #    $page = "setup/index.html";
+    #}
+
+    // blackbox is configured.
+    if($request->getHost()=="blackbox.surfwijzer.nl"){
         $page = "setup/index.html";
     }
+
+
     return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');
 

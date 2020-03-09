@@ -47,6 +47,7 @@ class bbConfig
     }
 
     private function readOwner(){
+
         $file = "/etc/blackbox/blackbox.owner";
         try {
             $response = $this->fread($file);
