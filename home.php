@@ -298,6 +298,11 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 })->setName('network/current');
 
 
+$app->get('/callback', function ($request, $response, $args) {
+
+
+    return $response->withJson("ok");
+});
 
 
 // Define home route
