@@ -392,7 +392,7 @@ $app->get('/', function ($request, $response, $args) {
     #}
 
     // blackbox is configured.
-    if($request->getHost()=="blackbox.surfwijzer.nl"){
+    if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
         $page = "setup/index.html";
     }
 
