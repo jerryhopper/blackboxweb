@@ -374,6 +374,13 @@ $app->get('/test', function ($request, $response, $args) {
     die();
 })->setName('test');
 
+$app->get('/.well-known/blackbox', function ($request, $response, $args) {
+    if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
+        return $response->withStatus(200);
+    }else{
+        return $response->withStatus(404);
+    }
+});
 
 // Define home route
 $app->get('/', function ($request, $response, $args) {
