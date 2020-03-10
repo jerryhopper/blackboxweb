@@ -692,7 +692,11 @@ function checkNetwork(url, timeout) {
         .then(setTimeout(() => { controller.abort() }, timeout))
         .then(function(response){
             console.log(response);
-            myStopFunction();
+            if(response.status==200){
+                alert("OK");
+                myStopFunction();
+            }
+
 
 
             //    response => console.log('Check server response:', response.statusText)
