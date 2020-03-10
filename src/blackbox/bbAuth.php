@@ -82,10 +82,10 @@ class bbAuth {
         $time = time();
         $token = (new Parser())->parse((string) $token); // Parses from a string
         $token->getHeaders(); // Retrieves the token header
-        print_r($token->getClaims()); // Retrieves the token claims
+        //print_r($token->getClaims()); // Retrieves the token claims
 
         //echo $token->getHeader('email'); // will print "4f1g23a12aa"
-        $email = $token->getClaim('email'); // will print "http://example.com"
+        $email   = $token->getClaim('email'); // will print "http://example.com"
         $expires = $token->getClaim('exp');
         $subject = $token->getClaim('sub');
 

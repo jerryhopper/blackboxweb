@@ -310,8 +310,8 @@ $app->get('/callback', function ($request, $response, $args) {
 
 
     $x = new bbAuth();
-    //$x->validate($allGetVars['token']);
-    $x->validate($T);
+    $x->validate($allGetVars['token']);
+    //$x->validate($T);
 
     print_r($x);
 
