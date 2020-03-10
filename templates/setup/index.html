@@ -256,25 +256,52 @@
 <div class="row" id="setup-router" style="display:none">
     <div class="col-lg-6 col-sm-6 ">
         <h2>Stap 2 - Router instellen</h2>
-        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
-        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
-        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
+        <div class="col-lg-6 col-sm-6 ">
+            <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
+            <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
+            <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
 
-        <p></p>
+            <p></p>
+        </div>
+
+        <div class="col-lg-6 col-sm-6 ">
+            <p>Instructies</p>
+            <ol>
+                <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+                <li>Navigeer naar  Lan/DHCP</li>
+                <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
+                <li>Sla wijziging op.</li>
+                <li>Wacht tot de blackbox de wijziging detecteert</li>
+
+            </ol>
+            <p>
+
+            </p>
+
+
+
+        </div>
+
     </div>
+
     <div class="col-lg-6 col-sm-6 ">
         <p>Instructies</p>
         <ol>
             <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
             <li>Navigeer naar  Lan/DHCP</li>
             <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
-            <li>Sla wijziging op. Klaar!</li>
+            <li>Sla wijziging op.</li>
+            <li>Wacht tot de blackbox de wijziging detecteert</li>
 
         </ol>
+        <p>
+
+        </p>
 
 
 
     </div>
+
     <div class="col-lg-12 col-sm-12 ">
         <hr/>
     </div>
@@ -636,6 +663,44 @@
         }
     };
 
+function waitForNetwork(){
+    window.myTimerVar = setInterval(myNetworkWaitTimer, 5000);
+}
+function myNetworkWaitTimer(){
+    //
+    var d = new Date();
+    var t = d.toLocaleTimeString();
+    console.log(t);
+
+    checkNetwork("https://blackbox.surfwijzer.nl", 2000);
+    //var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
+
+    //saveIp(curval+8);
+    //document.getElementById("demo").innerHTML = t;
+    //if(curval+1 >99 ){
+    //    alert("Timeout!");
+    //    myStopFunction();
+    //}
+
+}
+
+function checkNetwork(url, timeout) {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const options = { mode: 'no-cors', signal };
+    return fetch(url, options)
+        .then(setTimeout(() => { controller.abort() }, timeout))
+        .then(function(response){
+            console.log(response);
+            myStopFunction();
+
+
+            //    response => console.log('Check server response:', response.statusText)
+        }).catch(
+            error => console.error('Check server error:', error.message)
+        );
+}
+
 
 //var myVar = setInterval(myRebootWaitTimer, 1000);
 
@@ -662,6 +727,8 @@ function checkServer(url, timeout) {
             $("a#local-router-link").html("http://"+gw);
             $("span#blackbox-static-ip-adress").html(ip);
             $("i#checklist-static-ip").html("check_box");
+
+            waitForNetwork();
 
 
             //    response => console.log('Check server response:', response.statusText)
