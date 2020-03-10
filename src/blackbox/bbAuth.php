@@ -122,7 +122,14 @@ class bbAuth {
         return $this->tokenExpires;
     }
 
-
+    public function __get($propertyName)
+    {
+        if (isset($this->$propertyName) ) {
+            return $this->$propertyName;
+        } else {
+            throw new Exception("No such property");
+        }
+    }
 
     /**
      * @param $content
