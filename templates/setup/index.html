@@ -311,21 +311,11 @@
 <div class="row" id="blackbox-activate" style="display:none">
     <div class="col-lg-6 col-sm-6 ">
         <h2>Stap 3 - Blackbox activeren</h2>
-        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
-        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
-        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
+        <p>Om de blackbox te activeren, dient u zich in te identificeren met een surfwijzer account..</p>
 
-        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
     </div>
     <div class="col-lg-6 col-sm-6 ">
-        <p>Instructies</p>
-        <ol>
-            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
-            <li>Navigeer naar  Lan/DHCP</li>
-            <li>Wijzig de DNS server naar adres : [adress] </li>
-            <li>Sla wijziging op. Klaar!</li>
-
-        </ol>
+        <p>..</p>
 
 
 
@@ -698,7 +688,7 @@ function checkNetwork(url, timeout) {
                 //alert("OK");
                 myStopFunction();
                 $("div#setup-router").css("display","none");
-                
+
                 $("div#blackbox-activate").css("display","block");
 
                 //window.location="https://blackbox.surfwijzer.nl/"
