@@ -301,7 +301,7 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 $app->get('/callback', function ($request, $response, $args) {
 
 
-    return $response->withStatus(200);
+    return $response->withJson(1)->withStatus(200);
 });
 
 
