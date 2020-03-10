@@ -303,7 +303,25 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 // Define home route
 $app->get('/test', function ($request, $response, $args) {
 
-    print_r($_SERVER['SERVER_ADDR']);
+    //print_r($_SERVER['SERVER_ADDR']);
+
+
+    if( file_exists("/etc/blackbox/blackbox.state") ){
+
+        #var_dump(file_get_contents("/etc/blackbox/blackbox.state"));
+        #var_dump(file_get_contents("/etc/blackbox/hardware.json"));
+        #var_dump(file_get_contents("/etc/blackbox/blackbox.id"));
+        #var_dump(file_get_contents("/etc/blackbox/blackbox.conf"));
+        #var_dump(file_get_contents("/etc/blackbox/firstboot.state"));
+        var_dump(file_get_contents("/etc/blackbox/.staticip"));
+
+
+    }else{
+        die("not exist");
+    }
+    die("x");
+
+
 
     $ip = "10.0.1.200";
     $size = 24;
