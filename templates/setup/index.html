@@ -306,6 +306,8 @@
         <hr/>
     </div>
 </div>
+
+
 <div class="row" id="blackbox-activate" style="display:none">
     <div class="col-lg-6 col-sm-6 ">
         <h2>Stap 3 - Blackbox activeren</h2>
@@ -695,7 +697,11 @@ function checkNetwork(url, timeout) {
             if(response.status==200){
                 //alert("OK");
                 myStopFunction();
-                window.location="https://blackbox.surfwijzer.nl/"
+                $("div#setup-router").css("display","none");
+                
+                $("div#blackbox-activate").css("display","block");
+
+                //window.location="https://blackbox.surfwijzer.nl/"
             }
 
             //    response => console.log('Check server response:', response.statusText)
