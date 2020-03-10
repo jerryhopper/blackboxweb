@@ -301,6 +301,8 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 })->setName('network/current');
 
 
+
+
 $app->get('/callback', function ($request, $response, $args) {
 
     $allGetVars = $request->getQueryParams();
@@ -314,6 +316,11 @@ $app->get('/callback', function ($request, $response, $args) {
     //$x->validate($T);
 
     print_r($x);
+
+    $x->getToken();
+    $x->getTokenOwnerEmail();
+    $x->getTokenOwner();
+    $x->getTokenExpiry();
 
     //"code";
     // locale

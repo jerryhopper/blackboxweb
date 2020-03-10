@@ -8,17 +8,14 @@ class bbAuth {
 
 
     var $oauthClientId       = "705dbbd8-0155-4e7e-9199-20b8e47388e5";
-    var $oauthClientSecret   = "DOMJ0k7U5msfSTOVp6mOTkXzs41uYX5T_8nXxLIKUVw";
 
-    var $oauthAuthorizeUrl   = "https://idp.surfwijzer.nl/oauth2/authorize";
-    var $oauthTokenUrl       = "https://idp.surfwijzer.nl/oauth2/token";
 
     var $oauthIssuer         = "idp.surfwijzer.nl";
 
     private $tokenExpires    = "";
     private $tokenOwner      = "";
-    private $tokenOwnerEmail  = "";
-    private $token          = "";
+    private $tokenOwnerEmail = "";
+    private $token           = "";
 
     function __construct (){
 
@@ -27,7 +24,8 @@ class bbAuth {
 
 
     public function oAuthloginUrl(){
-        return $this->oauthAuthorizeUrl."?response_type=code&scope=email&client_id=".$this->oauthClientId."&state=&redirect_uri=http%3A%2F%2Fpi.hole%2Fadmin%2Findex.php";
+        return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";
+        //return $this->oauthAuthorizeUrl."?response_type=code&scope=email&client_id=".$this->oauthClientId."&state=&redirect_uri=http%3A%2F%2Fpi.hole%2Fadmin%2Findex.php";
     }
 
     function exchangeCodeForToken($code){
@@ -125,6 +123,28 @@ class bbAuth {
     }
 
 
+
+    /**
+     * @param $content
+     *
+     * @return bool
+     */
+    public function __isset($content) {
+        echo "The {$content} property is private，the __isset() method is called automatically.<br>";
+        echo  isset($this->$content);
+    }
+
+    /**
+     * @return array
+     */
+    public function __debugInfo() {
+        return [
+            'tokenOwner' => $this->tokenOwner ,
+            'tokenOwnerEmail' => $this->tokenOwnerEmail,
+            'token' => $this->token,
+
+        ];
+    }
 }
 
 
