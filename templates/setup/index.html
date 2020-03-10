@@ -672,7 +672,7 @@ function myNetworkWaitTimer(){
     var t = d.toLocaleTimeString();
     console.log(t);
 
-    checkNetwork("https://blackbox.surfwijzer.nl/.well-known/blackbox", 2000);
+    checkNetwork("https://blackbox.surfwijzer.nl/.well-known/blackbox", 5000);
     //var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
 
     //saveIp(curval+8);
@@ -693,11 +693,10 @@ function checkNetwork(url, timeout) {
         .then(function(response){
             console.log(response);
             if(response.status==200){
-                alert("OK");
+                //alert("OK");
                 myStopFunction();
+                window.location="https://blackbox.surfwijzer.nl/"
             }
-
-
 
             //    response => console.log('Check server response:', response.statusText)
         }).catch(
