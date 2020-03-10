@@ -300,6 +300,12 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 
 $app->get('/callback', function ($request, $response, $args) {
 
+    //"code";
+    // locale
+    // userState (AuthenticatedNotRegistered)
+    # curl -u TestClient:TestSecret https://api.surfwijzer.nl/blackbox/login -d 'code=xyz'
+    # curl -u TestClient:TestSecret https://idp.surfwijzer.nl/oauth2/token -d 'grant_type=authorization_code&code=xyz'
+
 
     return $response->withJson(1)->withStatus(200);
 });
