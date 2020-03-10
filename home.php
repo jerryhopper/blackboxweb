@@ -300,6 +300,9 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 
 $app->get('/callback', function ($request, $response, $args) {
 
+    $allGetVars = $request->getQueryParams();
+    $allGetVars["token"];
+
     //"code";
     // locale
     // userState (AuthenticatedNotRegistered)
