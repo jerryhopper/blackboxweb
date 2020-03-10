@@ -3,7 +3,10 @@
 
 require 'vendor/autoload.php';
 
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\ValidationData;
 
+require 'src/blackbox/bbAuth.php';
 require 'src/blackbox/bbConfig.php';
 require 'src/FTL.php';
 require 'src/Gravity.php';
@@ -302,6 +305,15 @@ $app->get('/callback', function ($request, $response, $args) {
 
     $allGetVars = $request->getQueryParams();
     $allGetVars["token"];
+
+    $T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM4NjM4MzMsImlhdCI6MTU4Mzg2MDIzMywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W119.-2f4vFuhb2i2tncQVHFkK18DPFbHPPCKEca__mXS3Fc";
+
+
+    $x = new bbAuth();
+    //$x->validate($allGetVars['token']);
+    $x->validate($T);
+
+    print_r($x);
 
     //"code";
     // locale
