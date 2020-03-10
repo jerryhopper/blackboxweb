@@ -301,7 +301,7 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 $app->get('/callback', function ($request, $response, $args) {
 
 
-    return $response->withJson("ok");
+    return $response->withStatus(200);
 });
 
 
@@ -451,7 +451,7 @@ $app->get('/setup', function ($request, $response, $args) {
 
 
 // Define named route
-$app->get('/callback', function ($request, $response, $args) {
+$app->get('/cxxallback', function ($request, $response, $args) {
     //return $response->withStatus(403);
     return $this->view->render($response, 'child.html', [
         'name' => $args['name']
