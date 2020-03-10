@@ -322,7 +322,7 @@ $app->get('/callback', function ($request, $response, $args) {
     # curl -u TestClient:TestSecret https://idp.surfwijzer.nl/oauth2/token -d 'grant_type=authorization_code&code=xyz'
 
 
-    return $response->withJson(1)->withStatus(200);
+    return $response->withJson(4)->withStatus(200);
 });
 
 
