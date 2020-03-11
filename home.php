@@ -467,7 +467,11 @@ $app->get('/callback', function ($request, $response, $args) {
         return $response->withRedirect( '/');
         //return $response->withJson(4)->withStatus(200);
     }else{
-
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+        $setcookies->set('tracking', "$value");
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+        return $response->withRedirect( '/');
     }
 
 
@@ -510,7 +514,9 @@ $app->get('/', function ($request, $response, $args) {
             $page = "register/index.html";
         }
     }else{
-        $page = "setup/index.html";
+        if( !$this->BlackBox->config->owner ){
+            $page = "setup/index.html";
+        }
     }
 
 
