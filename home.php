@@ -31,6 +31,10 @@ $app = new \Slim\App();
 $container = $app->getContainer();
 
 
+$container['BlackBox'] = function($c){
+    return new BlackBox();
+};
+
 $container['bbconfig'] = function ($c) {
     return new bbConfig();
 };
@@ -139,9 +143,6 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     return $response->withJson( $out );
 
 })->setName('network/scan');
-
-
-
 
 $app->get('/api/network/info', function ($request, $response, $args) {
 
@@ -448,13 +449,9 @@ $app->get('/callback', function ($request, $response, $args) {
 
 
     // Al er nog geen eigenaar is, maar de eerste login de eigenaar.
-    $BlackBox = new BlackBox();
-
-    //print_r($BlackBox);
-
     //die();
 
-    if( !$BlackBox->config->owner ){
+    if( !$this->BlackBox->config->owner ){
 
         $BlackBox->setOwner($owner,$email);
         //die("NoOwners");
@@ -469,6 +466,8 @@ $app->get('/callback', function ($request, $response, $args) {
 
         return $response->withRedirect( '/');
         //return $response->withJson(4)->withStatus(200);
+    }else{
+
     }
 
 
@@ -499,6 +498,12 @@ $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
 
 
+    if( !$this->BlackBox->config->owner ){
+        die("no ownert");
+
+    }else{
+        die("Ownert!");
+    }
 
     if( !$this->bbconfig->owner ){
         // blackbox needs network setup
