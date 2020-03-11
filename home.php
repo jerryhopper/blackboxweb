@@ -495,16 +495,26 @@ $app->get('/callback', function ($request, $response, $args) {
 
 // Define home route
 $app->get('/', function ($request, $response, $args) {
+
+    //   Default dashboard pages
     $page = "dashboard.html";
 
+    #var_dump($request->getUri()->getScheme());
+    #die();
 
-    if( !$this->BlackBox->config->owner ){
-#
-        //die("no ownert");
 
+    if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
+        //$page = "setup/index.html";
+        if( !$this->BlackBox->config->owner ){
+            // blackbox needs network setup
+            $page = "register/index.html";
+        }
     }else{
-        //die("Ownert!");
+        $page = "setup/index.html";
     }
+
+
+
 
     if( !$this->bbconfig->owner ){
         // blackbox needs network setup
