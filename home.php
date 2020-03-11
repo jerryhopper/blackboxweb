@@ -499,10 +499,11 @@ $app->get('/', function ($request, $response, $args) {
 
 
     if( !$this->BlackBox->config->owner ){
-        die("no ownert");
+
+        //die("no ownert");
 
     }else{
-        die("Ownert!");
+        //die("Ownert!");
     }
 
     if( !$this->bbconfig->owner ){
@@ -517,7 +518,7 @@ $app->get('/', function ($request, $response, $args) {
 
     // blackbox is configured.
     if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
-        $page = "setup/index.html";
+        //$page = "setup/index.html";
     }
 
 
