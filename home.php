@@ -499,7 +499,7 @@ $app->get('/', function ($request, $response, $args) {
 
 
     if( !$this->BlackBox->config->owner ){
-
+#
         //die("no ownert");
 
     }else{
