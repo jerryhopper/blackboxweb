@@ -6,6 +6,8 @@ require 'vendor/autoload.php';
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
 
+require 'src/BlackBox.php';
+require 'src/blackbox/bbState.php';
 require 'src/blackbox/bbAuth.php';
 require 'src/blackbox/bbConfig.php';
 require 'src/FTL.php';
@@ -303,40 +305,17 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 
 
 
-$app->get('/callback', function ($request, $response, $args) {
-
-    $allGetVars = $request->getQueryParams();
-    $allGetVars["token"];
-
-    $T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM4NjM4MzMsImlhdCI6MTU4Mzg2MDIzMywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W119.-2f4vFuhb2i2tncQVHFkK18DPFbHPPCKEca__mXS3Fc";
-
-
-    $x = new bbAuth();
-    $x->validate($allGetVars['token']);
-    //$x->validate($T);
-
-    print_r($x);
-
-    $x->getToken();
-    $x->getTokenOwnerEmail();
-    $x->getTokenOwner();
-    $x->getTokenExpiry();
-
-    //"code";
-    // locale
-    // userState (AuthenticatedNotRegistered)
-    # curl -u TestClient:TestSecret https://api.surfwijzer.nl/blackbox/login -d 'code=xyz'
-    # curl -u TestClient:TestSecret https://idp.surfwijzer.nl/oauth2/token -d 'grant_type=authorization_code&code=xyz'
-
-
-    return $response->withJson(4)->withStatus(200);
-});
-
-
 // Define home route
 $app->get('/test', function ($request, $response, $args) {
 
     //print_r($_SERVER['SERVER_ADDR']);
+    echo "<pre>";
+    $Blackbox = new BlackBox();
+    var_dump($Blackbox);
+
+
+
+    die("____--____");
 
 
     if( file_exists("/etc/blackbox/blackbox.state") ){
@@ -433,6 +412,88 @@ $app->get('/.well-known/blackbox', function ($request, $response, $args) {
     }
 });
 
+
+
+
+
+
+
+$app->get('/callback', function ($request, $response, $args) {
+
+    //echo "<pre>";
+
+
+    //$response->withHeader('Location', '/contact');
+
+    //return $response;
+
+
+    $allGetVars = $request->getQueryParams();
+    $allGetVars["token"];
+
+    $T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM5MzE4OTcsImlhdCI6MTU4MzkyODI5NywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W10sImJpcnRoZGF0ZVgiOiJvdmVyd3JpdHRlbiJ9.Tbb9Ar8atvZE9nNnMNIQ-Ot7i2hLmoH8-l-s90OsdCY";
+
+
+    $x = new bbAuth();
+    $x->validate($allGetVars['token']);
+    //$x->validate($T);
+
+    //print_r($x);
+
+    $token = $x->getToken();
+    $email = $x->getTokenOwnerEmail();
+    $owner = $x->getTokenOwner();
+    $expires=$x->getTokenExpiry();
+
+
+
+    // Al er nog geen eigenaar is, maar de eerste login de eigenaar.
+    $BlackBox = new BlackBox();
+
+    //print_r($BlackBox);
+
+    //die();
+
+    if( !$BlackBox->config->owner ){
+
+        $BlackBox->setOwner($owner,$email);
+        //die("NoOwners");
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+        $setcookies->set('tracking', "$value");
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+        // And for getting cookie :
+        // $jwt = $request->getCookieParam('auth');
+
+
+        return $response->withRedirect( '/');
+        //return $response->withJson(4)->withStatus(200);
+    }
+
+
+    print_r($BlackBox->owner);
+    die();
+
+
+    //"code";
+    // locale
+    // userState (AuthenticatedNotRegistered)
+    # curl -u TestClient:TestSecret https://api.surfwijzer.nl/blackbox/login -d 'code=xyz'
+    # curl -u TestClient:TestSecret https://idp.surfwijzer.nl/oauth2/token -d 'grant_type=authorization_code&code=xyz'
+
+    // if blackbox has no owner.
+    if( !$this->bbconfig->owner ){
+        // blackbox needs network setup
+        //$page = "register/index.html";
+    }
+
+
+
+
+    return $response->withJson(4)->withStatus(200);
+});
+
 // Define home route
 $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
@@ -441,7 +502,7 @@ $app->get('/', function ($request, $response, $args) {
 
     if( !$this->bbconfig->owner ){
         // blackbox needs network setup
-        $page = "register/index.html";
+        //$page = "register/index.html";
     }
 
     #if( !$this->bbconfig->networkState ){

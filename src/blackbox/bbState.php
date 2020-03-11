@@ -4,14 +4,18 @@ class bbState
 {
 
 
-    function __construct()
+    function __construct($state)
     {
-        $state = file_get_contents("/etc/blackbox/blackbox.state");
-
+        $this->state = $this->states( $state );
     }
 
-    function states(){
-        return array(
+    public function __toString()
+    {
+        return  $this->state;
+    }
+
+    private function states($state){
+        $states =  array(
             "1"=>"prescript",
             "2"=>"Automation_Custom_Script.sh",
             "3"=>"registerhardware.sh efore ip check",
@@ -21,11 +25,10 @@ class bbState
             "7"=>"blackbox install  - pihole initial install",
             "8"=>"blackbox install  - finalizing installation. ( set pihole beta, edit lighthttp.conf create postboot )",
             "9"=>"blackbox install  - readyforclient",
-            "10"=>"blackbox registerdevice   "
-
+            "10"=>"blackbox registerdevice"
         );
+
+        return $states[(string) trim($state)];
     }
-
-
 
 }

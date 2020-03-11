@@ -3,81 +3,125 @@
 
 class bbConfig
 {
+    private $owner; //etc/blackbox/blackbox.owner
+    private $id;    //etc/blackbox/blackbox.id
+    private $state; //etc/blackbox/blackbox.state
 
-    // firstboot.state
-    // hardware.json
-
-    // blackbox.id
-    // blackbox.state
-    // blackbox.conf
-
-    private $state;
-    private $id;
-    private $owner;
-    private $networkState=false;
-
-
-
+    private $readablestate;
 
     function __construct()
     {
-        $this->state = $this->readState();
-        $this->id = $this->readId();
-        $this->owner = $this->readOwner();
+        $this->hasId();
+        $this->hasOwner();
+        $this->hasState();
+
     }
 
     /**
-     * @return array
+     * @param $propertyName
+     * @return bool
      */
-    public function __debugInfo() {
-        return [
-            'state' => $this->state,
-            'id' => $this->id,
-            'owner' => $this->owner,
-            'networkState' => $this->networkState
-        ];
-    }
-
-    public function __get($propertyName){
-        if( !property_exists($this,$propertyName) ){
-            throw new Exception("No such property exists");
-        } else {
+    public function __get($propertyName)
+    {
+        if( isset($this->$propertyName ) ){
             return $this->$propertyName;
+        } else {
+            return false;
         }
     }
 
-    private function readOwner(){
+    /**
+     * @return bool
+     */
+    private function hasOwner(){
 
-        $file = "/etc/blackbox/blackbox.owner";
-        try {
-            $response = $this->fread($file);
-        }catch( Exception  $e){
-            $response = false;
+        if( file_exists("/etc/blackbox/blackbox.owner")) {
+            $this->owner = trim( $this->read("/etc/blackbox/blackbox.owner") );
+            return true;
         }
-        return $response;
+        $this->owner=false;
+        return false;
     }
 
-    private function readState (){
-        $file = "/etc/blackbox/blackbox.state";
-        return $this->fread($file);
+    /**
+     * @param $uid
+     * @param $email
+     * @return bool
+     * @throws Exception
+     */
+    public function setOwner($uid,$email){
+
+        $res = exec("sudo blackbox owner set $uid");
+        return true;
+        //return $this->write("/etc/blackbox/blackbox.owner",$uid);
     }
 
-    private function readId(){
-        $file = "/etc/blackbox/blackbox.id";
-        return $this->fread($file);
-    }
 
-    private function fread($file){
-        if(file_exists($file)){
-            $h = fopen($file,"r");
-            $contents = fread($h, filesize($file));
-            fclose($h);
-        }else{
-            throw new Exception("$file doesnt exist.");
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    private function hasId(){
+        if(file_exists("/etc/blackbox/blackbox.id")){
+            $this->id = trim($this->read("/etc/blackbox/blackbox.id"));
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    private function hasState(){
+        if(file_exists("/etc/blackbox/blackbox.state")){
+            $this->state = trim($this->read("/etc/blackbox/blackbox.state"));
+            $this->readablestate = (string )new bbState($this->state);
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    /**
+     * @param $file
+     * @param $data
+     * @return bool
+     * @throws Exception
+     */
+    private function write($file, $data){
+        if (!$handle = fopen($file, 'w')) {
+            throw new \Exception("Cannot open file ($file)");
+            exit;
+        }
+
+        // Write $somecontent to our opened file.
+        if (fwrite($handle, $data) === FALSE) {
+            throw new \Exception( "Cannot write to file ($file)");
+            exit;
+        }
+        fclose($handle);
+        return true;
+    }
+
+    /**
+     * @param $file
+     * @return mixed
+     * @throws Exception
+     */
+    private function read($file){
+        // ------------
+        if( !file_exists($file) ){
+            throw new \Exception("File does not exist ($file)");
+        }
+        $handle = fopen($file, "r");
+        $contents = fread($handle, filesize($file));
+        fclose($handle);
+
         return $contents;
     }
-
-
 
 }
