@@ -11,8 +11,18 @@ $serverName = htmlspecialchars($_SERVER["HTTP_HOST"]);
 // Remove external ipv6 brackets if any
 $serverName = preg_replace('/^\[(.*)\]$/', '${1}', $serverName);
 
-if (!is_file("/etc/pihole/setupVars.conf"))
+if (!is_file("/etc/pihole/setupVars.conf")){
+
+    if(file_exists("/var/www/html/osbox/home.php") ){
+        include("/var/www/html/osbox/home.php");
+        die();
+    }
+
+
+
     die("[ERROR] File not found: <code>/etc/pihole/setupVars.conf</code>");
+}
+
 
 // Get values from setupVars.conf
 $setupVars = parse_ini_file("/etc/pihole/setupVars.conf");
@@ -73,11 +83,13 @@ if (    $serverName === "pi.hole" OR
         }
 */
 
-        if(file_exists("/var/www/blackbox/home.php")){
-            include("/var/www/blackbox/home.php");
-        }else{
-            include("/var/www/html/blackbox/home.php");
-        }
+        include("/var/www/html/osbox/home.php");
+
+        //if(file_exists("/var/www/osbox/home.php")){
+            //include("/var/www/osbox/home.php");
+        //}else{
+
+        //}
 
         die();
         exit(header("Location: /blackbox/home.php"));
