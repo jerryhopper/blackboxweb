@@ -139,7 +139,8 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     $cmd = 'sudo osbox network scan';
     $result = exec( $cmd ,$AdressesInUse,$returnvar);
 
-
+    #var_dump($AdressesInUse);
+    #die();
 
     $cmd = 'sudo osbox network info';
     $result = exec( $cmd ,$output,$returnvar);
@@ -169,8 +170,9 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
         }
     }
 
+    #var_dump($usedIps[0]);
 
-
+    #die();
     $sub = new IPv4\SubnetCalculator($ipaddres, $netsize);
 
     $ip_address        = $sub->getIPAddress();
@@ -184,19 +186,31 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
     $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
 
-    $gatewayList = array();
-
+    $suggestIpList = array();
 
     // $usedIps
-    //array_pop($AdressesInUse);
-    unset($AdressesInUse[$usedIps[0]]);
+    #var_dump($usedIps[0]);
+    #die();
 
+    //array_pop($AdressesInUse);
+    //unset($AdressesInUse[$usedIps[0]]);
+    $_AdressesInUse=array();
+    foreach( $AdressesInUse as $aiu){
+        if( $aiu != $usedIps[0] ){
+            $_AdressesInUse[]= $aiu;
+        }
+
+    }
+
+
+    //$list[]=$usedIps[0];
 
     while ($teller <= $max) {
-        if( !in_array($_ip.$teller, $AdressesInUse) ){
+        if( !in_array($_ip.$teller, $_AdressesInUse) ){
             $list[] = $_ip.$teller;
             if(($teller < 10) or ($teller > 250)){
-                $gatewayList[]=$_ip.$teller;
+
+                $suggestIpList[]=$_ip.$teller;
             }
         }
         $teller++;
@@ -225,7 +239,7 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
         "ip_free"=>$list,
         "current_ip"=>$usedIps,
         "gw"=>$gateway,
-        "ip_suggest"=>$gatewayList
+        "ip_suggest"=>$suggestIpList
         )
     );
 
@@ -238,9 +252,9 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 $app->get('/api/network/info', function ($request, $response, $args) {
 
-    #if( $this->bbconfig->owner !=false ){
-    #    return $response->withStatus(400);
-    #}
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
 
     $cmd = "sudo osbox network current";
     $result = exec( $cmd ,$output2,$returnvar2);
@@ -337,6 +351,11 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 })->setName('network/ip');
 
 $app->post('/api/system/reboot', function ($request, $response, $args) {
+
+    if( $this->bbconfig->owner !=false ){
+        return $response->withStatus(400);
+    }
+
     // check if ip is in use.
     $cmd = "sudo osbox reboot";
     $result = exec( $cmd ,$output,$returnvar);
