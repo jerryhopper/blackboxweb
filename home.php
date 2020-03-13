@@ -325,7 +325,7 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 
     // set ip
     // check if ip is in use.
-    $cmd = "sudo blackbox network reset";
+    $cmd = "sudo osbox network reset";
     $result = exec( $cmd ,$output,$returnvar);
     if ( "$result" == "ok" ){
         return $response->withStatus(200);
