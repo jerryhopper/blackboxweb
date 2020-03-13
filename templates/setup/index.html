@@ -690,7 +690,7 @@ function myNetworkWaitTimer(){
 function checkNetwork(url, timeout) {
     const controller = new AbortController();
     const signal = controller.signal;
-    const options = { mode: 'no-cors', signal };
+    const options = { cache: 'reload', mode: 'no-cors', signal };
     return fetch(url, options)
         .then(setTimeout(() => { controller.abort() }, timeout))
         .then(function(response){

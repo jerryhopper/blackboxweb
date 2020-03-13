@@ -141,7 +141,6 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 
 
-
     $cmd = 'sudo osbox network info';
     $result = exec( $cmd ,$output,$returnvar);
     #error_log($result);
@@ -186,6 +185,12 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
 
     $gatewayList = array();
+
+
+    // $usedIps
+    //array_pop($AdressesInUse);
+    unset($AdressesInUse[$usedIps[0]]);
+
 
     while ($teller <= $max) {
         if( !in_array($_ip.$teller, $AdressesInUse) ){
@@ -379,8 +384,9 @@ $app->get('/api/network/current', function ($request, $response, $args) {
         return $response->withStatus(400);
     }
 
-    $cmd = "sudo blackbox network current";
+    $cmd = "sudo osbox network current";
     $result = exec( $cmd ,$output,$returnvar);
+
     if ( "$result" == "static" ){
         return $response->withJson( array("result"=>$result) )->withStatus(200);
     } else{
