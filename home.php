@@ -58,6 +58,9 @@ $container['view'] = function ($c) {
     return $view;
 };
 
+
+
+
 /**
  *
  *
@@ -66,6 +69,65 @@ $container['view'] = function ($c) {
  *
  *
  **/
+// Define home route
+$app->get('/', function ($request, $response, $args) {
+
+    //   Default dashboard pages
+    $page = "dashboard.html";
+
+    #var_dump($request->getUri()->getScheme());
+    #die();
+
+
+    if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
+        //$page = "setup/index.html";
+        if( !$this->BlackBox->config->owner ){
+            // blackbox needs network setup
+            $page = "register/index.html";
+        }
+    }else{
+        if( !$this->BlackBox->config->owner ){
+            $page = "setup/index.html";
+        }
+    }
+
+
+
+
+    if( !$this->bbconfig->owner ){
+        // blackbox needs network setup
+        //$page = "register/index.html";
+    }
+
+    #if( !$this->bbconfig->networkState ){
+    // blackbox needs network setup
+    #    $page = "setup/index.html";
+    #}
+
+    // blackbox is configured.
+    if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
+        //$page = "setup/index.html";
+    }
+
+
+    return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
+})->setName('homepage');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $app->get('/api/network/scan', function ($request, $response, $args) {
 
@@ -74,20 +136,41 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     }
 
     #die("x");
-    $cmd = 'sudo blackbox network scan';
+    $cmd = 'sudo osbox network scan';
     $result = exec( $cmd ,$AdressesInUse,$returnvar);
 
 
 
 
-    $cmd = 'sudo blackbox network info';
+    $cmd = 'sudo osbox network info';
     $result = exec( $cmd ,$output,$returnvar);
-    $items = explode(",",$result);
-    $network = $items[0];
+    #error_log($result);
+    #die();
+
+    $items =explode("|",$result);
+
+
+    $ips    = $items[0];
     $gateway = $items[1];
+
+
+    $items = explode(",",$ips);
+    $network = $items[0];
+
     $netdetail = explode("/",$network);
+
     $ipaddres  = $netdetail[0];
     $netsize  = $netdetail[1];
+
+    $usedIps=array();
+    foreach($items as $ipee){
+        $tmp = str_replace("/".$netsize,"",$ipee);
+        if($tmp!=""){
+            $usedIps[] = $tmp;
+        }
+    }
+
+
 
     $sub = new IPv4\SubnetCalculator($ipaddres, $netsize);
 
@@ -103,6 +186,7 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     $_ip=$min_host_quads[0].".".$min_host_quads[1].".".$min_host_quads[2].".";
 
     $gatewayList = array();
+
     while ($teller <= $max) {
         if( !in_array($_ip.$teller, $AdressesInUse) ){
             $list[] = $_ip.$teller;
@@ -134,6 +218,7 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     $out = array("result"=>array(
         "ip_inuse"=>$AdressesInUse,
         "ip_free"=>$list,
+        "current_ip"=>$usedIps,
         "gw"=>$gateway,
         "ip_suggest"=>$gatewayList
         )
@@ -144,13 +229,15 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 })->setName('network/scan');
 
+
+
 $app->get('/api/network/info', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
-    }
+    #if( $this->bbconfig->owner !=false ){
+    #    return $response->withStatus(400);
+    #}
 
-    $cmd = "sudo blackbox network current";
+    $cmd = "sudo osbox network current";
     $result = exec( $cmd ,$output2,$returnvar2);
     if ( "$result" == "static" ){
         $configurationType="static";
@@ -160,12 +247,11 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 
 
 
-
-    $cmd = 'sudo blackbox network info';
+    $cmd = 'sudo osbox network info';
     $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
 
-    //print_r($rawdata);
+
 
     $result = explode("|",$rawdata);
     $gateway = $result[1];
@@ -247,7 +333,7 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 
 $app->post('/api/system/reboot', function ($request, $response, $args) {
     // check if ip is in use.
-    $cmd = "sudo blackbox reboot";
+    $cmd = "sudo osbox reboot";
     $result = exec( $cmd ,$output,$returnvar);
     if ( "$result" == "ok" ){
         return $response->withStatus(200);
@@ -275,7 +361,7 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     //return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     //var_dump($xx);
     //die("xx");
-    $cmd = "sudo blackbox network set $IP $SUBNET $GATEWAY $SIZE";
+    $cmd = "sudo osbox network set $IP $SUBNET $GATEWAY $SIZE";
     $result = exec( $cmd ,$output,$returnvar);
     //print_r($result);
     //$result  ="ok";
@@ -497,49 +583,6 @@ $app->get('/callback', function ($request, $response, $args) {
     return $response->withJson(4)->withStatus(200);
 });
 
-// Define home route
-$app->get('/', function ($request, $response, $args) {
-
-    //   Default dashboard pages
-    $page = "dashboard.html";
-
-    #var_dump($request->getUri()->getScheme());
-    #die();
-
-
-    if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-        //$page = "setup/index.html";
-        if( !$this->BlackBox->config->owner ){
-            // blackbox needs network setup
-            $page = "register/index.html";
-        }
-    }else{
-        if( !$this->BlackBox->config->owner ){
-            $page = "setup/index.html";
-        }
-    }
-
-
-
-
-    if( !$this->bbconfig->owner ){
-        // blackbox needs network setup
-        //$page = "register/index.html";
-    }
-
-    #if( !$this->bbconfig->networkState ){
-        // blackbox needs network setup
-    #    $page = "setup/index.html";
-    #}
-
-    // blackbox is configured.
-    if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
-        //$page = "setup/index.html";
-    }
-
-
-    return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
-})->setName('homepage');
 
 $app->get('/register', function ($request, $response, $args) {
     //return $response->withStatus(403);
