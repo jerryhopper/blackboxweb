@@ -3,19 +3,44 @@
 
 class bbConfig
 {
-    private $owner; //etc/blackbox/blackbox.owner
-    private $id;    //etc/blackbox/blackbox.id
-    private $state; //etc/blackbox/blackbox.state
+    private $owner = null; //etc/blackbox/osbox.owner
+    private $id    = null;    //etc/blackbox/osbox.id
+    private $state = null; //etc/blackbox/osbox.state
+    private $networkstate = null; //etc/blackbox/osbox.network
 
-    private $readablestate;
+    private $networktype  = null; //  static/dynamic
+
+    private $readablestate = null;
+
 
     function __construct()
     {
         $this->hasId();
         $this->hasOwner();
         $this->hasState();
+        $this->networkType();
 
     }
+
+    public function registeredToAccount(){
+
+
+        return false;
+
+    }
+
+    public function networkConfigured(){
+        if ( $this->networktype=="static" ){
+            return true;
+        }
+        return false;
+    }
+
+    private function networkType(){
+        $this->networktype = trim(exec("bash /usr/lib/osbox/stage/networkcurrent.sh"));
+    }
+
+
 
     /**
      * @param $propertyName
@@ -35,7 +60,7 @@ class bbConfig
      */
     private function hasOwner(){
 
-        if( file_exists("/etc/blackbox/blackbox.owner")) {
+        if( file_exists("/etc/osbox/osbox.owner")) {
             $this->owner = trim( $this->read("/etc/blackbox/blackbox.owner") );
             return true;
         }
@@ -53,7 +78,7 @@ class bbConfig
 
         $res = exec("sudo blackbox owner set $uid");
         return true;
-        //return $this->write("/etc/blackbox/blackbox.owner",$uid);
+        //return $this->write("/etc/osbox/osbox.owner",$uid);
     }
 
 
@@ -63,8 +88,8 @@ class bbConfig
      * @throws Exception
      */
     private function hasId(){
-        if(file_exists("/etc/blackbox/blackbox.id")){
-            $this->id = trim($this->read("/etc/blackbox/blackbox.id"));
+        if(file_exists("/etc/osbox/osbox.id")){
+            $this->id = trim($this->read("/etc/osbox/osbox.id"));
             return true;
         }
         return false;
@@ -75,8 +100,8 @@ class bbConfig
      * @throws Exception
      */
     private function hasState(){
-        if(file_exists("/etc/blackbox/blackbox.state")){
-            $this->state = trim($this->read("/etc/blackbox/blackbox.state"));
+        if(file_exists("/etc/osbox/osbox.state")){
+            $this->state = trim($this->read("/etc/osbox/osbox.state"));
             $this->readablestate = (string )new bbState($this->state);
             return true;
         }

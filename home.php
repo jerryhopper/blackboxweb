@@ -75,40 +75,14 @@ $app->get('/', function ($request, $response, $args) {
     //   Default dashboard pages
     $page = "dashboard.html";
 
-    #var_dump($request->getUri()->getScheme());
-    #die();
-
-
     if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-        //$page = "setup/index.html";
-        if( !$this->BlackBox->config->owner ){
-            // blackbox needs network setup
             $page = "register/index.html";
-        }
     }else{
-        if( !$this->BlackBox->config->owner ){
             $page = "setup/index.html";
-        }
     }
 
 
-
-
-    if( !$this->bbconfig->owner ){
-        // blackbox needs network setup
-        //$page = "register/index.html";
-    }
-
-    #if( !$this->bbconfig->networkState ){
-    // blackbox needs network setup
-    #    $page = "setup/index.html";
-    #}
-
-    // blackbox is configured.
-    if($request->getUri()->getHost()=="blackbox.surfwijzer.nl"){
-        //$page = "setup/index.html";
-    }
-
+    $page = $this->BlackBox->showpage($page);
 
     return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');

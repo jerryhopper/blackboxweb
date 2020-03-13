@@ -4,11 +4,30 @@
 class BlackBox
 {
     public $config;
+    public $isConfigured;
+    public $isRegistered;
+
 
     function __construct()
     {
         $this->config = new bbConfig();
+        $this->isConfigured = $this->config->networkConfigured();
+        $this->isRegistered = $this->config->registeredToAccount();
 
+    }
+
+    public function showPage( $templatename ){
+
+        // if the network is configured, and device has a owner we can show the requested template
+        if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
+            return $templatename;
+        }
+        // if the network is configured and we have no owner
+        if(!$this->config->networkConfigured()  ){
+            return "setup/index.html";
+        }
+        // if the network is configured and we have no owner
+        return "register/index.html";
     }
 
     /**

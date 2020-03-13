@@ -16,16 +16,20 @@ class bbState
 
     private function states($state){
         $states =  array(
-            "1"=>"prescript",
-            "2"=>"Automation_Custom_Script.sh",
-            "3"=>"registerhardware.sh efore ip check",
-            "4"=>"registerhardware.sh after ip check",
-            "5"=>"registerhardware.sh sendhash ok, device registered.",
-            "6"=>"blackbox install  - copy pihole configs.",
-            "7"=>"blackbox install  - pihole initial install",
-            "8"=>"blackbox install  - finalizing installation. ( set pihole beta, edit lighthttp.conf create postboot )",
-            "9"=>"blackbox install  - readyforclient",
-            "10"=>"blackbox registerdevice"
+            "0"=>"Hardware detection & device registration",
+            "1"=>"Update osboxweb repo",
+            "2"=>"APT install prerequisites.",
+            "3"=>"Install osbox web",
+            "4"=>"Lighttpd SSL config",
+            "5"=>"prepare for pihole install",
+            "6"=>"pihole install",
+            "7"=>"pihole switch to dev branch",
+            "8"=>"fix permissions & lighttpd config",
+            "9"=>"dummy",
+            "10"=>"Ready for shipping",
+            "11"=>"static network configured",
+            "12"=>"namebased host reachable",
+            "13"=>"device registered to user"
         );
 
         return $states[(string) trim($state)];
