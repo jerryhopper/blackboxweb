@@ -675,7 +675,7 @@ function myNetworkWaitTimer(){
     var t = d.toLocaleTimeString();
     console.log(t);
 
-    checkNetwork("https://blackbox.surfwijzer.nl/.well-known/blackbox", 5000);
+    checkNetwork("http://nonexistent.surfwijzer.nl", 5000);
     //var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
 
     //saveIp(curval+8);
@@ -690,24 +690,23 @@ function myNetworkWaitTimer(){
 function checkNetwork(url, timeout) {
     const controller = new AbortController();
     const signal = controller.signal;
-    const options = { cache: 'reload', mode: 'no-cors', signal };
-    console.log("checkNetwork");
+    const options = { mode: 'no-cors', signal ,headers: {'Content-Type': 'application/json'} };
+    console.log("checkNetwork: "+url);
     return fetch(url, options)
         .then(setTimeout(() => { controller.abort() }, timeout))
         .then(function(response){
             console.log(response);
-            if(response.status==200){
-                console.log("checkNetwork 200");
-                //alert("OK");
-                myStopFunction();
+            console.log(response.status);
+            //if(response.status==200){
+            //alert("OK");
+            myStopFunction();
+            $("div#setup-router").css("display","none");
+            $("div#blackbox-activate").css("display","block");
 
-                $("div#setup-router").css("display","none");
-                $("div#blackbox-activate").css("display","block");
-
-                //window.location="https://blackbox.surfwijzer.nl/"
-            }else if(response.status==404){
-                console.log("checkNetwork 404");
-            }
+            window.location="https://blackbox.surfwijzer.nl/"
+            //}else if(response.status==404){
+                //console.log("checkNetwork 404");
+            //}
 
             //    response => console.log('Check server response:', response.statusText)
         }).catch(
@@ -756,7 +755,7 @@ function myRebootWaitTimer() {
     console.log("myRebootWaitTimer");
     var d = new Date();
     var t = d.toLocaleTimeString();
-    console.log(t);
+    //console.log(t);
 
     checkServer("http://"+$("#IpAdressFormFormControlSelect1").val(), 2000);
     var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
