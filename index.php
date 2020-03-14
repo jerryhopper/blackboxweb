@@ -67,7 +67,9 @@ if (    $serverName === "pi.hole" OR
 ) {
     // Redirect to Web Interface
 
-    if( $serverName === "thuis.surfwijzer.nl" OR $serverName === "blackbox.surfwijzer.nl" OR $serverName === "blackbox.devpoc.nl"){
+    if( $serverName === "thuis.surfwijzer.nl" OR
+        $serverName === "blackbox.surfwijzer.nl" OR
+        $serverName === "blackbox.devpoc.nl"){
         #print_r($_SERVER);
         #die();
 /*
