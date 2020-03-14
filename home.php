@@ -84,7 +84,7 @@ $app->get('/', function ($request, $response, $args) {
     #$page = "register/index.html";
     #$page = "setup/index.html";
 
-    //$page = $this->BlackBox->showpage($page);
+    $page = $this->BlackBox->showpage($page);
 
     return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');
