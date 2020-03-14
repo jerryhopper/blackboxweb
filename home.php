@@ -76,7 +76,7 @@ $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
 
     if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-            $page = "register/index.html";
+        $page = "register/index.html";
         //$page = "setup/index.html";
     }else{
         $page = "setup/index.html";

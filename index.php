@@ -59,6 +59,14 @@ function setHeader($type = "x") {
     if (isset($type) && $type === "js") header("Content-Type: application/javascript");
 }
 
+if (   $serverName === "nonexistent.surfwijzer.nl" ){
+        $res = exec('sudo echo "11">/etc/osbox/osbox.state' );
+        print_r($res);
+        die();
+        //header("Location: https://blackbox.surfwijzer.nl");
+
+}
+
 // Determine block page type
 if (    $serverName === "pi.hole" OR
         $serverName === "blackbox" OR
