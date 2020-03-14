@@ -26,7 +26,7 @@ class BlackBox
         if(!$this->config->networkConfigured()  ){
             return "setup/index.html";
         }
-        
+
 
         // if the network is configured and we have no owner
         return "register/index.html";
