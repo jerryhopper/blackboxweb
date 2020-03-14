@@ -670,7 +670,7 @@ function waitForNetwork(){
     window.myTimerVar = setInterval(myNetworkWaitTimer, 5000);
 }
 function myNetworkWaitTimer(){
-    //
+    console.log("myNetworkWaitTimer");
     var d = new Date();
     var t = d.toLocaleTimeString();
     console.log(t);
@@ -691,20 +691,22 @@ function checkNetwork(url, timeout) {
     const controller = new AbortController();
     const signal = controller.signal;
     const options = { cache: 'reload', mode: 'no-cors', signal };
+    console.log("checkNetwork");
     return fetch(url, options)
         .then(setTimeout(() => { controller.abort() }, timeout))
         .then(function(response){
             console.log(response);
             if(response.status==200){
+                console.log("checkNetwork 200");
                 //alert("OK");
                 myStopFunction();
-                $("div#setup-router").css("display","none");
 
+                $("div#setup-router").css("display","none");
                 $("div#blackbox-activate").css("display","block");
 
                 //window.location="https://blackbox.surfwijzer.nl/"
             }else if(response.status==404){
-
+                console.log("checkNetwork 404");
             }
 
             //    response => console.log('Check server response:', response.statusText)
@@ -718,6 +720,7 @@ function checkNetwork(url, timeout) {
 
 function checkServer(url, timeout) {
     const controller = new AbortController();
+    console.log("checkServer");
     const signal = controller.signal;
     const options = { mode: 'no-cors', signal };
     return fetch(url, options)
@@ -750,6 +753,7 @@ function checkServer(url, timeout) {
 }
 
 function myRebootWaitTimer() {
+    console.log("myRebootWaitTimer");
     var d = new Date();
     var t = d.toLocaleTimeString();
     console.log(t);
@@ -767,6 +771,7 @@ function myRebootWaitTimer() {
 }
 
 function myStopFunction() {
+    console.log("myStopFunction");
     clearInterval(window.myTimerVar);
 }
 
