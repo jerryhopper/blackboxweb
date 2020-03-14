@@ -230,31 +230,41 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 $app->get('/api/network/info', function ($request, $response, $args) {
 
+
+
     if( $this->bbconfig->owner !=false ){
         return $response->withStatus(400);
     }
 
-    $cmd = "sudo osbox network current";
+    $cmd = "sudo osbox network current 2>&1";
     $result = exec( $cmd ,$output2,$returnvar2);
+    var_dump($result);
+
     if ( "$result" == "static" ){
         $configurationType="static";
     } else{
         $configurationType="dynamic";
     }
 
+    #var_dump($configurationType);
 
+    var_dump($output2);
+    var_dump($returnvar2);
+    die("..........1");
 
     $cmd = 'sudo osbox network info';
     $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
 
 
+    echo "arawdatxa = $rawdata";
+
 
     $result = explode("|",$rawdata);
     $gateway = $result[1];
     $result = $result[0];
 
-    //print_r($result);
+    print_r($result);
 
     $NETitems = explode(",",$result);
 
@@ -262,7 +272,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $NETSecundary = $NETitems[1];
 
     //print_r($NETitems);
-    //die();
+    die("xx");
 
     //$network = $items[0];
     //$gateway = $items[1];
