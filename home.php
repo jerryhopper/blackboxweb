@@ -76,13 +76,15 @@ $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
 
     if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-            $page = "register/index.html";
+    #        $page = "register/index.html";
     }else{
-            $page = "setup/index.html";
+    #        $page = "setup/index.html";
     }
 
+    #$page = "register/index.html";
+    #$page = "setup/index.html";
 
-    $page = $this->BlackBox->showpage($page);
+    //$page = $this->BlackBox->showpage($page);
 
     return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');
