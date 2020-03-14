@@ -16,6 +16,12 @@ class BlackBox
 
     }
 
+
+    public function exec ($command){
+        $result = exec("sudo ".$command." 2>&1" ,$output,$returnvar);
+        return (object) array("result"=>$result,"command"=>$command,"returnvar"=>$returnvar,"output"=>$output);
+    }
+
     public function showPage( $templatename ){
 
         // if the network is configured, and device has a owner we can show the requested template

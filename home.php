@@ -236,43 +236,33 @@ $app->get('/api/network/info', function ($request, $response, $args) {
         return $response->withStatus(400);
     }
 
-    $cmd = "sudo osbox network current 2>&1";
-    $result = exec( $cmd ,$output2,$returnvar2);
-    var_dump($result);
-
-    if ( "$result" == "static" ){
+    $networkCurrent = $this->BlackBox->exec("osbox network current");
+    #$networkCurrent->result; #$networkCurrent->output; #$networkCurrent->returnvar; #$networkCurrent->command;
+    if ( $networkCurrent->result == "static" ){
         $configurationType="static";
     } else{
         $configurationType="dynamic";
     }
 
-    #var_dump($configurationType);
 
-    var_dump($output2);
-    var_dump($returnvar2);
-    die("..........1");
+    $networkInfo = $this->BlackBox->exec("osbox network info");
+    #$networkInfo->result; #$networkInfo->output; #$networkInfo->returnvar; #$networkInfo->command;
 
-    $cmd = 'sudo osbox network info';
-    $rawdata = exec( $cmd ,$output,$returnvar);
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
+    $nwInfo = explode("|", $networkInfo->result );
 
+    $result  = $nwInfo[0];
+    $gateway = $nwInfo[1];
 
-    echo "arawdatxa = $rawdata";
-
-
-    $result = explode("|",$rawdata);
-    $gateway = $result[1];
-    $result = $result[0];
-
-    print_r($result);
+    //print_r($result);
 
     $NETitems = explode(",",$result);
 
-    $NETPrimary = $NETitems[0];
-    $NETSecundary = $NETitems[1];
+    $NETPrimary     = $NETitems[0];
+    $NETSecundary   = $NETitems[1];
 
     //print_r($NETitems);
-    die("xx");
+    //die("xx");
 
     //$network = $items[0];
     //$gateway = $items[1];
@@ -285,23 +275,8 @@ $app->get('/api/network/info', function ($request, $response, $args) {
     $subnet_mask = $sub->getSubnetMask();
 
     $ipQuads = $sub->getIPAddressQuads();
-
-
     $minHostQuads = $sub->getMinHostQuads();
-
     $minHost= $sub->getMinHost();
-    /*
-    $t=1;
-    while( $t<10){
-
-        $IP=$ipQuads[0].".".$ipQuads[1].".".$ipQuads[2].".".($minHostQuads+$t);
-        if($minHostQuads+$t <255 && $IP!=$gateway ){
-            $suggestIp[] = $ipQuads[0].".".$ipQuads[1].".".$ipQuads[2].".".($minHostQuads+$t);
-        }
-        $t++;
-    }
-    */
-
 
 
     $out = array(
@@ -310,7 +285,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
             "subnet_mask"=>$subnet_mask,
             "gateway"=>$gateway,
             "size"=>$netsize,
-            "raw"=>$rawdata,
+            "raw"=>$networkInfo->result,
             "netconfig"=>$configurationType
         )
     );
