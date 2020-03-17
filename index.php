@@ -60,10 +60,11 @@ function setHeader($type = "x") {
 }
 
 if (   $serverName == "nonexistent.surfwijzer.nl" ){
-        $res = exec('sudo echo "11">/etc/osbox/osbox.state' );
-        print_r($res);
-        die();
-        //header("Location: https://blackbox.surfwijzer.nl");
+        $res = exec('sudo blackbox reachablebydomainname' );
+
+        //print_r($res);
+        //die();
+        header("Location: https://blackbox.surfwijzer.nl");
 
 }
 
