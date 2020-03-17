@@ -31,12 +31,12 @@ class BlackBox
             return $templatename;
         }
 
-
-        if($this->config->networkConfigured() && !$this->config->registeredToAccount() ){
-            return "register/index.html";
+//&& !$this->config->registeredToAccount()
+        if( !$this->config->networkConfigured() ){
+            return "setup/index.html";
         }
 
-        return "setup/index.html";
+        return "register/index.html";
 
         //print_r($this);
 
