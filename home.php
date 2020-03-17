@@ -75,7 +75,7 @@ $app->get('/', function ($request, $response, $args) {
     //   Default dashboard pages
     $page = "dashboard.html";
 
-    if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
+    //if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
 
         //if( !$this->BlackBox->config->owner ){
 
@@ -83,18 +83,21 @@ $app->get('/', function ($request, $response, $args) {
 
         //$page = "register/index.html";
         //$page = "setup/index.html";
-    }else{
+    //}//else{
         //$page = "testopmaak.html";
-    }
+    //}
 
     #$page = "register/index.html";
     #$page = "setup/index.html";
     #if(){
 
 #    }
-    //$page = $this->BlackBox->showpage($page);
 
-    return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
+
+    return $this->view->render( $response, $this->BlackBox->showpage("dashboard.html"), [
+        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl
+    ]);
 })->setName('homepage');
 
 
@@ -545,7 +548,7 @@ $app->get('/callback', function ($request, $response, $args) {
     }else{
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
-        $setcookies->set('tracking', "$value");
+        //$setcookies->set('tracking', "$value");
         $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
         return $response->withRedirect( '/');
     }

@@ -21,12 +21,19 @@ class bbConfig
         $this->networkType();
 
     }
+    public function getState(){
 
+        //$bbstate = new bbState($state);
+
+        return (int)$this->state;
+    }
     public function registeredToAccount(){
 
+        if ($this->id==13){
+            return true;
+        }
 
         return false;
-
     }
 
     public function networkConfigured(){
@@ -61,7 +68,7 @@ class bbConfig
     private function hasOwner(){
 
         if( file_exists("/etc/osbox/osbox.owner")) {
-            $this->owner = trim( $this->read("/etc/blackbox/blackbox.owner") );
+            $this->owner = trim( $this->read("/etc/osbox/osbox.owner") );
             return true;
         }
         $this->owner=false;
@@ -102,7 +109,7 @@ class bbConfig
      */
     private function hasState(){
         if(file_exists("/etc/osbox/osbox.state")){
-            $this->state = trim($this->read("/etc/osbox/osbox.state"));
+            $this->state = (int) trim($this->read("/etc/osbox/osbox.state"));
             $this->readablestate = (string )new bbState($this->state);
             return true;
         }

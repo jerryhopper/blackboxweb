@@ -1,113 +1,144 @@
-{% extends "base.html" %}
-{% block title %}Setup your blackbox{% endblock %}
+{% extends "_base.html" %}
 
-{% block sidebarmenu %}
+
+
+{% block sidebar %}
+<ul class="nav voortgang-sidebar">
+
+    <li id="btn-voordat" class="nav-item active  ">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Voordat we beginnen.</p>
+        </a>
+    </li>
+
+    <li id="btn-ip-instellen" class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Ip Instellen.</p>
+        </a>
+    </li>
+
+    <li id="btn-router-instellen" class="nav-item ">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Router instellen</p>
+        </a>
+    </li>
+
+    <li id="btn-internet-verbinding" class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Internet verbinding</p>
+        </a>
+    </li>
+
+    <li id="btn-apparaat-registreren" class="nav-item ">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Apparaat registreren.</p>
+        </a>
+    </li>
+
+
+
+    <li class="nav-item active-pro ">
+        <a class="nav-link" href="#">
+            <i class="material-icons">unarchive</i>
+            <p>Upgrade to PRO</p>
+        </a>
+    </li>
+</ul>
 {% endblock %}
 
-{% block NOnavbar %}
+
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+    <div class="container-fluid">
+        <div class="navbar-wrapper">
+            <a class="navbar-brand" href="javascript:;">Dashboard</a>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end">
+            <!--- <form class="navbar-form">
+                <div class="input-group no-border">
+                    <input type="text" value="" class="form-control" placeholder="Search...">
+                    <button type="submit" class="btn btn-white btn-round btn-just-icon">
+                        <i class="material-icons">search</i>
+                        <div class="ripple-container"></div>
+                    </button>
+                </div>
+            </form> --->
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="material-icons">help</i>
+                        <p class="d-lg-none d-md-block">
+                            Informatie
+                        </p>
+                    </a>
+                </li>
+                <!---
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="material-icons">notifications</i>
+                        <span class="notification">5</span>
+                        <p class="d-lg-none d-md-block">
+                            Some Actions
+                        </p>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Mike John responded to your email</a>
+                        <a class="dropdown-item" href="#">You have 5 new tasks</a>
+                        <a class="dropdown-item" href="#">You're now friend with Andrew</a>
+                        <a class="dropdown-item" href="#">Another Notification</a>
+                        <a class="dropdown-item" href="#">Another One</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="material-icons">person</i>
+                        <p class="d-lg-none d-md-block">
+                            Account
+                        </p>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="#">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Log out</a>
+                    </div>
+                </li>
+                --->
+            </ul>
+        </div>
+    </div>
+</nav>
 {% endblock %}
-
-{% block NOfooter %}
-{% endblock %}
-
-{%block NOspecificjs %}
-{% endblock %}
-
-
-
-{% block mainpanelclass %}main-panel-wide{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-8 col-sm-8 ">
-        <h1>Netwerk configuratie</h1>
-        <p>Voordat u de blackbox kunt gebruiken, dient u het netwerk te configureren.</p>
-        <p></p>
-        <p>Door middel van een aantal vragen loodsen wij u door het installatieproces. De checklist laat zien hoever je bent in het proces.</p>
-        <p>Houd dit venster open totdat de installatie voltooid is.</p>
+<div class="container-fluid">
 
-    </div>
-    <div class="col-lg-4 col-sm-4 card">
-<!--- warning error error-outline check_box check_box_outline_blank --->
-        <div class="card-body">
-            <h5> Checklist</h5>
-            <div>
-                <i id="checklist-router-access" class="material-icons pull-left">check_box_outline_blank</i>
-                <div>Toegang tot router</div>
-            </div>
-            <div>
-                <i id="checklist-static-ip" class="material-icons pull-left">check_box_outline_blank</i>
-                <div>Blackbox ingesteld.</div>
-            </div>
-            <div>
-                <i id="checklist-dhcp-dns" class="material-icons pull-left">check_box_outline_blank</i>
-                <div>Router Dhcp/Dns aangepast</div>
-            </div>
+    <div class="row" id="pre-setup" >
 
+        <div class="col-lg-12 col-sm-12" id="begin">
+            <h2>Voordat we verder gaan</h2>
+            <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk. Hiervoor dient u in te loggen in uw internet-router.</p>
+            <p>Hiervoor heeft u login-gegevens nodig. Zonder toegang tot uw internet-router kan de installatie niet verder.</p>
+            <p></p>
         </div>
 
-
-    </div>
-    <div class="col-lg-12 col-sm-12 " style="display: none">
-        <button type="button" class="btn btn-default pull-left">
-            <i class="material-icons">skip_previous</i>
-            Vorige
-        </button>
-        <button type="button" class="btn btn-default pull-left">
-            <i class="material-icons">skip_next</i>
-            Volgende
-        </button>
-        <button type="button" class="btn btn-danger pull-right">
-            Installeren
-        </button>
-    </div>
-
-    <div class="col-lg-12 col-sm-12">
-        <hr/>
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="col-lg-12 col-sm-12 voordat" >
-        <h2>Voordat we verder gaan</h2>
-        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk. Hiervoor dient u in te loggen in uw internet-router.</p>
-        <p>Hiervoor heeft u login-gegevens nodig. Zonder toegang tot uw internet-router kan de installatie niet verder.</p>
-        <p></p>
-        <div class="row vraag2" id="voordat-nee" style="display: none">
-            <div class="col-lg-12 col-sm-12 ">
-                <h3>[NEE] Router hulp</h3>
-                <p>U heeft hulp nodig bij het configureren van uw router. Als u een router heeft gekregen bij uw internet-abonnement is het goed mogelijk dat de login-gegevens op een sticker staan afgedrukt op de router. Identificeer uw router door deze fysiek te bekijken, in het byzonder het merk, typenummer - en of er eventueel een sticker of andere aanwijzingen te vinden zijn. U heeft geen toegang tot uw router, of u weet niet hoe? Dan is het goed mogelijk dat uw router nog de fabrieks-intellingen heeft.</p>
-                <p>Uw router-administratie bevindt zich waarschijnlijk hier: <b>http://routerIP</b></p>
-                <p>Om in te loggen in uw router, heeft u inloggegevens nodig. Veel routers hebben standaard wachtwoorden, en deze gaan we proberen op te zoeken.</p>
-                <p>De (engelstalige) website portforward houdt een lijst bij van standaard wachtwoorden van routers. Vindt hier het wachtwoord van uw router.</p>
-                <div class="row">
-                    <div class="col-lg-12 ">
-                        <h4>Wat is het Merk van uw Router?</h4>
-                        <div class="form-group">
-                            <label>
-                                <input type="text" name="router_merk"> <a href="#"> Zoek!</a>
-                            </label>
-                        </div>
-
-                    </div>
-
-                </div>
-                <p>Heeft u het wachtwoord gevonden, en kunt u inloggen? - Dan kunnen we verder!</p>
-
-                <p></p>
-
-                <hr>
-            </div>
-        </div>
-
-
-        <div class="row vraag1">
-            <div class="col-lg-12 col-sm-12">
-                <p></p>
-                <p>Heeft u toegang tot uw router?</p>
-            </div>
-            <div class="col-lg-12 col-sm-12">
+        <div class="col-lg-12 col-sm-12" id="vraag-1">
+            <h2>Heeft u toegang tot uw router?</h2>
+            <p></p>
+            <p>
                 <button type="button" class="btn btn-default pull-left" id="router-access-true" >
                     <i class="material-icons">done</i>
                     Ja
@@ -116,363 +147,370 @@
                     <i class="material-icons">error_outline</i>
                     Nee
                 </button>
-            </div>
-        </div>
-
-
-
-        <div class="row vraag3" id="voordat-ja" style="display: none">
-            <div class="col-lg-12 col-sm-12 ">
-                <h3>[JA] Login in uw router</h3>
-                <p>Login in uw router, en navigeer naar de sectie 'DHCPServer'</p>
-                <p> </p>
-
-                <div class="voordatja-1" style="">
-                    <p>Kunt u de optie DNS Server vinden?</p>
-                    <p> </p>
-                    <div class="row">
-                        <div class="col-lg-12 col-sm-12">
-                            <button type="button" class="btn btn-default pull-left" id="router-dns-true" >
-                                <i class="material-icons">done</i>
-                                Ja
-                            </button>
-                            <button type="button" class="btn btn-default pull-left" id="router-dns-false" >
-                                <i class="material-icons">error_outline</i>
-                                Nee
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="voordatja-2" style="display: none">
-                    <p>Kunt u een optie vinden die de DHCP server uitschakeld?</p>
-                    <p></p>
-                    <div class="row">
-                        <div class="col-lg-12 col-sm-12">
-                            <button type="button" class="btn btn-default pull-left" id="router-dhcp-true" >
-                                <i class="material-icons">done</i>
-                                Ja
-                            </button>
-                            <button type="button" class="btn btn-default pull-left" id="router-dhcp-false">
-                                <i class="material-icons">error_outline</i>
-                                Nee
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="voordatja-3" style="display: none">
-                    <p>We weten genoeg om de installatie te kunnen beginnen.</p>
-                    <button type="button" class="btn btn-default" id="voordat-info-ok">
-                        <i class="material-icons">done</i>
-                        Volgende
-                    </button>
-                </div>
-
-
-                <hr>
-            </div>
-        </div>
-
-        <div class="col-lg-12 col-sm-12 ">
-            <hr/>
-        </div>
-    </div>
-
-</div>
-
-
-<div class="row" id="main-setup" style="display:none" >
-    <div class="col-lg-12 col-sm-12">
-        <h2>Stap 1 - BlackBox instellen</h2>
-        <div class="row">
-            <div class="col-lg-6 col-sm-6">
-                <p>Hier wordt het ip-adress van de blackbox ingesteld.</p>
-                <p>U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipadres kiezen.</p>
-                <p>Huidig ip: <b id="real-blackbox-ip">{{ SERVER_ADDR }}</b></p>
-                <p>Voorkeur-instelling : <b id="preferred_ip">000.000.000.000</b></p>
-                <button class="btn btn-info" id="blackbox-save-ip" style="display: none"> Volgende </button>
-            </div>
-            <div class="col-lg-4 col-sm-4">
-                <div id="change-ip-form-progress">
-                    <p></p>
-                    <p></p>
-                    <p>Loading network settings</p>
-                    <div class="progress" >
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
-                    </div>
-                </div>
-
-                <form id="change-ip-form" style="display:none">
-
-                    <div class="form-group">
-                        <label for="IpAdressFormFormControlSelect1">Select IP</label>
-                        <select class="form-control selectpicker" data-style="btn btn-link" id="IpAdressFormFormControlSelect1">
-
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="SubnetFormControlInput1">Subnet</label>
-                        <input type="text" class="form-control" id="SubnetFormControlInput1" placeholder="*.*.*.*" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="GatewayFormControlInput1">Gateway</label>
-                        <input type="text" class="form-control" id="GatewayFormControlInput1" placeholder="*.*.*.*" disabled>
-                    </div>
-
-
-                </form>
-            </div>
-
-        </div>
-        <div></div>
-    </div>
-</div>
-
-<div class="row" id="main-setup-apply" style="display:none" >
-    <div class="col-lg-12 col-sm-12">
-        <h2>Instellingen toepassen</h2>
-        <div class="row">
-            <div class="col-lg-12 col-sm-12">
-                <p>De instellingen worden toegepast, even geduld alstublieft.</p>
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12 col-sm-12">
-                <div id="change-ip-apply-progress">
-                    <p id="change-ip-apply-status"></p>
-                    <div class="progress" >
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="row" id="setup-router" style="display:none">
-    <div class="col-lg-6 col-sm-6 ">
-        <h2>Stap 2 - Router instellen</h2>
-        <div class="col-lg-6 col-sm-6 ">
-            <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
-            <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
-            <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
-
+            </p>
             <p></p>
         </div>
 
-        <div class="col-lg-6 col-sm-6 ">
-            <p>Instructies</p>
-            <ol>
-                <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
-                <li>Navigeer naar  Lan/DHCP</li>
-                <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
-                <li>Sla wijziging op.</li>
-                <li>Wacht tot de blackbox de wijziging detecteert</li>
-
-            </ol>
+        <div class="col-lg-12 col-sm-12" id="vraag-2">
+            <h2>Login in uw router</h2>
+            <p>Login in uw router, en navigeer naar de sectie 'DHCPServer'</p>
+            <h3>Kunt u de optie DNS Server vinden?</h3>
+            <p></p>
             <p>
-
+                <button type="button" class="btn btn-default pull-left" id="router-dns-true" >
+                    <i class="material-icons">done</i>
+                    Ja
+                </button>
+                <button type="button" class="btn btn-default pull-left" id="router-dns-false" >
+                    <i class="material-icons">error_outline</i>
+                    Nee
+                </button>
             </p>
+            <p></p>
+        </div>
+
+        <div class="col-lg-12 col-sm-12" id="vraag-3">
+
+            <h3>Kunt u een optie vinden die de DHCP server uitschakeld?</h3>
+            <p></p>
+            <p>
+                <button type="button" class="btn btn-default pull-left" id="router-dhcp-true" >
+                    <i class="material-icons">done</i>
+                    Ja
+                </button>
+                <button type="button" class="btn btn-default pull-left" id="router-dhcp-false">
+                    <i class="material-icons">error_outline</i>
+                    Nee
+                </button>
+            </p>
+            <p></p>
+        </div>
+
+        <div class="col-lg-12 col-sm-12" id="vraag-4">
+            <h2>Bedankt!</h2>
+            <h3>Wij weten genoeg, we kunnen beginnen met de installatie</h3>
+            <p></p>
+            <p>
+                <button type="button" class="btn btn-default" id="voordat-info-ok">
+                    <i class="material-icons">done</i>
+                    Volgende
+                </button>
+            </p>
+        </div>
+
+    </div>
 
 
+    <div class="row" id="main-setup">
+        <div class="col-lg-12 col-sm-12">
+            <h2>IP adres instellen</h2>
+
+            <div class="row">
+
+                <div class="col-lg-12 col-sm-12">
+                    <p>Hier wordt het ip-adress van de blackbox ingesteld. U kunt de voorkeurs-instellingen gebruiken, of kies zelf een ipadres.</p>
+
+
+
+
+                    <div id="change-ip-form-progress">
+                        <p></p>
+                        <p></p>
+                        <p>Loading network settings</p>
+                        <div class="progress" >
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <form id="change-ip-form" style="display:none">
+
+                        <div class="row" >
+                            <div class="col-lg-4">
+                                <div class="xform-group">
+                                    <label for="IpAdressFormFormControlSelect1">Geselecteerd IP adres</label>
+                                    <select class="form-control Xselectpicker" data-style="btn btn-link" id="IpAdressFormFormControlSelect1">
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+
+                            </div>
+                            <div class="col-lg-4">
+
+                            </div>
+                        </div>
+
+                        <div class="row" style="display: none">
+                            <div class="form-group">
+                                <label for="SubnetFormControlInput1">Subnet</label>
+                                <input type="text" class="form-control" id="SubnetFormControlInput1" placeholder="*.*.*.*" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="GatewayFormControlInput1">Gateway</label>
+                                <input type="text" class="form-control" id="GatewayFormControlInput1" placeholder="*.*.*.*" disabled>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p></p>
+                        </div>
+                        <div class="col-md-12">
+                            <p>
+                                <button class="btn btn-info" id="blackbox-save-ip" style="display: none"> Volgende </button>
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+            </div>
 
         </div>
 
     </div>
 
-    <div class="col-lg-6 col-sm-6 ">
-        <p>Instructies</p>
-        <ol>
-            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
-            <li>Navigeer naar  Lan/DHCP</li>
-            <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
-            <li>Sla wijziging op.</li>
-            <li>Wacht tot de blackbox de wijziging detecteert</li>
+    <div class="row" id="main-setup-apply">
+        <div class="col-lg-12 col-sm-12">
+            <h2>IP Instellingen toepassen</h2>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <p>De instellingen worden toegepast, even geduld alstublieft.</p>
 
-        </ol>
-        <p>
-
-        </p>
-
-
-
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <div id="change-ip-apply-progress">
+                        <p id="change-ip-apply-status"></p>
+                        <div class="progress" >
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="col-lg-12 col-sm-12 ">
-        <hr/>
-    </div>
-</div>
+    <div class="row" id="setup-router">
+        <div class="col-lg-12 col-sm-12">
+            <h2>Router instellen</h2>
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 ">
+                    <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
+                    <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
+                    <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
 
+                    <p></p>
+                </div>
+                <div class="col-lg-6 col-sm-6 ">
+                    <p>Instructies</p>
+                    <ol>
+                        <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
+                        <li>Navigeer naar  Lan/DHCP</li>
+                        <li>Wijzig de DNS server naar adres : <span id="blackbox-static-ip-adress">adress</span>> </li>
+                        <li>Sla wijziging op.</li>
+                        <li>Wacht tot de blackbox de wijziging detecteert</li>
 
-<div class="row" id="blackbox-activate" style="display:xnone">
-    <div class="col-lg-6 col-sm-6 ">
-        <h2>Stap 3 - Blackbox activeren</h2>
-        <p>Om de blackbox te activeren, dient u zich in te identificeren met een surfwijzer account..</p>
-        <button id="finalize-setup-login" class="btn btn-info">Login </button>
-        <a target="_blank" href="https://idp.surfwijzer.nl/oauth2/authorize?client_id=82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin
-">https://idp.surfwijzer.nl/oauth2/authorize?client_id=82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin
-        </a>
-        </>
-    <div class="col-lg-6 col-sm-6 ">
-        <p>..</p>
+                    </ol>
+                    <p>
 
-
-
-    </div>
-
-</div>
-<div class="row" id="blackbox-usage" style="display:none">
-    <div class="col-lg-6 col-sm-6 ">
-        <h2>Stap 4 - Blackbox Gebruiken</h2>
-        <p>Om de blackbox te laten functioneren, is een wijziging in uw router noodzakelijk.</p>
-        <p>Dit is een vrij eenvoudige ingreep. In de router dient u de DNS bij de DHCP instelling te wijzigien zoals hier rechts word aangegeven. <a href="#"> Meer informatie</a>  </p>
-        <p>Sommige oudere routers, zoals de KPN Xperiabox 7 hebben deze optie niet. Voor deze routers is er een <a  href="#">speciale handleiding.</a></p>
-
-        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
-    </div>
-    <div class="col-lg-5 col-sm-5 ">
-        <p>Instructies</p>
-        <ol>
-            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
-            <li>Navigeer naar  Lan/DHCP</li>
-            <li>Wijzig de DNS server naar adres : [adress] </li>
-            <li>Sla wijziging op. Klaar!</li>
-
-        </ol>
+                    </p>
 
 
 
+                </div>
+            </div>
+
+        </div>
     </div>
 
-</div>
-<div class="row" style="display:none">
-    <div class="col-lg-6 col-sm-6 ">
-        <h2>De instellingen worden toegepast</h2>
-        <p>Het duurt even voordat de instellingen zijn toegepast.</p>
-        <p>Even gedult alstublieft.</p>
 
-        <p>Huidig ip: <b>{{ SERVER_ADDR }}</b></p>
+    <div class="row" id="setup-router-nointernet">
+        <div class="col-lg-12 col-sm-12">
+            <h2>Internet verbinding controleren</h2>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 ">
+                    <p>Om de blackbox te registreren, is een internet verbinding noodzakelijk.</p>
+                    <p></p>
+                    <p>een moment geduld alstublieft.</p>
+
+                </div>
+
+            </div>
+
+        </div>
     </div>
-    <div class="col-lg-6 col-sm-6 ">
-        <p>...</p>
-        <ol>
-            <li>Ga naar <a id="local-router-link" href="#" target="_blank">http://routerip</a>  en login.</li>
-            <li>Navigeer naar  Lan/DHCP</li>
-            <li>Wijzig de DNS server naar adres : [adress] </li>
-            <li>Sla wijziging op. Klaar!</li>
-
-        </ol>
 
 
 
+    <div class="row" id="setup-activate">
+        <div class="col-lg-12 col-sm-12">
+            <h2>Apparaat registreren.</h2>
+            <p>Om de blackbox te activeren, dient u zich in te identificeren met een surfwijzer account..</p>
+            <button id="finalize-setup-login" class="btn btn-info">Login </button>
+
+        </div>
     </div>
-    <div class="col-lg-12 col-sm-12 ">
-        <hr/>
+    <div class="row" id="main-setup">
+
     </div>
 </div>
 {% endblock %}
 
 
-{%block specificjs %}
+{% block specificpagejs %}
+
+<style>
+
+    /* div#pre-setup { display: none } */
+    div#pre-setup div#vraag-1 { display: block }
+    div#pre-setup div#vraag-2 { display: none }
+    div#pre-setup div#vraag-3 { display: none }
+    div#pre-setup div#vraag-4 { display: none }
+
+    div#main-setup {        display: none }
+    div#main-setup-apply {  display: none }
+    div#setup-router {      display: none }
+    div#setup-router-nointernet {      display: none }
+    div#setup-activate {    display: none }
+
+    select#IpAdressFormFormControlSelect1 {
+        display: none;
+        font-size: 1.2em;
+
+    }
+</style>
 
 <script>
 
-    window.onunload = function () {
-        alert('You are trying to leave.');
-        return false;
-    }
+    /**
+     *  the osbox-object.
+     **/
+    osbox = {};
+    osbox.function={};
+    /**
+     *  Data-object.
+     **/
+    osbox.data = {};
+    osbox.data.presetup = {}
 
-    class Router {
-        constructor (brand,type){
-            this.brand = brand;
-            this.type = type;
+    osbox.data.networkinfo = {}
+
+    osbox.data.progress = 0
+
+    osbox.data.presetup.routeraccess   = false;
+    osbox.data.presetup.customdns      = false;
+    osbox.data.presetup.disabledhcp    = false;
+
+
+
+    /**
+     *  Utility functions
+     **/
+    osbox.util = {};
+    osbox.util.networkinfo = function(data){
+        //console.log("util.networkinfo : ");
+
+        var myObject = {}
+        var info = data.result.raw.split('|');
+
+        var ipinfo = info[0].split(",")
+
+        myObject.size = data.result.size
+        myObject.ipadress= []
+        var i;
+        for (i = 0; i < ipinfo.length; i++) {
+            myObject.ipadress.push(ipinfo[i].split("/")[0]) ;
         }
-    };
-    class Network {
-        constructor (ip,sub,gw){
-            this.ip     = ip;
-            this.subnet = sub;
-            this.gateway= gw;
-        }
-
-    };
-    function CheckList(){
-        this.routerToegang = false;
-        this.blackbloxIp = false;
-        this.routerChange = false;
+        myObject.gateway = info[1];
+        myObject.subnet = data.result.subnet_mask;
+        return myObject;
     }
 
 
-    var checkList = {}
+    /**
+     *  functions for Web-api interaction
+     **/
+    osbox.api = {};
 
-    checkList.toegang = false;
-    checkList.dnsserver= false;
-    checkList.disabledhcp = false;
-
-    var router = {}
-
-    router.brand = "asus";
-    router.model = "rt66acu";
-
-    router.gateway = "";
-    router.subnet = "";
-    router.ipadres = "";
-
-
-
-
-
-
-
-    function setProp(el,prop,val){
-        $(el).attr(prop,val)
+    osbox.api.system = {};
+    osbox.api.system.reboot = function(){
+        console.log("osbox.api.system.reboot");
+        fetch("/api/system/reboot", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'},
+            body: JSON.stringify({ "ipadress": 1 })
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            //console.log(data);
+            a=1;
+        });
     }
 
-    function saveIp(progress){
-        $('#change-ip-apply-progress .progress-bar').width(progress + "%").attr('aria-valuenow', progress);
-    }
-
-
-
-    function networkScan (url){
-        fetch(url)
+    osbox.api.network = {};
+    osbox.api.network.info = function (){
+        fetch("/api/network/info")
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
-                //
-                var newprogress=90;
-                $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
-                var $dropdown = $("#IpAdressFormFormControlSelect1");
+                /* set the network results. */
+                osbox.data.networkinfo = data.result;
 
-                $("#preferred_ip").html(data.result.ip_suggest[0]);
+                var newprogress=40;
 
-                $.each(data.result.ip_suggest, function(index,value) {
-                    $dropdown.append($("<option />").val(value).text(value));
-                });
+                /*  */
+                osbox.data.progress = 40;
+                $('#change-ip-form-progress').width(osbox.data.progress + "%").attr('aria-valuenow', osbox.data.progress);
 
-                $("form#change-ip-form").css("display","block");
-                $("#change-ip-form-progress").css("display","none");
+                /*
+                console.log(data.result);
 
-                $("button#blackbox-save-ip").css("display","block");
+                console.log(data.result.ip_address);
+                console.log(data.result.subnet_mask);
+                console.log(data.result.gateway);
+                console.log(data.result.size);
+                console.log(data.result.raw);
+                */
+
+                osbox.util.networkinfo(data);
+
+                window.networkInformation = data
+
+
+                $("#real-blackbox-ip").html(data.result.ip_address[0]);
+                $("#IpAdressFormControlInput1").val(data.result.ip_address[0]);
+                $("#SubnetFormControlInput1").val(data.result.subnet);
+                $("#GatewayFormControlInput1").val(data.result.gateway);
+
+//               $("#GatewayFormControlInput1").val(data.result.gateway);
+
 
 
             });
     }
-
-    function networkCurrent (url){
-        fetch(url)
+    osbox.api.network.current = function(){
+        fetch("/api/network/current")
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
+                osbox.data.networktype = data.result;
+
                 console.log(data);
+
                 var newprogress=60;
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
                 if(data.result=="static"){
@@ -486,318 +524,504 @@
                 }
             });
     }
-
-    function networkInfo (url){
-        fetch(url)
+    osbox.api.network.scan = function(){
+        fetch("/api/network/scan")
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
-                var newprogress=40;
+                console.log(data);
+                //
+                var newprogress=90;
                 $('#change-ip-form-progress').width(newprogress + "%").attr('aria-valuenow', newprogress);
+                var $dropdown = $("#IpAdressFormFormControlSelect1");
+
+                $("#preferred_ip").html(data.result.ip_suggest[0]);
+
+                $.each(data.result.ip_suggest, function(index,value) {
+                    //$dropdown.append($("<option />").val(value).text(value));
+                    $dropdown.append($("<option />").text(value));
+                });
 
 
-                console.log(data.result.ip_address);
-                console.log(data.result.subnet_mask);
-                console.log(data.result.gateway);
-                console.log(data.result.size);
-                console.log(data.result.raw);
+                $("form#change-ip-form").css("display","block");
+
+                $('#IpAdressFormFormControlSelect1').selectpicker('refresh');
+                $('#IpAdressFormFormControlSelect1').selectpicker('render');
 
 
-
-
-                var myObject = {}
-                var info = data.result.raw.split('|');
-
-                var ipinfo = info[0].split(",")
-
-                myObject.size = data.result.size
-                myObject.ipadress= []
-                var i;
-                for (i = 0; i < ipinfo.length; i++) {
-                    myObject.ipadress.push(ipinfo[i].split("/")[0]) ;
-                }
-                myObject.gateway = info[1];
-                myObject.subnet = data.result.subnet_mask;
-                //console.log(info);
-                //console.log(myObject);
-                window.networkInformation = myObject
-
-                $("#real-blackbox-ip").html(myObject.ipadress[0]);
-                $("#IpAdressFormControlInput1").val(myObject.ipadress[0]);
-                $("#SubnetFormControlInput1").val(myObject.subnet);
-                $("#GatewayFormControlInput1").val(myObject.gateway);
-
-//               $("#GatewayFormControlInput1").val(data.result.gateway);
-
+                $("#change-ip-form-progress").css("display","none");
+                $("button#blackbox-save-ip").css("display","block");
 
 
             });
     }
-    //networkScan("/api/network/scan");
+    osbox.api.network.set = function(){
 
-
-    //
-    // $('#yourElement').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', alert("x"));
-    //
-
-    //
-
-    class buttonClick {
-
-        constructor (buttonId){
-            var parts = buttonId.split("-");
-            this.section    = parts[0];
-            this.property   = parts[1];
-            this.value      = parts[2];
-            console.log(">>>>> button#"+this.section+"-"+this.property+"-"+this.value);
-
-            if(this.value=="true"){
-                // true!
-                //.addClass( "animated" ).addClass( "fadeOut" );
-                //.animated .fadeIn
-                $("button#"+this.section+"-"+this.property+"-true" ) .removeClass( "btn-default" ).addClass( "btn-info" );
-                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-info" ).addClass( "btn-default" );
-            }else{
-                // false
-                $("button#"+this.section+"-"+this.property+"-true" ) .removeClass( "btn-info" ).addClass( "btn-default" );
-                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-default" ).addClass( "btn-info" );
-            }
-
-
-            if( buttonId == "router-access-true"){
-
-                $("#voordat-ja").css("display","block");
-                //$("#voordat-ja").addClass( "animated" ).addClass( "fadeOut" );
-                $("#voordat-nee").css("display","none");
-                //$("#voordat-nee").addClass( "animated" ).addClass( "fadeIn" );
-
-            }else if( buttonId == "router-access-false" ){
-                $("#voordat-ja").css("display","none");
-                $("#voordat-nee").css("display","block");
-                if( $("button#router-access-false").hasClass('btn-warning') ){
-                    alert("fatal");
-                }
-                $("button#"+this.section+"-"+this.property+"-false" ).removeClass( "btn-default" ).addClass( "btn-warning" );
-
-            }
-            // router-access-true
-
-            if( buttonId == "router-dns-true" || buttonId == "router-dns-false"){
-                $(".voordatja-2").css("display","block");
-            }
-
-
-
-            // $("button#router-dhcp-true").hasClass('btn-info');
-            // $("button#router-dhcp-false").hasClass('btn-info');
-            // $("button#router-dns-true").hasClass('btn-info');
-            // $("button#router-dns-false").hasClass('btn-info');
-            // $("button#router-access-true").hassClass('btn-info');
-            if( buttonId == "router-dhcp-true" || buttonId == "router-dhcp-false" || buttonId == "router-dns-false" || buttonId == "router-dns-true"){
-                console.log("check settings");
-                if( $("button#router-dhcp-false").hasClass('btn-info') && $("button#router-dns-false").hasClass('btn-info') ){
-                    //alert("Fatal");
-                    $(".voordatja-3").css("display","none");
-                }
-
-                if( ( $("button#router-dhcp-true").hasClass('btn-info')==true ^  $("button#router-dns-true").hasClass('btn-info')==true) ^ ( $("button#router-dhcp-true").hasClass('btn-info') && $("button#router-dns-true").hasClass('btn-info') ) ){
-                    $(".voordatja-3").css("display","block");
-                }else{
-                    $(".voordatja-3").css("display","none");
-                }
-
-            }
-
-
-
-            if( buttonId == "voordat-info-ok"){
-                $("div.voordat").css("display","none");
-
-                $("i#checklist-router-access").html("check_box");
-                $("#main-setup").css("display","block");
-            }
-
-            if( buttonId == "blackbox-save-ip"){
-                $("div#main-setup").css("display","none");
-                $("div#main-setup-apply").css("display","block");
-                saveIp(10);
-
-                fetch("/api/network/set", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            "ip": $("#IpAdressFormFormControlSelect1").val(),
-                            "net":$("#SubnetFormControlInput1").val(),
-                            "gw":$("#GatewayFormControlInput1").val(),
-                            "size": window.networkInformation.size
-                        })
-                    })
-                    .then((response) => {
-                        return response.json();
-                    })
-                    .then((data) => {
-                        console.log(data);
-                        saveIp(30)
-                        window.myTimerVar = setInterval(myRebootWaitTimer, 5000);
-
-
-                        fetch("/api/system/reboot", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'},
-                            body: JSON.stringify({ "ipadress": $("#IpAdressFormFormControlSelect1").val()})
-                        }).then((response) => {
-                                return response.json();
-                            }).then((data) => {
-                                //console.log(data);
-                                a=1;
-                            });
-
-                    });
-
-                //
-                //
-            }
-
-
-
-            if(buttonId == "finalize-setup-login"){
-
-            }
+        var dta = {
+            "ip" : osbox.data.networkinfo.preferredip,
+            "net" : osbox.data.networkinfo.subnet_mask,
+            "gw" : osbox.data.networkinfo.gateway,
+            "size" : osbox.data.networkinfo.size
         }
-    };
+        console.log("dta");
+        console.log(dta);
+        fetch("/api/network/set", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dta)
+        }).then((response) => {
+            return response.json();
+        })
+            .then((data) => {
+                console.log("/api/network/set  OK")
+                //console.log(data);
+                //saveIp(30)
 
-function waitForNetwork(){
-    window.myTimerVar = setInterval(myNetworkWaitTimer, 5000);
-}
-function myNetworkWaitTimer(){
-    console.log("myNetworkWaitTimer");
-    var d = new Date();
-    var t = d.toLocaleTimeString();
-    console.log(t);
+                /**
+                 *  Reboot!.
+                 **/
+                osbox.api.system.reboot();
 
-    checkNetwork("http://nonexistent.surfwijzer.nl", 5000);
-    //var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
-
-    //saveIp(curval+8);
-    //document.getElementById("demo").innerHTML = t;
-    //if(curval+1 >99 ){
-    //    alert("Timeout!");
-    //    myStopFunction();
-    //}
-
-}
-
-
-
-function checkNetwork(url, timeout) {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const options = { mode: 'no-cors', signal ,headers: {'Content-Type': 'application/json'} };
-    console.log("checkNetwork: "+url);
-    return fetch(url, options)
-        .then(setTimeout(() => { controller.abort() }, timeout))
-        .then(function(response){
-            console.log(response);
-            console.log(response.status);
-            //if(response.status==200){
-            //alert("OK");
-            myStopFunction();
-            $("div#setup-router").css("display","none");
-            $("div#blackbox-activate").css("display","block");
-
-            window.location="https://blackbox.surfwijzer.nl/"
-            //}else if(response.status==404){
-                //console.log("checkNetwork 404");
-            //}
-
-            //    response => console.log('Check server response:', response.statusText)
-        }).catch(
-            error => console.error('Check server error:', error.message)
-        );
-}
+                /**
+                 *  Set the reboot-timer.
+                 **/
+                window.myTimerVar = setInterval(osbox.network.myRebootWaitTimer, 5000);
 
 
-//var myVar = setInterval(myRebootWaitTimer, 1000);
 
-function checkServer(url, timeout) {
-    const controller = new AbortController();
-    console.log("checkServer");
-    const signal = controller.signal;
-    const options = { mode: 'no-cors', signal };
-    return fetch(url, options)
-        .then(setTimeout(() => { controller.abort() }, timeout))
-        .then(function(response){
-            saveIp(100);
-            console.log(response);
-            myStopFunction();
+            });
 
-
-            $("#main-setup-apply").css("display","none");
-            $("#setup-router").css("display","block");
-
-            var ip = $("#IpAdressFormFormControlSelect1").val();
-            var gw = $("#GatewayFormControlInput1").val();
-
-
-            $("a#local-router-link").attr("href","http://"+gw);
-            $("a#local-router-link").html("http://"+gw);
-            $("span#blackbox-static-ip-adress").html(ip);
-            $("i#checklist-static-ip").html("check_box");
-
-            waitForNetwork();
-
-
-            //    response => console.log('Check server response:', response.statusText)
-        }).catch(
-            error => console.error('Check server error:', error.message)
-        );
-}
-
-function myRebootWaitTimer() {
-    console.log("myRebootWaitTimer");
-    var d = new Date();
-    var t = d.toLocaleTimeString();
-    //console.log(t);
-
-    checkServer("http://"+$("#IpAdressFormFormControlSelect1").val(), 2000);
-    var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
-
-    saveIp(curval+8);
-    //document.getElementById("demo").innerHTML = t;
-    if(curval+1 >99 ){
-        alert("Timeout!");
-        myStopFunction();
     }
 
-}
+
+
+    /**
+     *  Network functions.
+     **/
+    osbox.network = {}
+
+    /**
+     *  Set the 'myNetworkWaitTimer' timer.
+     *  executes the myNetworkWaitTimer function every X seconds.
+     **/
+    osbox.network.waitForNetwork = function(){
+        /**
+         *  Set the wait-for-network-timer.
+         *  this will check DNS config.
+         **/
+        window.myTimerVar = setInterval(osbox.network.myNetworkWaitTimer, 5000);
+    }
+
+    /**
+     *  Set the 'myNetworkWaitTimer' timer.
+     **/
+    osbox.network.myNetworkWaitTimer = function(){
+        /**
+         *  Set the wait-timer function.
+         **/
+        console.log("myNetworkWaitTimer");
+
+        osbox.data.counter = osbox.data.counter +1 ;
+        /**
+         *  Make the request ..
+         **/
+        osbox.network.checkNetwork("http://nonexistent.surfwijzer.nl", 5000);
+        //var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
+
+        //saveIp(curval+8);
+        //document.getElementById("demo").innerHTML = t;
+        if(osbox.data.counter >99 ){
+            alert("Timeout!");
+            osbox.network.myStopFunction();
+        }
+
+    }
+
+    osbox.network.checkInternet = function(){
+        var url = "https://idp.surfwijzer.nl";
+        var timeout = 5000;
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const options = { mode: 'no-cors', signal ,headers: {'Content-Type': 'application/json'} };
+        console.log("checkInternet: "+url);
+        return fetch(url, options)
+            .then(setTimeout(() => { controller.abort() }, timeout))
+            .then(function(response){
+                console.log(response);
+                console.log(response.status);
+                //if(response.status==200){
+                //alert("OK");
+                osbox.network.myStopFunction();
+
+                $("div#setup-router").css("display","none");
+
+                osbox.data.isonline = true;
+
+
+                $("div#setup-router-nointernet").css("display","none");
+                $("div#setup-activate").css("display","block");
+                $("ul.voortgang-sidebar li").removeClass("active");
+                $("ul.voortgang-sidebar li#btn-apparaat-registreren").addClass("active");
+
+
+                //    response => console.log('Check server response:', response.statusText)
+            }).catch(function(error){
+                console.error('Check server error:', error.message);
+                alert("Fatal!");
+            });
+    }
 
 
 
-function myStopFunction() {
-    console.log("myStopFunction");
-    clearInterval(window.myTimerVar);
-}
+    /**
+     *  Check network function.
+     *
+     **/
+    osbox.network.checkNetwork = function () {
+        var url = "http://nonexistent.surfwijzer.nl";
+        var timeout = 5000;
+
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const options = { mode: 'no-cors', signal ,headers: {'Content-Type': 'application/json'} };
+        console.log("checkNetwork: "+url);
+        return fetch(url, options)
+            .then(setTimeout(() => { controller.abort() }, timeout))
+            .then(function(response){
+                console.log(response);
+                console.log(response.status);
+                //if(response.status==200){
+                //alert("OK");
+                osbox.network.myStopFunction();
+
+                $("div#setup-router").css("display","none");
 
 
-$(document).ready(function(){
+                $("div#setup-router-nointernet").css("display","block");
+                $("ul.voortgang-sidebar li").removeClass("active");
+                $("ul.voortgang-sidebar li#btn-internet-verbinding").addClass("active");
 
-    networkInfo("/api/network/info");
-    networkCurrent("/api/network/current");
-    networkScan("/api/network/scan");
+                osbox.network.checkInternet();
 
-    // Button listener.
-    $( "button" ).click(function() {
-        var clickedButton = $(this).attr("id");
-        new buttonClick(clickedButton);
+
+
+                //
+                //
+                // window.location="https://blackbox.surfwijzer.nl/"
+                //
+                //
+                // }else if(response.status==404){
+                //console.log("checkNetwork 404");
+                //}
+
+                //    response => console.log('Check server response:', response.statusText)
+            }).catch(
+                error => console.error('Check server error:', error.message)
+            );
+    }
+
+    /**
+     *  Data-object.
+     **/
+    osbox.network.rebootIpCheck  = function (ipAdressUrl) {
+
+        var timeout =  2000;
+
+        const controller = new AbortController();
+        console.log("rebootIpCheck");
+        const signal = controller.signal;
+        const options = { mode: 'no-cors', signal };
+        return fetch(ipAdressUrl+"/.well-known", options)
+            .then(setTimeout(() => { controller.abort() }, timeout))
+            .then(function(response){
+                /**
+                 *  Static ip was set!
+                 **/
+                console.log("rebootIpCheck - Success! ");
+
+
+
+
+                //saveIp(100);
+                console.log(response);
+
+                $('#change-ip-apply-progress .progress-bar').width(100 + "%").attr('aria-valuenow', (100));
+
+                /**
+                 *  Stop the reboot-timer.
+                 **/
+                osbox.network.myStopFunction();
+
+
+
+                $("ul.voortgang-sidebar li").removeClass("active");
+                $("ul.voortgang-sidebar li#btn-router-instellen").addClass("active");
+
+
+                $("#main-setup-apply").css("display","none");
+                $("#setup-router").css("display","block");
+
+                //var ip = $("#IpAdressFormFormControlSelect1").val();
+                //var gw = $("#GatewayFormControlInput1").val();
+                //$("a#local-router-link").attr("href","http://"+gw);
+                //$("a#local-router-link").html("http://"+gw);
+                //$("span#blackbox-staticosbox.network.-ip-adress").html(ip);
+                //$("i#checklist-static-ip").html("check_box");
+
+
+                /**
+                 *  Set the wait for network-timer which check DNS
+                 **/
+                osbox.network.waitForNetwork();
+
+                //    response => console.log('Check server response:', response.statusText)
+            }).catch(
+                error => console.error('Check server error:', error.message)
+            );
+    }
+
+    osbox.network.myRebootWaitTimer = function () {
+        console.log("myRebootWaitTimer");
+        osbox.data.counter=osbox.data.counter+1;
+
+
+        // check the server.
+        var IPUrl="http://"+osbox.data.networkinfo.preferredip;
+        osbox.network.rebootIpCheck ( IPUrl  );
+
+        // get the value of the progress-bar!
+        var curval = parseInt($( "#change-ip-apply-progress div.progress-bar").attr("aria-valuenow"));
+        $('#change-ip-apply-progress .progress-bar').width((curval+10) + "%").attr('aria-valuenow', (curval+10));
+        // add the progress to the progressbar.
+
+
+        //document.getElementById("demo").innerHTML = t;
+        if(osbox.data.counter >99 ){
+            alert("Timeout!");
+            osbox.network.myStopFunction();
+            osbox.data.counter=0;
+        }
+
+    }
+
+    /**
+     *  Data-object.
+     **/
+    osbox.network.myStopFunction = function() {
+        console.log("myStopFunction");
+        clearInterval(window.myTimerVar);
+    }
+
+
+    /**
+     *  Button click functions.
+     *
+     **/
+
+    osbox.function.setRouterAccess = function (variable){
+        if(variable)
+        {
+            //osbox.data.presetup.routeraccess;
+            $("#begin").css("display", "none");
+            $("#vraag-1").css("display", "none");
+            $("#vraag-2").css("display", "block");
+
+            osbox.data.presetup.routeraccess = true;
+        }else{
+            //osbox.data.presetup.routeraccess;
+            // Show error!
+            osbox.data.presetup.routeraccess = false;
+            Swal.fire(
+                'Error!',
+                'Zonder toegang tot uw router, kan de installatie niet voortgezet worden. <i><a href="#">Meer informatie</a></i>',
+                'error'
+            );
+        }
+    }
+
+    osbox.function.setCustomDns = function (variable){
+        if(variable){
+            $("#vraag-3").css("display","block");
+            osbox.data.presetup.customdns=true;
+        }else{
+            $("#vraag-3").css("display","block");
+            osbox.data.presetup.customdns=false;
+        }
+    }
+
+    osbox.function.setDisableDhcp = function (variable){
+        if(variable){
+            $("#vraag-4").css("display","block");
+            osbox.data.presetup.disabledhcp=true;
+        }else{
+            //osbox.data.presetup.routeraccess;
+            $("#vraag-4").css("display","block");
+            osbox.data.presetup.disabledhcp=false;
+        }
+    }
+
+    osbox.function.saveIp = function (){
+        // hide some stuff.
+        $("#main-setup").css("display","none");
+        $("#main-setup-apply").css("display","block");
+
+
+        // set the preferred ip in the dataobject.
+        osbox.data.networkinfo.preferredip = $("#IpAdressFormFormControlSelect1").val();
+        // reset the generic counter
+        osbox.data.counter = 0;
+
+        console.log(osbox.data);
+
+        osbox.api.network.set()
+
+
+        // $("#setup-router").css("display","block");
+
+
+        // $("ul.voortgang-sidebar li").removeClass("active");
+        // $("ul.voortgang-sidebar li#btn-router-instellen").addClass("active");
+
+        // $("#setup-router").css("display","block");
+
+
+        // $("#setup-router-nointernet").css("display","block");
+
+        // $("#setup-activate").css("display","block");
+    }
+
+    osbox.function.presetup = function(){
+        //
+        $("#vraag-2").css("display","none");
+        $("#vraag-3").css("display","none");
+        $("#vraag-4").css("display","none");
+
+        // hide the main block
+        $("#pre-setup").css("display","none");
+
+        // show the main block
+        $("#main-setup").css("display","block");
+
+        $("ul.voortgang-sidebar li").removeClass("active");
+        $("ul.voortgang-sidebar li#btn-ip-instellen").addClass("active");
+
+    }
+
+
+    $(document).ready(function(){
+
+        /**
+         *  Get the current network information
+         **/
+        osbox.api.network.info();
+
+        /**
+         *  Scan the local network (SLOW).
+         **/
+        osbox.api.network.scan();
+
+        /**
+         *  Click listener
+         **/
+        $("div.content button").click(function() {
+            var clickedButton = $(this).attr("id");
+            console.log("click: "+clickedButton);
+
+            $("div.content button").removeClass("btn-default");
+            $("div.content button").removeClass("btn-info");
+
+            $("div.content button#"+clickedButton).addClass("btn-info");
+
+
+
+            /**
+             *  User choice : has router access? = TRUE
+             *
+             **/
+            if(clickedButton=="router-access-true"){ osbox.function.setRouterAccess(true); }
+            /**
+             *  User choice : has router access? = FALSE
+             *
+             **/
+            if(clickedButton=="router-access-false"){ osbox.function.setRouterAccess(false); }
+
+
+
+
+            /**
+             *  User choice : has DNS option? = TRUE
+             *
+             **/
+            if(clickedButton=="router-dns-true"){ osbox.function.setCustomDns(true); }
+            /**
+             *  User choice : has DNS option? = FALSE
+             *
+             **/
+            if(clickedButton=="router-dns-false"){ osbox.function.setCustomDns(false); }
+
+
+
+
+
+            /**
+             *  User choice : has DHCP disable option? = TRUE
+             *
+             **/
+            if(clickedButton=="router-dhcp-true"){ osbox.function.setDisableDhcp(true); }
+            /**
+             *  User choice : has DHCP disable option? = FALSE
+             *
+             **/
+            if(clickedButton=="router-dhcp-false"){ osbox.function.setDisableDhcp(false); }
+
+
+
+
+            /**
+             *  End of Preinstallation questions
+             *
+             **/
+            if(clickedButton=="voordat-info-ok"){ osbox.function.presetup(); }
+
+
+
+
+            /**
+             *  Save IP-Settings.
+             *
+             **/
+            if(clickedButton=="blackbox-save-ip"){ osbox.function.saveIp(); };
+
+
+
+            if(clickedButton=="finalize-setup-login"){
+                window.location = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin"
+            }
+
+
+        });
+
+
+        /*
+        *
+        * <ul class="nav voortgang-sidebar">
+        * <li id="btn-voordat" class="nav-item active  ">
+        *
+        *
+        *
+        * */
+
+
+        //$("div.content button").click(function() {
+        //    var clickedButton = $(this).attr("id");
+        //    console.log("click: "+clickedButton);
+        //});
+
+
+
     });
-});
-
-
-
-
 </script>
 {% endblock %}
-

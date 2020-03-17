@@ -7,12 +7,14 @@ class BlackBox
     public $isConfigured;
     public $isRegistered;
 
+    public $loginurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
 
     function __construct()
     {
         $this->config = new bbConfig();
         $this->isConfigured = $this->config->networkConfigured();
         $this->isRegistered = $this->config->registeredToAccount();
+        $this->state = $this->config->getState();
 
     }
 
@@ -28,14 +30,33 @@ class BlackBox
         if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
             return $templatename;
         }
-        // if the network is configured and we have no owner
-        if(!$this->config->networkConfigured()  ){
-            return "setup/index.html";
+
+
+        if($this->config->networkConfigured() && !$this->config->registeredToAccount() ){
+            return "register/index.html";
         }
 
+        return "setup/index.html";
+
+        //print_r($this);
+
+        //$this->state;
+
+        //die();
+
+        //state = 13
+        // if the network is configured, and device has a owner we can show the requested template
+        //if($this->config->networkConfigured() && $this->config->registeredToAccount() ){
+        //    return $templatename;
+        //}
+        // if the network is configured and we have no owner
+        //if(!$this->config->networkConfigured()  ){
+        //    return "setup/index.html";
+        //}
+
 
         // if the network is configured and we have no owner
-        return "register/index.html";
+        //return "register/index.html";
     }
 
     /**
