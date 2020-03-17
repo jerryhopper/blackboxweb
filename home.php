@@ -122,9 +122,9 @@ $app->get('/xcc', function ($request, $response, $args) {
 
 $app->get('/api/network/scan', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
-    }
+    //if( $this->bbconfig->owner !=false ){
+      //  return $response->withStatus(400);
+    //}
 
     #die("x");
     $cmd = 'sudo osbox network scan';
@@ -245,9 +245,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 
 
 
-    if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
-    }
+
 
     $networkCurrent = $this->BlackBox->exec("osbox network current");
     #$networkCurrent->result; #$networkCurrent->output; #$networkCurrent->returnvar; #$networkCurrent->command;
@@ -309,7 +307,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 $app->post('/api/network/reset', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
+        //return $response->withStatus(400);
     }
 
 
@@ -329,7 +327,7 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 $app->post('/api/system/reboot', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
+        //return $response->withStatus(400);
     }
 
     // check if ip is in use.
@@ -346,7 +344,7 @@ $app->post('/api/system/reboot', function ($request, $response, $args) {
 $app->post('/api/network/set', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
+        //return $response->withStatus(400);
     }
     //$xx=$request->getParsedBody();
     // set ip
@@ -376,7 +374,7 @@ $app->post('/api/network/set', function ($request, $response, $args) {
 $app->get('/api/network/current', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
-        return $response->withStatus(400);
+        //return $response->withStatus(400);
     }
 
     $cmd = "sudo osbox network current";
