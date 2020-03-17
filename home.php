@@ -76,10 +76,15 @@ $app->get('/', function ($request, $response, $args) {
     $page = "dashboard.html";
 
     if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-        $page = "register/index.html";
+
+        //if( !$this->BlackBox->config->owner ){
+
+        //}
+
+        //$page = "register/index.html";
         //$page = "setup/index.html";
     }else{
-        $page = "setup/index.html";
+        //$page = "testopmaak.html";
     }
 
     #$page = "register/index.html";
@@ -92,6 +97,11 @@ $app->get('/', function ($request, $response, $args) {
     return $this->view->render($response, $page, ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
 })->setName('homepage');
 
+
+$app->get('/xcc', function ($request, $response, $args) {
+
+    return $this->view->render($response, "testopmaak.html", ["SERVER_ADDR"=>$_SERVER['SERVER_ADDR']]);
+});
 
 
 
@@ -519,11 +529,11 @@ $app->get('/callback', function ($request, $response, $args) {
 
     if( !$this->BlackBox->config->owner ){
 
-        $BlackBox->setOwner($owner,$email);
+        $this->BlackBox->setOwner($owner,$email);
         //die("NoOwners");
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
-        $setcookies->set('tracking', "$value");
+        //$setcookies->set('tracking', "$value");
         $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
 
         // And for getting cookie :
@@ -541,7 +551,7 @@ $app->get('/callback', function ($request, $response, $args) {
     }
 
 
-    print_r($BlackBox->owner);
+    //print_r($BlackBox->owner);
     die();
 
 

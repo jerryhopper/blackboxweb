@@ -14731,6 +14731,7 @@ h2.title {
 .dropdown-menu.show {
   display: block;
   opacity: 1;
+  position:inherit;
   transform: scale(1);
 }
 

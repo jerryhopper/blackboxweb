@@ -44,7 +44,7 @@ class BlackBox
      * @return bool
      * @throws Exception
      */
-    function setOwner($uid,$email){
+    public function setOwner($uid,$email){
         return $this->config->setOwner($uid,$email);
     }
 

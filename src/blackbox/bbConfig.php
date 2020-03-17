@@ -77,6 +77,7 @@ class bbConfig
     public function setOwner($uid,$email){
 
         $res = exec("sudo blackbox owner set $uid");
+        error_log("sudo blackbox owner set $uid")
         return true;
         //return $this->write("/etc/osbox/osbox.owner",$uid);
     }
