@@ -115,10 +115,10 @@ if (    $serverName === "pi.hole" OR
     </head><body id='splashpage'><img src='/admin/img/logo.svg'/><br/>Pi-<b>hole</b>: Your black hole for Internet advertisements<br><a href='/admin'>Did you mean to go to the admin panel?</a></body></html>
     ";
 
-    if(file_exists("/var/www/blackbox/home.php")){
-        include("/var/www/blackbox/home.php");
+    if(file_exists("/var/www/osbox/home.php")){
+        include("/var/www/osbox/home.php");
     }else{
-        include("/var/www/html/blackbox/home.php");
+        include("/var/www/html/osbox/home.php");
     }
     die();
 
