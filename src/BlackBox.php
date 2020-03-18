@@ -24,7 +24,33 @@ class BlackBox
         return (object) array("result"=>$result,"command"=>$command,"returnvar"=>$returnvar,"output"=>$output);
     }
 
-    public function showPage( $templatename ){
+    public function showPage( $templatename , $request ){
+
+        /*
+            "10"=>"Ready for shipping",
+            "11"=>"static network configured",
+            "12"=>"namebased host reachable",
+            "13"=>"device registered to user"
+        */
+
+        if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" &&
+            $request->getUri()->getScheme()=="https" ){
+
+        }
+
+        if ( $this->state==10 ) {
+            return "setup/index.html";
+        }
+        if ( $this->state==11 ) {
+            return "setup/index.html";
+        }
+        if ( $this->state==12 ) {
+            return "register/index.html";
+        }
+
+        if ( $this->state==13 ) {
+            return $templatename;
+        }
 
         // if the network is configured, and device has a owner we can show the requested template
         if($this->config->networkConfigured() && $this->config->registeredToAccount() ){

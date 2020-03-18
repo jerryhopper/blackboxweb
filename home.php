@@ -67,20 +67,15 @@ $container['view'] = function ($c) {
  *
  *
  *
- *
  **/
 // Define home route
 $app->get('/', function ($request, $response, $args) {
 
     //   Default dashboard pages
-    $page = "dashboard.html";
-
+    //$page = "dashboard.html";
     //if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-
         //if( !$this->BlackBox->config->owner ){
-
         //}
-
         //$page = "register/index.html";
         //$page = "setup/index.html";
     //}//else{
@@ -94,9 +89,10 @@ $app->get('/', function ($request, $response, $args) {
 #    }
 
 
-    return $this->view->render( $response, $this->BlackBox->showpage("dashboard.html"), [
+    return $this->view->render( $response, $this->BlackBox->showpage( "dashboard.html", $request ), [
         "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
-        "AUTH_LOGINURL"=>$this->BlackBox->loginurl
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
+        "STATE"=>$this->BlackBox->state
     ]);
 })->setName('homepage');
 
