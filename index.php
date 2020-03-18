@@ -60,7 +60,7 @@ function setHeader($type = "x") {
 }
 
 if (   $serverName == "nonexistent.surfwijzer.nl" ){
-        $res = exec('sudo blackbox reachablebydomainname' );
+        $res = exec('sudo osbox reachablebydomainname' );
 
         //print_r($res);
         //die();
