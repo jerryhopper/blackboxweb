@@ -17,6 +17,8 @@ class bbAuth {
     private $tokenOwnerEmail = "";
     private $token           = "";
 
+    private $authenticated  = false;
+
     function __construct (){
 
     }
@@ -77,6 +79,9 @@ class bbAuth {
         return $res->access_token;
     }
 
+    public function isAuthenticated(){
+        return $this->authenticated;
+    }
 
     function validate( $token ){
 
@@ -106,6 +111,7 @@ class bbAuth {
         $this->tokenOwner = $subject;
         $this->token = $token;
 
+        $this->authenticated = true;
         return true;
     }
     public function getBlockAdmins(){

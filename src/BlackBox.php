@@ -6,6 +6,7 @@ class BlackBox
     public $config;
     public $isConfigured;
     public $isRegistered;
+    public $setupVars;
 
     public $loginurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
 
@@ -17,9 +18,37 @@ class BlackBox
         $this->state = $this->config->getState();
 
         $this->auth = new bbAuth();
+        $vars = new SetupVars();
+        $this->setupVars = $vars->get();
+
         $this->loginurl = $this->auth->oAuthloginUrl();
+
+
+        $this->piholeNativeAuth = new PiholeNativeAuth($this->setupVars);
+
     }
 
+    public function getUserinfo(){
+
+        if( !$this->auth->isAuthenticated() ){
+            return array(
+                "authenticated"=>false,
+            );
+        }else{
+            return array(
+                "authenticated"=>true,
+                "user"=>array(
+                    "userId"=>$this->auth->tokenOwner,
+                    "userEmail"=>$this->auth->tokenOwnerEmail
+                )
+            );
+        }
+        //$this->BlackBox->auth->tokenOwner;
+        //'useremail',$this->BlackBox->auth->tokenOwnerEmail
+
+
+
+    }
 
     public function cookietoken($token){
         if( $this->auth->validate($token) ){

@@ -16,8 +16,12 @@ class PiholeNativeAuth
     public function logout (){
         session_unset();
         setcookie('persistentlogin', '');
-        header('Location: index.php');
-        exit();
+        //header('Location: index.php');
+        //exit();
+
+    }
+
+    function login (){
 
     }
 

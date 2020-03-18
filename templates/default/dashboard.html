@@ -2,9 +2,10 @@
 
 
 {% block sidebar %}
+
 <ul class="nav">
 
-    {% if online == false %}
+    {% if AUTH.authenticated == false %}
     <li class="nav-item alert-dark  ">
         <a class="nav-link" href="/login">
             <i class="material-icons">vpn_key</i>

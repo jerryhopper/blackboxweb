@@ -69,14 +69,10 @@ $app->add(function ($request, $response, $next) {
 
     if( isset( $cookieparms['auth']) ){
         $this->BlackBox->cookietoken($cookieparms['auth']);
-        $request = $request->withAttribute('userid', $this->BlackBox->auth->tokenOwner);
-        $request = $request->withAttribute('useremail',$this->BlackBox->auth->tokenOwnerEmail);
-        //
-        //print_r($this->BlackBox->auth->tokenOwner);
-        //die();
-    }else{
-
     }
+
+    $request = $request->withAttribute('AUTH', $this->BlackBox->getUserinfo() );
+
 
     //$response->getBody()->write('BEFORE');
     $response = $next($request, $response);
@@ -96,28 +92,19 @@ $app->add(function ($request, $response, $next) {
 // Define home route
 $app->get('/', function ($request, $response, $args) {
 
-    //   Default dashboard pages
-    //$page = "dashboard.html";
-    //if( $request->getUri()->getHost()=="blackbox.surfwijzer.nl" && $request->getUri()->getScheme()=="https" ){
-        //if( !$this->BlackBox->config->owner ){
-        //}
-        //$page = "register/index.html";
-        //$page = "setup/index.html";
-    //}//else{
-        //$page = "testopmaak.html";
-    //}
 
-    #$page = "register/index.html";
-    #$page = "setup/index.html";
-    #if(){
-
-#    }
+    #[authenticated] => 1
+    #[user][userId] => 6ab331fb-e654-4de3-aa29-b403fcd557e1
+    #[user][userEmail] => hopper.jerry@gmail.com
+    #print_r($request->getAttribute("AUTH"));
+    #die();
 
 
     return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), [
         "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
         "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
-        "STATE"=>$this->BlackBox->state
+        "STATE"=>$this->BlackBox->state,
+        "AUTH"=>$request->getAttribute("AUTH")
     ]);
 })->setName('homepage');
 
@@ -552,7 +539,7 @@ $app->get('/callback', function ($request, $response, $args) {
 
 
     if( !$this->BlackBox->config->owner ){
-        die("NO OWNER");
+
         $this->BlackBox->setOwner($owner,$email);
         //die("NoOwners");
         $setcookies = new Slim\Http\Cookies();
@@ -568,11 +555,25 @@ $app->get('/callback', function ($request, $response, $args) {
         //return $response->withJson(4)->withStatus(200);
     }else{
 
+        //var_dump($this->BlackBox->setupVars["WEBPASSWORD"]);
+        //die();
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+
+        $setcookies->set('persistentlogin',['value' => $this->BlackBox->setupVars["WEBPASSWORD"], 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+
+
         //$setcookies->set('tracking', "$value");
         $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
         //return $response->write( '/');
+
+
+        //$_SESSION["hash"] = $this->BlackBox->setupVars->WEBPASSWORD;
+
+ //       $this->BlackBox->auth;
+        //setcookie('persistentlogin', $pwhash, time()+60*60*24*7);
+        ///
+
         return $response->withRedirect( '/');
     }
 
@@ -644,6 +645,28 @@ $app->get('/login', function ($request, $response, $args) {
 // Define logout route
 $app->get('/logout', function ($request, $response, $args) {
     //return $response->withStatus(403);
+
+    $setcookies = new Slim\Http\Cookies();
+    $setcookies->set('auth',['value' => "none", 'expires' => time() - $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+    //$setcookies->set('tracking', "$value");
+    $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+
+    $setcookies = new Slim\Http\Cookies();
+    $setcookies->set('persistentlogin',['value' => "none", 'expires' => time() - $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
+
+    // And for getting cookie :
+    // $jwt = $request->getCookieParam('auth');
+    session_unset();
+    //setcookie('persistentlogin', '');
+
+    return $response->withRedirect( '/');
+
+
+
+
+
+
     return $this->view->render($response, 'logout.html', [
         'name' => $args['name']
     ]);
