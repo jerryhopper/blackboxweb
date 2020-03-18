@@ -16,8 +16,18 @@ class BlackBox
         $this->isRegistered = $this->config->registeredToAccount();
         $this->state = $this->config->getState();
 
+        $this->auth = new bbAuth();
+        $this->loginurl = $this->auth->oAuthloginUrl();
     }
 
+
+    public function cookietoken($token){
+        if( $this->auth->validate($token) ){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public function exec ($command){
         $result = exec("sudo ".$command." 2>&1" ,$output,$returnvar);

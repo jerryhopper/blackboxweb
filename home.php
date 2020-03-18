@@ -27,8 +27,12 @@ require 'src/SetupVars.php';
 // Create Slim app
 $app = new \Slim\App();
 
+
+
+
 // Fetch DI Container
 $container = $app->getContainer();
+
 
 
 $container['BlackBox'] = function($c){
@@ -59,6 +63,27 @@ $container['view'] = function ($c) {
 };
 
 
+$app->add(function ($request, $response, $next) {
+
+    $cookieparms = $request->getCookieParams();
+
+    if( isset( $cookieparms['auth']) ){
+        $this->BlackBox->cookietoken($cookieparms['auth']);
+        $request = $request->withAttribute('userid', $this->BlackBox->auth->tokenOwner);
+        $request = $request->withAttribute('useremail',$this->BlackBox->auth->tokenOwnerEmail);
+        //
+        //print_r($this->BlackBox->auth->tokenOwner);
+        //die();
+    }else{
+
+    }
+
+    //$response->getBody()->write('BEFORE');
+    $response = $next($request, $response);
+    //$response->getBody()->write('AFTER');
+
+    return $response;
+});
 
 
 /**
@@ -89,7 +114,7 @@ $app->get('/', function ($request, $response, $args) {
 #    }
 
 
-    return $this->view->render( $response, $this->BlackBox->showpage( "dashboard.html", $request ), [
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), [
         "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
         "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
         "STATE"=>$this->BlackBox->state
@@ -502,10 +527,11 @@ $app->get('/callback', function ($request, $response, $args) {
     //return $response;
 
 
+
     $allGetVars = $request->getQueryParams();
     $allGetVars["token"];
 
-    $T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM5MzE4OTcsImlhdCI6MTU4MzkyODI5NywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W10sImJpcnRoZGF0ZVgiOiJvdmVyd3JpdHRlbiJ9.Tbb9Ar8atvZE9nNnMNIQ-Ot7i2hLmoH8-l-s90OsdCY";
+    //$T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM5MzE4OTcsImlhdCI6MTU4MzkyODI5NywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W10sImJpcnRoZGF0ZVgiOiJvdmVyd3JpdHRlbiJ9.Tbb9Ar8atvZE9nNnMNIQ-Ot7i2hLmoH8-l-s90OsdCY";
 
 
     $x = new bbAuth();
@@ -518,14 +544,15 @@ $app->get('/callback', function ($request, $response, $args) {
     $email = $x->getTokenOwnerEmail();
     $owner = $x->getTokenOwner();
     $expires=$x->getTokenExpiry();
-
+    $expires=3600;
 
 
     // Al er nog geen eigenaar is, maar de eerste login de eigenaar.
     //die();
 
-    if( !$this->BlackBox->config->owner ){
 
+    if( !$this->BlackBox->config->owner ){
+        die("NO OWNER");
         $this->BlackBox->setOwner($owner,$email);
         //die("NoOwners");
         $setcookies = new Slim\Http\Cookies();
@@ -540,10 +567,12 @@ $app->get('/callback', function ($request, $response, $args) {
         return $response->withRedirect( '/');
         //return $response->withJson(4)->withStatus(200);
     }else{
+
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
         //$setcookies->set('tracking', "$value");
         $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+        //return $response->write( '/');
         return $response->withRedirect( '/');
     }
 
@@ -603,6 +632,10 @@ $app->get('/cxxallback', function ($request, $response, $args) {
 // Define login route
 $app->get('/login', function ($request, $response, $args) {
     //return $response->withStatus(403);
+
+    return $response->withRedirect($this->BlackBox->loginurl);
+
+    //{{ AUTH_LOGINURL }}
     return $this->view->render($response, '_login.html', [
         'name' => $args['name']
     ]);

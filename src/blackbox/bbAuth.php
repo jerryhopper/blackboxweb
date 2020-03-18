@@ -7,7 +7,7 @@ use Lcobucci\JWT\ValidationData;
 class bbAuth {
 
 
-    var $oauthClientId       = "705dbbd8-0155-4e7e-9199-20b8e47388e5";
+    var $oauthClientId       = "82252ce6-ad4a-4a7f-8ff3-f7074f1a58dc";
 
 
     var $oauthIssuer         = "idp.surfwijzer.nl";
@@ -24,7 +24,10 @@ class bbAuth {
 
 
     public function oAuthloginUrl(){
-        return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";
+        $lurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
+        return $lurl;
+
+        //return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";
         //return $this->oauthAuthorizeUrl."?response_type=code&scope=email&client_id=".$this->oauthClientId."&state=&redirect_uri=http%3A%2F%2Fpi.hole%2Fadmin%2Findex.php";
     }
 
