@@ -372,6 +372,7 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     //print_r($result);
     //$result  ="ok";
     if ( $result == "ok" ){
+
         return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     } else{
         return $response->withJson(array("result"=> "error","msg"=>$result ) )->withStatus(501);
@@ -540,7 +541,9 @@ $app->get('/callback', function ($request, $response, $args) {
 
     if( !$this->BlackBox->config->owner ){
 
-        $this->BlackBox->setOwner($owner,$email);
+        $this->BlackBox->setOwner($owner,$email) ;
+
+
         //die("NoOwners");
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
