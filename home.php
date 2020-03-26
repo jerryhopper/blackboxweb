@@ -7,8 +7,11 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
 
 require 'src/BlackBox.php';
+require 'src/blackbox/bbCommand.php';
 require 'src/blackbox/bbState.php';
+require 'src/blackbox/bbDatabase.php';
 require 'src/blackbox/bbAuth.php';
+require 'src/blackbox/userObj.php';
 require 'src/blackbox/bbConfig.php';
 require 'src/FTL.php';
 require 'src/Gravity.php';
@@ -18,11 +21,6 @@ require 'src/SQLite3.php';
 require 'src/PiholeNativeAuth.php';
 require 'src/SetupVars.php';
 
-#echo "xYYYYYYYYYY";
-
-#print_r($_SERVER);
-
-#echo "xxx";
 
 // Create Slim app
 $app = new \Slim\App();
@@ -39,9 +37,9 @@ $container['BlackBox'] = function($c){
     return new BlackBox();
 };
 
-$container['bbconfig'] = function ($c) {
-    return new bbConfig();
-};
+//$container['bbconfig'] = function ($c) {
+  //  return new bbConfig();
+//};
 
 $container['setupVars'] = function ($c) {
     $vars = new SetupVars();
@@ -62,15 +60,35 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-
+/**
+ *  Middleware that adds auth functionality
+ */
 $app->add(function ($request, $response, $next) {
 
+    $allGetVars = $request->getQueryParams();
     $cookieparms = $request->getCookieParams();
 
-    if( isset( $cookieparms['auth']) ){
-        $this->BlackBox->cookietoken($cookieparms['auth']);
+    // Authentication callback middleware
+    $token = false;
+    $isAuthenticated = false;
+
+    if( isset( $allGetVars['token']) ) {
+        $token = $allGetVars["token"];
+
+    }elseif( isset( $cookieparms['auth']) ){
+        $token = $cookieparms['auth'];
+
     }
 
+    if($token !== false){
+        // Validate the token
+        $isAuthenticated = $this->BlackBox->validateToken($token);
+
+    }
+
+
+
+    // Add userinfo to request.
     $request = $request->withAttribute('AUTH', $this->BlackBox->getUserinfo() );
 
 
@@ -78,8 +96,99 @@ $app->add(function ($request, $response, $next) {
     $response = $next($request, $response);
     //$response->getBody()->write('AFTER');
 
+    $response = $response->withAddedHeader('X-Osbox-state', $this->BlackBox->getState() );
+    //$response = $response->withAddedHeader('X-Osbox-readablestate', (int)$this->BlackBox->readablestate );
+
+    $response = $response->withAddedHeader('X-Osbox-authenticated', (int) $isAuthenticated );
+    $response = $response->withAddedHeader('X-Osbox-hasowner', (int)$this->BlackBox->hasOwner() );
+
+
     return $response;
 });
+
+
+
+
+/**
+ *  Callback function.
+ */
+$app->get('/callback', function ($request, $response, $args) {
+
+    $expires=3590;
+
+    $allGetVars = $request->getQueryParams();
+    $token = $allGetVars["token"];
+
+    $isAuthenticated = $this->BlackBox->validateToken($token);
+
+
+
+
+    /**
+     *  If user is not authenticated, redirect to error page.
+     */
+    if( ! $isAuthenticated ){
+        /**
+         *  If user is not authenticated, redirect to error page.
+         */
+        return $response->withRedirect( '/error');
+
+    }elseif( ! $this->BlackBox->hasOwner()  ){
+        /**
+         *  If user is authenticated, but the device has no owner.
+         */
+        $this->BlackBox->setOwner(  $userObject );
+
+        // set the cookie
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth', [
+            'value' => $token,
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+        return $response->withRedirect( '/firstrun');
+
+    }else{
+        /**
+         *  If user is authenticated, and the device has a owner.
+         */
+
+        // set the cookie
+        $setcookies = new Slim\Http\Cookies();
+        $setcookies->set('auth',[
+            'value' => $token,
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $setcookies->set('persistentlogin',[
+            'value' => $this->BlackBox->setupVars["WEBPASSWORD"],
+            'expires' => $this->BlackBox->getUserinfo('expires'),
+            'path' => '/',
+            'domain' => 'blackbox.surfwijzer.nl',
+            'httponly' => true,
+            'hostonly' => false,
+            'secure' => true,
+            'samesite' => 'lax'
+        ]);
+        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
+
+        return $response->withRedirect( '/');
+
+    }
+});
+
 
 
 /**
@@ -100,13 +209,18 @@ $app->get('/', function ($request, $response, $args) {
     #die();
 
 
-    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), [
-        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
-        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
-        "STATE"=>$this->BlackBox->state,
-        "AUTH"=>$request->getAttribute("AUTH")
-    ]);
-})->setName('homepage');
+    return $this->view->render( $response, $this->BlackBox->showpage( "default/dashboard.html", $request ), $this->BlackBox->UiParameters(["PAGE"=>".page_dashboard"]));
+})->setName('page_dashboard');
+
+
+$app->get('/firstrun', function ($request, $response, $args) {
+
+})->setName('page_firstrun');
+
+
+
+
+
 
 
 $app->get('/xcc', function ($request, $response, $args) {
@@ -247,8 +361,6 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
 
 })->setName('network/scan');
 
-
-
 $app->get('/api/network/info', function ($request, $response, $args) {
 
 
@@ -380,7 +492,7 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     return $response->withStatus(200);
 })->setName('network/set');
 
-$app->get('/api/network/current', function ($request, $response, $args) {
+$app->get( '/api/network/current', function ($request, $response, $args) {
 
     if( $this->bbconfig->owner !=false ){
         //return $response->withStatus(400);
@@ -400,15 +512,156 @@ $app->get('/api/network/current', function ($request, $response, $args) {
 
 
 
+
+// Define whitelist route
+$app->get('/whitelist', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+    return $this->view->render($response, 'whitelist.html', [
+        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
+        "STATE"=>$this->BlackBox->state,
+        "AUTH"=>$request->getAttribute("AUTH"),
+        "PAGE"=>".page_whitelist"
+    ]);
+})->setName('whitelist');
+
+// Define blacklist route
+$app->get('/blacklist', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+    return $this->view->render($response, 'blacklist.html', [
+        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
+        "STATE"=>$this->BlackBox->state,
+        "AUTH"=>$request->getAttribute("AUTH"),
+        "PAGE"=>".page_blacklist"
+    ]);
+})->setName('page_blacklist');
+
+// Define blacklist route
+$app->get('/network', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+    return $this->view->render($response, 'network.html', [
+        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
+        "STATE"=>$this->BlackBox->state,
+        "AUTH"=>$request->getAttribute("AUTH"),
+        "PAGE"=>".page_networkdevices"
+    ]);
+})->setName('page_networkdevices');
+
+// Define blacklist route
+$app->get('/groups', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+    return $this->view->render($response, 'groups.html', [
+        "SERVER_ADDR"=>$_SERVER['SERVER_ADDR'],
+        "AUTH_LOGINURL"=>$this->BlackBox->loginurl,
+        "STATE"=>$this->BlackBox->state,
+        "AUTH"=>$request->getAttribute("AUTH"),
+        "PAGE"=>".page_groups"
+    ]);
+})->setName('page_groups');
+
+
+// Define blacklist route
+$app->get('/devices', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+
+
+    return $this->view->render($response, 'groups.html', $this->BlackBox->UiParameters(["PAGE"=>".page_uwapparaten"]) );
+})->setName('page_uwapparaten');
+
+// Define blacklist route
+$app->get('/users', function ($request, $response, $args) {
+    //return $response->withStatus(403);'name' => $args['name']
+
+    return $this->view->render($response, 'users.html', $this->BlackBox->UiParameters(["PAGE"=>".page_users"]) );
+})->setName('page_users');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Define home route
 $app->get('/test', function ($request, $response, $args) {
 
     //print_r($_SERVER['SERVER_ADDR']);
-    echo "<pre>";
-    $Blackbox = new BlackBox();
-    var_dump($Blackbox);
+    //echo "<pre>";
+
+    $log = "Current installation state: ".$this->BlackBox->getState()." (".$this->BlackBox->readablestate .") <br> ";
+    $log .= "isConfigured = ".(int)$this->BlackBox->isConfigured."<br>";
+    $log .= "isRegistered = ".(int)$this->BlackBox->isRegistered."<br>";
+    if( $this->BlackBox->hasOwner() ){
+        $log .= "Device has owner. <br>";
+    }else{
+        $log .= "device has no owner. <br>";
+    }
 
 
+
+
+
+
+
+   // echo "Userinfo: <br>";
+
+  //  $ui =$this->BlackBox->getUserinfo();
+   // if($ui===false){
+   //     echo "user is not authenticated";
+  //  }else{
+   //     echo "<pre>";
+     //   print_r($ui);
+    //    echo "</pre>";
+    //}
+
+    //$this->BlackBox->getUserinfo();
+
+
+
+
+
+
+
+    // SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';
+    print_r($this->BlackBox->test() );
+
+
+    //$this->BlackBox->debug();
+    //$Blackbox = new BlackBox();
+    //var_dump( $this->BlackBox->getState() );
+
+
+
+    die();
+
+    $fp = fopen('/etc/osbox/osbox.db', 'w+');
+    $fwrite = fwrite($fp, '');
+    fclose($fp);
+    var_dump($fwrite);
 
     die("____--____");
 
@@ -505,103 +758,10 @@ $app->get('/test', function ($request, $response, $args) {
 
 
 
-$app->get('/callback', function ($request, $response, $args) {
-
-    //echo "<pre>";
-
-
-    //$response->withHeader('Location', '/contact');
-
-    //return $response;
-
-
-
-    $allGetVars = $request->getQueryParams();
-    $allGetVars["token"];
-
-    //$T = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImY0MjAyMjYzZSJ9.eyJhdWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJleHAiOjE1ODM5MzE4OTcsImlhdCI6MTU4MzkyODI5NywiaXNzIjoiaWRwLnN1cmZ3aWp6ZXIubmwiLCJzdWIiOiI2YWIzMzFmYi1lNjU0LTRkZTMtYWEyOS1iNDAzZmNkNTU3ZTEiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiaG9wcGVyLmplcnJ5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZXJyeWhvcHBlciIsImFwcGxpY2F0aW9uSWQiOiI4MjI1MmNlNi1hZDRhLTRhN2YtOGZmMy1mNzA3NGYxYTU4ZGMiLCJyb2xlcyI6W10sImJpcnRoZGF0ZVgiOiJvdmVyd3JpdHRlbiJ9.Tbb9Ar8atvZE9nNnMNIQ-Ot7i2hLmoH8-l-s90OsdCY";
-
-
-    $x = new bbAuth();
-    $x->validate($allGetVars['token']);
-    //$x->validate($T);
-
-    //print_r($x);
-
-    $token = $x->getToken();
-    $email = $x->getTokenOwnerEmail();
-    $owner = $x->getTokenOwner();
-    $expires=$x->getTokenExpiry();
-    $expires=3600;
-
-
-    // Al er nog geen eigenaar is, maar de eerste login de eigenaar.
-    //die();
-
-
-    if( !$this->BlackBox->config->owner ){
-
-        $this->BlackBox->setOwner($owner,$email) ;
-
-
-        //die("NoOwners");
-        $setcookies = new Slim\Http\Cookies();
-        $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
-        //$setcookies->set('tracking', "$value");
-        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
-
-        // And for getting cookie :
-        // $jwt = $request->getCookieParam('auth');
-
-
-        return $response->withRedirect( '/');
-        //return $response->withJson(4)->withStatus(200);
-    }else{
-
-        //var_dump($this->BlackBox->setupVars["WEBPASSWORD"]);
-        //die();
-        $setcookies = new Slim\Http\Cookies();
-        $setcookies->set('auth',['value' => $token, 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
-
-        $setcookies->set('persistentlogin',['value' => $this->BlackBox->setupVars["WEBPASSWORD"], 'expires' => time() + $expires, 'path' => '/','domain' => 'blackbox.surfwijzer.nl','httponly' => true,'hostonly' => false,'secure' => true,'samesite' => 'lax']);
-
-
-        //$setcookies->set('tracking', "$value");
-        $response = $response->withHeader('Set-Cookie', $setcookies->toHeaders());
-        //return $response->write( '/');
-
-
-        //$_SESSION["hash"] = $this->BlackBox->setupVars->WEBPASSWORD;
-
- //       $this->BlackBox->auth;
-        //setcookie('persistentlogin', $pwhash, time()+60*60*24*7);
-        ///
-
-        return $response->withRedirect( '/');
-    }
-
-
-    //print_r($BlackBox->owner);
-    die();
-
-
-    //"code";
-    // locale
-    // userState (AuthenticatedNotRegistered)
-    # curl -u TestClient:TestSecret https://api.surfwijzer.nl/blackbox/login -d 'code=xyz'
-    # curl -u TestClient:TestSecret https://idp.surfwijzer.nl/oauth2/token -d 'grant_type=authorization_code&code=xyz'
-
-    // if blackbox has no owner.
-    if( !$this->bbconfig->owner ){
-        // blackbox needs network setup
-        //$page = "register/index.html";
-    }
 
 
 
 
-    return $response->withJson(4)->withStatus(200);
-});
 
 
 $app->get('/register', function ($request, $response, $args) {
@@ -637,7 +797,7 @@ $app->get('/cxxallback', function ($request, $response, $args) {
 $app->get('/login', function ($request, $response, $args) {
     //return $response->withStatus(403);
 
-    return $response->withRedirect($this->BlackBox->loginurl);
+    return $response->withRedirect($this->BlackBox->getLoginUrl());
 
     //{{ AUTH_LOGINURL }}
     return $this->view->render($response, '_login.html', [
@@ -705,9 +865,9 @@ $app->get('/setupvars.json', function ($request, $response, $args) {
 // Define home route
 $app->get('/api.php', function ($request, $response, $args) {
 
-    $bbapi = new BbPiholeApi($request, $args, $this->setupVars);
+    $bbapi = new BbPiholeApi($request, $args, $this->BlackBox->setupVars);
 
-    $bbapidb = new BbPiholeApiDb($request, $args, $this->setupVars);
+    $bbapidb = new BbPiholeApiDb($request, $args, $this->BlackBox->setupVars);
 
     //GET
     $allGetVars = $request->getQueryParams();
@@ -1469,39 +1629,6 @@ $app->get('/api_db.php', function ($request, $response, $args) {
 
 
 });
-
-// Define whitelist route
-$app->get('/whitelist', function ($request, $response, $args) {
-    //return $response->withStatus(403);'name' => $args['name']
-    return $this->view->render($response, 'whitelist.html', [
-
-    ]);
-})->setName('whitelist');
-
-// Define blacklist route
-$app->get('/blacklist', function ($request, $response, $args) {
-    //return $response->withStatus(403);'name' => $args['name']
-    return $this->view->render($response, 'blacklist.html', [
-
-    ]);
-})->setName('blacklist');
-
-// Define blacklist route
-$app->get('/network', function ($request, $response, $args) {
-    //return $response->withStatus(403);'name' => $args['name']
-    return $this->view->render($response, 'network.html', [
-
-    ]);
-})->setName('network');
-
-// Define blacklist route
-$app->get('/groups', function ($request, $response, $args) {
-    //return $response->withStatus(403);'name' => $args['name']
-    return $this->view->render($response, 'groups.html', [
-
-    ]);
-})->setName('groups');
-
 
 
 

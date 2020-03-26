@@ -39,22 +39,67 @@
                 {% block sidebar %}
                 <ul class="nav">
 
+                    {% if AUTH.authenticated == false %}
+                    <li class="nav-item alert-dark page_login">
+                        <a class="nav-link" href="/login">
+                            <i class="material-icons">vpn_key</i>
+                            <p>login </p>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item alert-dark  page_logout">
+                        <a class="nav-link" href="/logout">
+                            <i class="material-icons">vpn_key</i>
+                            <p>logout</p>
+                        </a>
+                    </li>
 
-                    <li class="nav-item active  ">
-                        <a class="nav-link" href="./dashboard%20-%20Copy.html">
+                    <li class="nav-item page_users">
+                        <a class="nav-link" href="./users">
+                            <i class="material-icons">supervised_user_circle</i>
+                            <p>Users</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item page_uwapparaten">
+                        <a class="nav-link" href="./devices">
+                            <i class="material-icons">important_devices</i>
+                            <p>Uw apparaten</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item page_dashboard">
+                        <a class="nav-link" href="/">
                             <i class="material-icons">dashboard</i>
                             <p>Dashboard</p>
                         </a>
                     </li>
 
-                    <li class="nav-item ">
-                        <a class="nav-link" href="./user.html">
-                            <i class="material-icons">person</i>
-                            <p>User Profile</p>
+                    <li class="nav-item page_whitelist">
+                        <a class="nav-link" href="./whitelist">
+                            <i class="material-icons">library_books</i>
+                            <p>Personal whitelist</p>
+                        </a>
+                    </li>
+                    <li class="nav-item page_blacklist">
+                        <a class="nav-link" href="./blacklist">
+                            <i class="material-icons">library_books</i>
+                            <p>Personal blacklist</p>
+                        </a>
+                    </li>
+                    <li class="nav-item page_networkdevices">
+                        <a class="nav-link" href="./network">
+                            <i class="material-icons">device_unknown</i>
+                            <p>network devices</p>
                         </a>
                     </li>
 
-
+                    <li class="nav-item page_groups">
+                        <a class="nav-link" href="./groups">
+                            <i class="material-icons">account_tree</i>
+                            <p>groups</p>
+                        </a>
+                    </li>
 
                     <li class="nav-item active-pro ">
                         <a class="nav-link" href="./upgrade.html">
@@ -62,8 +107,18 @@
                             <p>Upgrade to PRO</p>
                         </a>
                     </li>
+                    {% endif %}
+
+
+
+
+
+
                 </ul>
+
                 {% endblock %}
+
+
             </div>
         </div>
         {% endblock %}
@@ -159,6 +214,8 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <nav class="float-left">
+                        {{ log }}
+                        <!--
                         <ul>
                             <li>
                                 <a href="https://www.creative-tim.com">
@@ -180,7 +237,7 @@
                                     Licenses
                                 </a>
                             </li>
-                        </ul>
+                        </ul>--->
                     </nav>
                     <div class="copyright float-right">
                         (state:{{ STATE }}) &copy;
@@ -422,13 +479,19 @@
         });
     </script>
     {% endblock %}
+
     {% block specificpagejs %}
     <script>
-        $(document).ready(function()
+        $(document).ready(function(){
 
         });
     </script>
     {% endblock %}
-
+    <!--- Active-Menu-item. --->
+    <script>
+        $(function() {
+            $("{{PAGE}}").addClass('active');
+        });
+    </script>
 </body>
 </html>

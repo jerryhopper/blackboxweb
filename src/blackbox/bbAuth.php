@@ -15,14 +15,22 @@ class bbAuth {
     private $tokenExpires    = "";
     private $tokenOwner      = "";
     private $tokenOwnerEmail = "";
-    private $token           = "";
+    protected $token           = "";
 
     private $authenticated  = false;
+
 
     function __construct (){
 
     }
 
+    public function oAuthlogoutUrl(){
+        $lurl = "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fapi.surfwijzer.nl%2Fblackbox%2Flogin";
+        return $lurl;
+
+        //return "https://idp.surfwijzer.nl/oauth2/authorize?client_id=".$this->oauthClientId."&response_type=code&redirect_uri=https%3A%2F%2Fblackbox.surfwijzer.nl%2Fblackbox%2Flogin";
+        //return $this->oauthAuthorizeUrl."?response_type=code&scope=email&client_id=".$this->oauthClientId."&state=&redirect_uri=http%3A%2F%2Fpi.hole%2Fadmin%2Findex.php";
+    }
 
 
     public function oAuthloginUrl(){
@@ -110,6 +118,8 @@ class bbAuth {
         $this->tokenOwnerEmail = $email;
         $this->tokenOwner = $subject;
         $this->token = $token;
+
+
 
         $this->authenticated = true;
         return true;

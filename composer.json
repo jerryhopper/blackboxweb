@@ -12,6 +12,7 @@
         "twig/twig": "^3.0",
         "slim/twig-view": "2.*",
         "markrogoyski/ipv4-subnet-calculator": "3.*",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "slim/pdo": "^1.10"
     }
 }

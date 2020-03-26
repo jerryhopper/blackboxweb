@@ -81,7 +81,14 @@ class bbConfig
      * @return bool
      * @throws Exception
      */
-    public function setOwner($uid,$email){
+    public function setOwner(userObj $userObject ){
+
+        $userObject->id;
+        $userObject->email;
+        $userObject->name;
+        $userObject->roles;
+
+
 
         $res = exec("sudo osbox owner set $uid");
         error_log("sudo osbox owner set $uid");

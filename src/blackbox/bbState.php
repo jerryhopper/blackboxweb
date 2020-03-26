@@ -7,6 +7,8 @@ class bbState
     function __construct($state)
     {
         $this->state = $this->states( $state );
+        //var_dump($this);
+        //die();
     }
 
     public function __toString()
