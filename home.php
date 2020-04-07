@@ -10,6 +10,7 @@ require 'src/BlackBox.php';
 require 'src/blackbox/bbCommand.php';
 require 'src/blackbox/bbState.php';
 require 'src/blackbox/bbDatabase.php';
+require 'src/blackbox/bbGravityDb.php';
 require 'src/blackbox/bbAuth.php';
 require 'src/blackbox/userObj.php';
 require 'src/blackbox/bbConfig.php';

@@ -101,8 +101,19 @@ class BlackBox
     function test(){
 
 
-        echo "<pre>";
+        $gravitydb = new bbGravityDb();
 
+        $result = $gravitydb->getRegexWhite();
+        #$gravitydb->flushRegex();
+        #$gravitydb->importRegex();
+
+
+
+
+
+        echo "<pre>";
+        var_dump($result);
+        die();
         //echo "Drop tables ";
         try{
             //$this->database->dropTable("users");
