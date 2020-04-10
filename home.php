@@ -8,6 +8,7 @@ use Lcobucci\JWT\ValidationData;
 
 require 'src/BlackBox.php';
 require 'src/blackbox/bbCommand.php';
+require 'src/blackbox/bbExec.php';
 require 'src/blackbox/bbState.php';
 require 'src/blackbox/bbDatabase.php';
 require 'src/blackbox/bbGravityDb.php';
@@ -138,8 +139,11 @@ $app->get('/callback', function ($request, $response, $args) {
         /**
          *  If user is authenticated, but the device has no owner.
          */
-        $this->BlackBox->setOwner(  $userObject );
+        //print_r($this->BlackBox->userObject);
 
+        $this->BlackBox->setOwner(  $this->BlackBox->userObject );
+
+        //die();
         // set the cookie
         $setcookies = new Slim\Http\Cookies();
         $setcookies->set('auth', [
@@ -248,16 +252,34 @@ $app->get('/api/network/scan', function ($request, $response, $args) {
     //if( $this->bbconfig->owner !=false ){
       //  return $response->withStatus(400);
     //}
+    /*
+
+    $res = $this->BlackBox->exec("osbox network current");
+    $networkCurrent = $res->getResult();
+    #$res->getCommand();
+    #$res->getReturnvar();
+    #$res->getOutput();
+
+    */
+    $res = $this->BlackBox->exec("osbox network scan");
+    $AdressesInUse = $res->getOutput();
+
+
 
     #die("x");
-    $cmd = 'sudo osbox network scan';
-    $result = exec( $cmd ,$AdressesInUse,$returnvar);
+
+
+    #$cmd = 'sudo osbox network scan';
+    #$result = exec( $cmd ,$AdressesInUse,$returnvar);
 
     #var_dump($AdressesInUse);
     #die();
 
-    $cmd = 'sudo osbox network info';
-    $result = exec( $cmd ,$output,$returnvar);
+    $res = $this->BlackBox->exec("osbox network info");
+    $result = $res->getResult();
+
+    #$cmd = 'sudo osbox network info';
+    #$result = exec( $cmd ,$output,$returnvar);
     #error_log($result);
     #die();
 
@@ -368,20 +390,28 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 
 
 
-    $networkCurrent = $this->BlackBox->exec("osbox network current");
+    $res = $this->BlackBox->exec("osbox network current");
+    $networkCurrent = $res->getResult();
+    #$res->getCommand();
+    #$res->getReturnvar();
+    #$res->getOutput();
+
+
     #$networkCurrent->result; #$networkCurrent->output; #$networkCurrent->returnvar; #$networkCurrent->command;
-    if ( $networkCurrent->result == "static" ){
+    if ( $networkCurrent == "static" ){
         $configurationType="static";
     } else{
         $configurationType="dynamic";
     }
 
 
-    $networkInfo = $this->BlackBox->exec("osbox network info");
-    #$networkInfo->result; #$networkInfo->output; #$networkInfo->returnvar; #$networkInfo->command;
+    $res = $this->BlackBox->exec("osbox network info");
+
+    $networkInfo = $res->getResult();
+        #$networkInfo->result; #$networkInfo->output; #$networkInfo->returnvar; #$networkInfo->command;
 
     //  10.0.1.4/24,10.0.1.15/24|10.0.1.1  10.0.1.4/24,|10.0.1.1
-    $nwInfo = explode("|", $networkInfo->result );
+    $nwInfo = explode("|", $networkInfo );
 
     $result  = $nwInfo[0];
     $gateway = $nwInfo[1];
@@ -417,7 +447,7 @@ $app->get('/api/network/info', function ($request, $response, $args) {
             "subnet_mask"=>$subnet_mask,
             "gateway"=>$gateway,
             "size"=>$netsize,
-            "raw"=>$networkInfo->result,
+            "raw"=>$networkInfo,
             "netconfig"=>$configurationType
         )
     );
@@ -425,17 +455,30 @@ $app->get('/api/network/info', function ($request, $response, $args) {
 
 })->setName('network/info');
 
+
+
+
 $app->post('/api/network/reset', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
+ #   if( $this->bbconfig->owner !=false ){
         //return $response->withStatus(400);
-    }
+ #   }
 
 
     // set ip
     // check if ip is in use.
-    $cmd = "sudo osbox network reset";
-    $result = exec( $cmd ,$output,$returnvar);
+    #$cmd = "sudo osbox network reset";
+    #$result = exec( $cmd ,$output,$returnvar);
+
+    $res = $this->BlackBox->exec("osbox network reset");
+    $result = $res->getResult();
+    #$res->getCommand();
+    #$res->getReturnvar();
+    #$res->getOutput();
+
+
+
+
     if ( "$result" == "ok" ){
         return $response->withStatus(200);
     } else{
@@ -447,13 +490,16 @@ $app->post('/api/network/reset', function ($request, $response, $args) {
 
 $app->post('/api/system/reboot', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
+  #  if( $this->bbconfig->owner !=false ){
         //return $response->withStatus(400);
-    }
+  #  }
 
     // check if ip is in use.
-    $cmd = "sudo osbox reboot";
-    $result = exec( $cmd ,$output,$returnvar);
+
+    $res = $this->BlackBox->exec("osbox reboot");
+    $result = $res->getResult();
+echo $result;
+
     if ( "$result" == "ok" ){
         return $response->withStatus(200);
     } else{
@@ -464,7 +510,7 @@ $app->post('/api/system/reboot', function ($request, $response, $args) {
 
 $app->post('/api/network/set', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
+    if( $this->BlackBox->hasOwner() !=false ){
         //return $response->withStatus(400);
     }
     //$xx=$request->getParsedBody();
@@ -480,8 +526,12 @@ $app->post('/api/network/set', function ($request, $response, $args) {
     //return $response->withJson(array("result"=> "ok" ) )->withStatus(200);
     //var_dump($xx);
     //die("xx");
-    $cmd = "sudo osbox network set $IP $SUBNET $GATEWAY $SIZE";
-    $result = exec( $cmd ,$output,$returnvar);
+    $cmd = "osbox network set $IP $SUBNET $GATEWAY $SIZE";
+    #$result = exec( $cmd ,$output,$returnvar);
+
+    $res = $this->BlackBox->exec( $cmd );
+    $result = $res->getResult();
+
     //print_r($result);
     //$result  ="ok";
     if ( $result == "ok" ){
@@ -495,12 +545,16 @@ $app->post('/api/network/set', function ($request, $response, $args) {
 
 $app->get( '/api/network/current', function ($request, $response, $args) {
 
-    if( $this->bbconfig->owner !=false ){
+  #  if( $this->bbconfig->owner !=false ){
         //return $response->withStatus(400);
-    }
+  #  }
 
-    $cmd = "sudo osbox network current";
+
     $result = exec( $cmd ,$output,$returnvar);
+
+    $res = $this->BlackBox->exec( $cmd );
+    $result = $res->getResult();
+
 
     if ( "$result" == "static" ){
         return $response->withJson( array("result"=>$result) )->withStatus(200);

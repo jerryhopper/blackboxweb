@@ -98,6 +98,19 @@ class BlackBox
 
     }
 
+
+    function exec($command){
+
+        return new bbExec($command);
+        print_r($res);
+        $res->getResult();
+        $res->getCommand();
+        $res->getReturnvar();
+        $res->getOutput();
+
+        die();
+    }
+
     function test(){
 
 
@@ -361,7 +374,22 @@ class BlackBox
      * @throws Exception
      */
     public function setOwner( userObj $userObject /* $uid,$email*/){
-        return $this->config->setOwner($userObject /* $uid,$email*/);
+
+        $userObject->id;
+        $userObject->email;
+        $userObject->name;
+        $userObject->roles;
+
+
+
+        #$res = exec("sudo osbox owner set $uid");
+        error_log("sudo osbox owner set ".$userObject->id);
+
+        $res = $this->exec("osbox owner set ".$userObject->id);
+
+        return true;
+
+        #return $this->config->setOwner($userObject /* $uid,$email*/);
     }
 
     /**
