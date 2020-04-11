@@ -29,7 +29,7 @@ class bbConfig
     }
     public function registeredToAccount(){
 
-        if ($this->id==13){
+        if ((int)$this->state>=13){
             return true;
         }
 
