@@ -114,18 +114,22 @@ class BlackBox
     function test(){
 
 
-        $gravitydb = new bbGravityDb();
+       // $gravitydb = new bbGravityDb();
+        $piholedb = new bbPiholeDb();
 
-        $result = $gravitydb->getRegexWhite();
+//        $result = $gravitydb->getRegexWhite();
         #$gravitydb->flushRegex();
         #$gravitydb->importRegex();
 
-
-
+        #$result = $gravitydb->getExactBlack();
+        #$result = $gravitydb->getRegexBlack();
+        //$result = $gravitydb->getGroups();
+        //$result = $gravitydb->getClients();
+        $result = $piholedb->getNetwork();
 
 
         echo "<pre>";
-        var_dump($result);
+        print_r($result);
         die();
         //echo "Drop tables ";
         try{

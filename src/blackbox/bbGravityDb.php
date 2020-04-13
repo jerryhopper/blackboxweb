@@ -88,6 +88,35 @@ class bbGravityDb{
     }
 
 
+    public function getGroups(){
+
+        $sql="SELECT * FROM [group]";
+
+        $stmt = $this->pdo->prepare($sql);
+        //$stmt->bindParam('type',$type);
+        try{
+            $x = $stmt->execute();
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+        return $stmt->fetchAll();
+    }
+
+    public function getClients(){
+
+        $sql="SELECT * FROM [client]";
+
+        $stmt = $this->pdo->prepare($sql);
+        //$stmt->bindParam('type',$type);
+        try{
+            $x = $stmt->execute();
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+        return $stmt->fetchAll();
+    }
+
+
 
     /**
      * @return array

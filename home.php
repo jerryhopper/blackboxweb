@@ -12,6 +12,7 @@ require 'src/blackbox/bbExec.php';
 require 'src/blackbox/bbState.php';
 require 'src/blackbox/bbDatabase.php';
 require 'src/blackbox/bbGravityDb.php';
+require 'src/blackbox/bbPiholeDb.php';
 require 'src/blackbox/bbAuth.php';
 require 'src/blackbox/userObj.php';
 require 'src/blackbox/bbConfig.php';
@@ -703,6 +704,7 @@ $app->get('/test', function ($request, $response, $args) {
 
     // SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';
     print_r($this->BlackBox->test() );
+
 
 
     //$this->BlackBox->debug();
